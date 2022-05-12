@@ -12,12 +12,11 @@ export const searchParty = async (name: string, setLogIn: Function, setInputValu
 
     console.log(headers);
 
-    const { data } = await server.post(`/parties/find_party`, { name }, { headers });
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.log(error);
-    setLogIn(true);
-    setInputValue('');
+    const { data, status } = await server.post(`/parties/find_party`, { name }, { headers });
+    console.log({data, status});
+    return {data, status};
+  } catch (error: any) {
+    console.log(error.response.status);
+    return (error.response)
   };
 };

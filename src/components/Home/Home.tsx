@@ -13,12 +13,28 @@ const Home = () => {
 
   return (
     <section className="home">
-      <form id='form-wrap' className="home__wrap" onSubmit={(event) => {
+      <form id='form-wrap' className="home__wrap" onSubmit={async (event) => {
         event.preventDefault();
-        if (logIn) {
-          console.error('shouldnt be here');
-        } else {
-          searchParty(inputValue, setLogIn, setInputValue);
+        if (!logIn) {
+          const response: any = await searchParty(inputValue, setLogIn, setInputValue);
+          switch (response.status) {
+            case 404:
+              console.log('Party does not exist');
+              break;
+
+              case 200:
+              console.log(response.data);
+              break;
+
+              case 401:
+              setLogIn(true);
+              setInputValue('');
+              break;
+
+            default:
+              console.error('Error in party get')
+              break;
+          }
         };
       }}>
         <input value={inputValue} type="text" name="input" id="text" className='home__wrap__input' onChange={(event) => {
@@ -27,8 +43,12 @@ const Home = () => {
         { logIn && <input value={password} type="password" name="input" id="text" className='home__wrap__input' onChange={(event) => {
           setPassword(event.target.value);
         }} onKeyDown={(event) => {
-          if (event.key === 'Enter')
+          if (event.key === 'Enter') {
             logInAPI(inputValue, password);
+            setLogIn(false);
+            setInputValue('');
+            setPassword('');
+          };
         }} /> }
       </form>
     </section>
