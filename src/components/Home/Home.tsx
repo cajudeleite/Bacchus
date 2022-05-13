@@ -16,7 +16,7 @@ const Home = () => {
       <form id='form-wrap' className="home__wrap" onSubmit={async (event) => {
         event.preventDefault();
         if (!logIn) {
-          const response: any = await searchParty(inputValue, setLogIn, setInputValue);
+          const response: any = await searchParty(inputValue);
           switch (response.status) {
             case 404:
               console.log('Party does not exist');

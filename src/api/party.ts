@@ -4,7 +4,7 @@ const server = axios.create({
   baseURL: 'http://localhost:3000',
 });
 
-export const searchParty = async (name: string, setLogIn: Function, setInputValue: Function) => {
+export const searchParty = async (name: string) => {
   try {
     const headers: any =  {
       Authorization: localStorage.getItem('token')
@@ -13,7 +13,6 @@ export const searchParty = async (name: string, setLogIn: Function, setInputValu
     console.log(headers);
 
     const { data, status } = await server.post(`/parties/find_party`, { name }, { headers });
-    console.log({data, status});
     return {data, status};
   } catch (error: any) {
     console.log(error.response.status);
