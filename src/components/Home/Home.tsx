@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import './styles.scss';
 import { searchParty } from '../../api/party';
-import { logInAPI } from '../../api/session';
+import { logInAPI, signUpAPI } from '../../api/session';
 
 const Home = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [password , setPassword] = useState('');
   const [logIn, setLogIn] = useState(false);
-
-  const formWrap: any = document.getElementById('form-wrap');
+  const [signUp, setSignUp] = useState(false);
 
   return (
     <section className="home">
@@ -37,19 +36,46 @@ const Home = () => {
           }
         };
       }}>
-        <input value={inputValue} type="text" name="input" id="text" className='home__wrap__input' onChange={(event) => {
+        <input value={inputValue} type="text" name="input" id="input" className='home__wrap__input' onChange={(event) => {
           setInputValue(event.target.value);
         }} />
-        { logIn && <input value={password} type="password" name="input" id="text" className='home__wrap__input' onChange={(event) => {
+        { logIn && <input value={password} type="password" name="input" id="password" className='home__wrap__input' onChange={(event) => {
           setPassword(event.target.value);
-        }} onKeyDown={(event) => {
+        }} onKeyDown={async (event) => {
           if (event.key === 'Enter') {
-            logInAPI(inputValue, password);
+            const response: any = await logInAPI(inputValue, password);
+            switch (response.status) {
+              case 200:
+                setLogIn(false);
+                setInputValue('');
+                setPassword('');
+                break;
+              case 404:
+                console.log('User does not exist');
+                setSignUp(true);
+                break;
+              case 406:
+                console.log('Wrong password');
+                break;
+              default:
+                console.error('Error in log in');
+                break;
+            };
+          };
+        }} /> }
+        {signUp && <button type="submit" className='home__wrap__submit' onClick={async () => {
+          console.log('Sign up');
+          const response: any = await signUpAPI(inputValue, password);
+          if (response.status === 201) {
+            await logInAPI(inputValue, password);
+            setSignUp(false);
             setLogIn(false);
             setInputValue('');
             setPassword('');
+          } else {
+            console.log('Error in sign up');
           };
-        }} /> }
+        }}>Sign Up</button>}
       </form>
     </section>
   );
