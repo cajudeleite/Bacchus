@@ -5,13 +5,10 @@ const server = axios.create({
 });
 
 export const searchParty = async (name: string) => {
+  const headers: any =  {
+    Authorization: localStorage.getItem('token')
+  };
   try {
-    const headers: any =  {
-      Authorization: localStorage.getItem('token')
-    };
-
-    console.log(headers);
-
     const { data, status } = await server.post(`/parties/find_party`, { name }, { headers });
     return {data, status};
   } catch (error: any) {
