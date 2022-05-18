@@ -6,10 +6,11 @@ const server = axios.create({
 
 export const logInAPI = async (email: string, password: string) => {
   try {
-    const { headers } = await server.post(`/users/sign_in`, { user: { email, password } });
+    const { headers, status } = await server.post(`/users/sign_in`, { user: { email, password } });
     localStorage.setItem('token', headers.authorization);
+    return status;
   } catch (error: any) {
-    return (error.response)
+    return (error.response.status);
   };
 };
 
