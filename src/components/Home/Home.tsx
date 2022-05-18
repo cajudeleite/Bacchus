@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './styles.scss';
-import { searchParty } from '../../api/party';
+import { searchEvent } from '../../api/event';
 import { logInAPI, signUpAPI } from '../../api/session';
 
 const Home = () => {
@@ -15,10 +15,10 @@ const Home = () => {
       <form id='form-wrap' className="home__wrap" onSubmit={async (event) => {
         event.preventDefault();
         if (!logIn) {
-          const response: any = await searchParty(inputValue);
+          const response: any = await searchEvent(inputValue);
           switch (response.status) {
             case 404:
-              console.log('Party does not exist');
+              console.log('Event does not exist');
               break;
 
               case 200:
@@ -31,7 +31,7 @@ const Home = () => {
               break;
 
             default:
-              console.error('Error in party get')
+              console.error('Error in event get')
               break;
           }
         };
@@ -44,8 +44,8 @@ const Home = () => {
         }} onKeyDown={async (event) => {
           if (event.key === 'Enter') {
             const response: any = await logInAPI(inputValue, password);
-            switch (response.status) {
-              case 200:
+            switch (response) {
+              case 202:
                 setLogIn(false);
                 setInputValue('');
                 setPassword('');
