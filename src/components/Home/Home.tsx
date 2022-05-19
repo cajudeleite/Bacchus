@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./styles.scss";
-import { searchParty } from "../../api/party";
+import { searchEvent } from "../../api/event";
 import { logInAPI, signUpAPI } from "../../api/session";
 
 const Home = () => {
@@ -11,7 +11,7 @@ const Home = () => {
   const [createParty, setCreateParty] = useState<boolean>(false);
 
   const handleParty: () => void = async () => {
-    const response: any = await searchParty(inputValue);
+    const response: any = await searchEvent(inputValue);
     switch (response.status) {
       case 404:
         console.log("Party does not exist");

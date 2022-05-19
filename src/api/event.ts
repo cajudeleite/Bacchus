@@ -4,12 +4,12 @@ const server = axios.create({
   baseURL: 'http://localhost:3000',
 });
 
-export const searchParty = async (name: string) => {
+export const searchEvent = async (name: string) => {
   const headers: any =  {
     Authorization: localStorage.getItem('token')
   };
   try {
-    const { data, status } = await server.post(`/parties/find_party`, { name }, { headers });
+    const { data, status } = await server.post(`/events/find_event`, { name }, { headers });
     return {data, status};
   } catch (error: any) {
     console.log(error.response.status);
