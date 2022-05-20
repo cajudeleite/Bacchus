@@ -1,26 +1,26 @@
-import axios from 'axios';
+import axios from "axios";
 
 const server = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: "http://localhost:3000",
 });
 
 export const logInAPI = async (email: string, password: string) => {
   try {
     const { headers, status } = await server.post(`/users/sign_in`, { user: { email, password } });
-    localStorage.setItem('token', headers.authorization);
+    localStorage.setItem("token", headers.authorization);
     return status;
   } catch (error: any) {
-    return (error.response.status);
-  };
+    return error.response.status;
+  }
 };
 
 export const signUpAPI = async (email: string, password: string) => {
   try {
     const { data, status } = await server.post(`/users`, { user: { email, password } });
-    console.log('data', data);
-    console.log('status', status);
-    return {status};
+    console.log("data", data);
+    console.log("status", status);
+    return { status };
   } catch (error: any) {
-    return (error.response);
-  };
+    return error.response;
+  }
 };
