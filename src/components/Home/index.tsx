@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./styles.scss";
-import { searchEvent } from "../../api/event";
+import { searchEvent, createEvent } from "../../api/event";
 import { logInAPI, signUpAPI } from "../../api/session";
+
+type IEvent = [name: string, description: string, status: string, address: string, date: string, invite_quantity: number];
 
 const Home = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [logIn, setLogIn] = useState<boolean>(false);
   const [signUp, setSignUp] = useState<boolean>(false);
-  const [createParty, setCreateParty] = useState<boolean>(false);
+  const [createEventTrigger, setCreateEventTrigger] = useState<boolean>(false);
+  const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
+  const [eventStep, setEventStep] = useState<number>(0);
+  const eventInfo: IEvent = useRef<IEvent>(["", "", "open", "", "", 0]).current;
 
-  const handleParty: () => void = async () => {
+  const handleEvent: () => void = async () => {
     const response: any = await searchEvent(inputValue);
     switch (response.status) {
       case 404:
-        console.log("Party does not exist");
-        setCreateParty(true);
+        console.log("Event does not exist");
+        setCreateEventTrigger(true);
         break;
 
       case 200:
@@ -28,7 +33,7 @@ const Home = () => {
         break;
 
       default:
-        console.error("Error in party get");
+        console.error("Error in event get");
         break;
     }
   };
@@ -70,25 +75,37 @@ const Home = () => {
     }
   };
 
+  const handleCreateEventTrigger: () => void = async () => {
+    if (eventStep === eventSteps.length - 1) {
+      await createEvent(eventInfo);
+      setCreateEventTrigger(false);
+      setInputValue("");
+      setEventStep(0);
+      return;
+    }
+    eventInfo[eventStep] = inputValue;
+    setEventStep(eventStep + 1);
+    setInputValue("");
+  };
+
+  const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = async (event) => {
+    event.preventDefault();
+    if (logIn) {
+      handleLogIn();
+    } else if (signUp) {
+      handleSignUp();
+    } else if (createEventTrigger) {
+      console.log(eventInfo);
+      handleCreateEventTrigger();
+    } else {
+      handleEvent();
+    }
+  };
+
   return (
     <section className="home">
-      <form
-        id="form-wrap"
-        className="home__wrap"
-        onSubmit={async (event) => {
-          event.preventDefault();
-          if (!logIn && !signUp) {
-            console.log("Party");
-            handleParty();
-          } else if (logIn) {
-            console.log("Log In");
-            handleLogIn();
-          } else if (signUp) {
-            console.log("Sign Up");
-            handleSignUp();
-          }
-        }}
-      >
+      <form id="form-wrap" className="home__wrap" onSubmit={handleSubmit}>
+        {createEventTrigger && <h1 className="home__wrap__title">{eventSteps[eventStep]}</h1>}
         <input
           value={inputValue}
           type="text"
@@ -112,11 +129,11 @@ const Home = () => {
             onFocus={() => handleLogIn()}
           />
         )}
-        {(logIn || signUp || createParty) && (
+        {(logIn || signUp || createEventTrigger) && (
           <button type="submit" className="home__wrap__submit">
             {logIn && "Log In"}
             {signUp && "Sign Up"}
-            {createParty && "Create Party"}
+            {createEventTrigger && "Create Event"}
           </button>
         )}
       </form>
