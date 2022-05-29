@@ -16,9 +16,7 @@ export const logInAPI = async (email: string, password: string) => {
 
 export const signUpAPI = async (email: string, password: string) => {
   try {
-    const { data, status } = await server.post(`/users`, { user: { email, password } });
-    console.log("data", data);
-    console.log("status", status);
+    const { status } = await server.post(`/users`, { user: { email, password } });
     return { status };
   } catch (error: any) {
     return error.response;

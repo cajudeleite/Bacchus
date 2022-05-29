@@ -13,7 +13,6 @@ export const searchEvent = async (name: string) => {
     const { data, status } = await server.post("/events/find_event", { name }, { headers });
     return { data, status };
   } catch (error: any) {
-    console.log(error.response.status);
     return error.response;
   }
 };
@@ -30,9 +29,8 @@ export const createEvent = async (paramArray: (string | number)[]) => {
 
   try {
     const { data, status } = await server.post("/events", { event }, { headers });
-    console.log(data);
     return { data, status };
   } catch (error) {
-    console.error(error);
+    return error;
   }
 };
