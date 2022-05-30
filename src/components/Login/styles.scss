@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 
-.session {
+.login {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +16,7 @@
     &__title {
       font-size: 20px;
       font-family: "Roboto Mono", monospace;
-      color: rgba($color: rgb(255, 255, 255), $alpha: 1);
+      color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
       text-align: center;
       position: relative;
       top: 20px;
@@ -26,8 +26,8 @@
       height: 45px;
       width: 300px;
       background: none;
-      border: solid 2px rgba($color: rgb(255, 255, 255), $alpha: 1);
-      color: rgba($color: rgb(255, 255, 255), $alpha: 1);
+      border: solid 2px rgba($color: rgb(255, 255, 255), $alpha: 0.4);
+      color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
       font-family: "Roboto Mono", monospace;
       text-align: center;
       padding: 0 0.5rem;
@@ -40,8 +40,8 @@
       height: 45px;
       width: 320px;
       background: none;
-      border: solid 2px rgba($color: rgb(255, 255, 255), $alpha: 1);
-      color: rgba($color: rgb(255, 255, 255), $alpha: 1);
+      border: solid 2px rgba($color: rgb(255, 255, 255), $alpha: 0.4);
+      color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
       font-family: "Roboto Mono", monospace;
       text-align: center;
       font-size: 20px;
@@ -49,5 +49,16 @@
         cursor: pointer;
       }
     }
+  }
+  &__link {
+    font-size: 17px;
+    font-family: "Roboto Mono", monospace;
+    color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
+    text-align: center;
+    position: relative;
+    text-decoration: underline;
+    padding: 0;
+    margin: 0;
+    font-weight: 400;
   }
 }
