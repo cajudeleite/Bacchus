@@ -1,22 +1,46 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./styles.scss";
 import { logInAPI, signUpAPI } from "../../api/session";
+import { IUser } from "../../types";
 
 const Register = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") => void }) => {
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const user = useRef<IUser>({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [userStep, setUserStep] = useState<number>(0);
 
   const handleSignUp: () => void = async () => {
-    const response: any = await signUpAPI(username, email, password);
+    const response: any = await signUpAPI(user.current);
     if (response.status === 201) {
-      await logInAPI(email, password);
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setRoute("home");
+      await logInAPI(user.current.email, user.current.password);
+      window.location.reload();
     } else {
       console.log("Error in sign up");
+    }
+  };
+
+  const handleSubmit = () => {
+    switch (userStep) {
+      case 0:
+        user.current.username = inputValue;
+        setInputValue("");
+        setUserStep(1);
+        break;
+      case 1:
+        user.current.email = inputValue;
+        setInputValue("");
+        setUserStep(2);
+        break;
+      case 2:
+        user.current.password = inputValue;
+        setInputValue("");
+        handleSignUp();
+        break;
+      default:
+        break;
     }
   };
 
@@ -27,45 +51,32 @@ const Register = ({ setRoute }: { setRoute: (input: "home" | "login" | "register
         className="register__wrap"
         onSubmit={(event) => {
           event.preventDefault();
-          handleSignUp();
+          handleSubmit();
         }}
       >
+        <label htmlFor="input" className="register__wrap__label">
+          {Object.keys(user.current)[userStep]}
+        </label>
         <input
-          value={username}
-          type="text"
-          name="username"
-          id="username"
+          value={inputValue}
+          type={userStep === 0 ? "text" : userStep === 1 ? "email" : "password"}
+          name="input"
+          id="input"
           className="register__wrap__input"
           onChange={(event) => {
-            setUsername(event.target.value);
+            setInputValue(event.target.value);
           }}
         />
-        <input
-          value={email}
-          type="email"
-          name="email"
-          id="email"
-          className="register__wrap__input"
-          onChange={(event) => {
-            setEmail(event.target.value);
-          }}
-        />
-        <input
-          value={password}
-          type="password"
-          name="password"
-          id="password"
-          className="register__wrap__input"
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
-        />
-        <button type="submit" className="register__wrap__submit">
-          Register
-        </button>
-        <p className="login__link" onClick={() => setRoute("login")}>
-          Connect to account
-        </p>
+        {userStep === 2 && (
+          <button type="submit" className="register__wrap__submit">
+            Register
+          </button>
+        )}
+        {userStep === 0 && (
+          <p className="login__link" onClick={() => setRoute("login")}>
+            Connect to account
+          </p>
+        )}
       </form>
     </section>
   );
