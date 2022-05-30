@@ -2,30 +2,12 @@ import React, { useRef, useState } from "react";
 import "./styles.scss";
 import { searchEvent, createEvent } from "../../api/event";
 
-type IEvent = [
-  name: string,
-  description: string,
-  status: string,
-  address: string,
-  date: string,
-  invite_quantity: number
-];
+type IEvent = [name: string, description: string, status: string, address: string, date: string, invite_quantity: number];
 
-const Home = ({
-  setRoute,
-}: {
-  setRoute: (input: "home" | "signin" | "signup") => void;
-}) => {
+const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") => void }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [createEventTrigger, setCreateEventTrigger] = useState<boolean>(false);
-  const eventSteps = [
-    "Name",
-    "Description",
-    "Status",
-    "Address",
-    "Date",
-    "Invite Quantity",
-  ];
+  const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
   const [eventStep, setEventStep] = useState<number>(0);
   const eventInfo: IEvent = useRef<IEvent>(["", "", "open", "", "", 0]).current;
 
@@ -43,7 +25,7 @@ const Home = ({
 
       case 401:
         setInputValue("");
-        setRoute("signin");
+        setRoute("login");
         break;
 
       default:
@@ -65,9 +47,7 @@ const Home = ({
     setInputValue("");
   };
 
-  const handleSubmit: (
-    event: React.FormEvent<HTMLFormElement>
-  ) => void = async (event) => {
+  const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = async (event) => {
     event.preventDefault();
     if (createEventTrigger) {
       console.log(eventInfo);
@@ -80,9 +60,7 @@ const Home = ({
   return (
     <section className="home">
       <form id="form-wrap" className="home__wrap" onSubmit={handleSubmit}>
-        {createEventTrigger && (
-          <h1 className="home__wrap__title">{eventSteps[eventStep]}</h1>
-        )}
+        {createEventTrigger && <h1 className="home__wrap__title">{eventSteps[eventStep]}</h1>}
         <input
           value={inputValue}
           type="text"
