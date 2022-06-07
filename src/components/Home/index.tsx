@@ -67,6 +67,7 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
           name="input"
           id="input"
           className="home__wrap__input"
+          autoComplete="off"
           onChange={(event) => {
             setInputValue(event.target.value);
           }}

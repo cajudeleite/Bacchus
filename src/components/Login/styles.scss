@@ -49,16 +49,17 @@
         cursor: pointer;
       }
     }
-  }
-  &__link {
-    font-size: 17px;
-    font-family: "Roboto Mono", monospace;
-    color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
-    text-align: center;
-    position: relative;
-    text-decoration: underline;
-    padding: 0;
-    margin: 0;
-    font-weight: 400;
+    &__link {
+      font-size: 17px;
+      font-family: "Roboto Mono", monospace;
+      color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
+      text-align: center;
+      position: relative;
+      text-decoration: underline;
+      padding: 0;
+      margin: 0;
+      font-weight: 400;
+      cursor: pointer;
+    }
   }
 }

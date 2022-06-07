@@ -12,6 +12,7 @@ const App = () => {
       {route === "home" && <Home setRoute={setRoute} />}
       {route === "login" && <LogIn setRoute={setRoute} />}
       {route === "register" && <Register setRoute={setRoute} />}
+      <h1 className="app__logo">MEDUSA</h1>
     </section>
   );
 };

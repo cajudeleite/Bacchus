@@ -10,9 +10,7 @@ const LogIn = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") 
     const response: any = await logInAPI(login, password);
     switch (response) {
       case 202:
-        setRoute("home");
-        setLogin("");
-        setPassword("");
+        window.location.reload();
         break;
       case 404:
         console.log("User does not exist");
@@ -61,7 +59,7 @@ const LogIn = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") 
         <button type="submit" className="login__wrap__submit">
           Log In
         </button>
-        <p className="login__link" onClick={() => setRoute("register")}>
+        <p className="login__wrap__link" onClick={() => setRoute("register")}>
           Create new account
         </p>
       </form>

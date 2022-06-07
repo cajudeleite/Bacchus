@@ -63,6 +63,7 @@ const Register = ({ setRoute }: { setRoute: (input: "home" | "login" | "register
           name="input"
           id="input"
           className="register__wrap__input"
+          autoComplete="off"
           onChange={(event) => {
             setInputValue(event.target.value);
           }}
@@ -73,7 +74,7 @@ const Register = ({ setRoute }: { setRoute: (input: "home" | "login" | "register
           </button>
         )}
         {userStep === 0 && (
-          <p className="login__link" onClick={() => setRoute("login")}>
+          <p className="register__wrap__link" onClick={() => setRoute("login")}>
             Connect to account
           </p>
         )}
