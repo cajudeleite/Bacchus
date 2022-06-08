@@ -47,8 +47,7 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
     setInputValue("");
   };
 
-  const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = async (event) => {
-    event.preventDefault();
+  const handleSubmit: () => void = async () => {
     if (createEventTrigger) {
       console.log(eventInfo);
       handleCreateEventTrigger();
@@ -59,17 +58,28 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
 
   return (
     <section className="home">
-      <form id="form-wrap" className="home__wrap" onSubmit={handleSubmit}>
+      <form
+        id="form-wrap"
+        className="home__wrap"
+        onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+        }}
+      >
         {createEventTrigger && <h1 className="home__wrap__title">{eventSteps[eventStep]}</h1>}
         <input
           value={inputValue}
-          type="text"
+          type={eventStep === 4 ? "date" : "text"}
           name="input"
           id="input"
           className="home__wrap__input"
           autoComplete="off"
           onChange={(event) => {
             setInputValue(event.target.value);
+          }}
+          onKeyDownCapture={(event) => {
+            if (event.key === "Enter") {
+              handleSubmit();
+            }
           }}
         />
       </form>

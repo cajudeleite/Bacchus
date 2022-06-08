@@ -35,6 +35,9 @@
       &:focus {
         outline: none;
       }
+      &::-webkit-calendar-picker-indicator {
+        filter: invert(1) opacity(0.4);
+      }
     }
     &__submit {
       height: 45px;
