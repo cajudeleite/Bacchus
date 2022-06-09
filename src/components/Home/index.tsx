@@ -10,6 +10,7 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
   const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
   const [eventStep, setEventStep] = useState<number>(0);
   const eventInfo: IEvent = useRef<IEvent>(["", "", "open", "", "", 0]).current;
+  const [inputError, setInputError] = useState<boolean>(false);
 
   const handleEvent: () => void = async () => {
     const response: any = await searchEvent(inputValue);
@@ -35,6 +36,14 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
   };
 
   const handleCreateEventTrigger: () => void = async () => {
+    if (!inputValue) {
+      console.error("Event name is required");
+      setInputError(true);
+      setTimeout(() => {
+        setInputError(false);
+      }, 400);
+      return;
+    }
     if (eventStep === eventSteps.length - 1) {
       await createEvent(eventInfo);
       setCreateEventTrigger(false);
@@ -49,7 +58,6 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
 
   const handleSubmit: () => void = async () => {
     if (createEventTrigger) {
-      console.log(eventInfo);
       handleCreateEventTrigger();
     } else {
       handleEvent();
@@ -65,23 +73,50 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
           event.preventDefault();
         }}
       >
-        {createEventTrigger && <h1 className="home__wrap__title">{eventSteps[eventStep]}</h1>}
-        <input
-          value={inputValue}
-          type={eventStep === 4 ? "date" : "text"}
-          name="input"
-          id="input"
-          className="home__wrap__input"
-          autoComplete="off"
-          onChange={(event) => {
-            setInputValue(event.target.value);
-          }}
-          onKeyDownCapture={(event) => {
-            if (event.key === "Enter") {
-              handleSubmit();
-            }
-          }}
-        />
+        {createEventTrigger && (
+          <label htmlFor="input" className={"home__wrap__title" + (inputError ? " shake-horizontal" : "")}>
+            {eventSteps[eventStep]}
+          </label>
+        )}
+        {eventStep !== 2 && (
+          <input
+            value={inputValue}
+            type={eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
+            min="0"
+            name="input"
+            id="input"
+            className={"home__wrap__input" + (inputError ? " shake-horizontal" : "")}
+            autoComplete="off"
+            onChange={(event) => {
+              setInputValue(event.target.value);
+            }}
+            onKeyDownCapture={(event) => {
+              if (event.key === "Enter") {
+                handleSubmit();
+              }
+            }}
+          />
+        )}
+        {eventStep === 2 && (
+          <select
+            name="input"
+            id="input"
+            className="home__wrap__input"
+            onChange={(event) => {
+              setInputValue(event.target.value);
+              console.log(event.target.value);
+            }}
+            onKeyDownCapture={(event) => {
+              if (event.key === "Enter") {
+                handleSubmit();
+              }
+            }}
+          >
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+            <option value="locked">Locked</option>
+          </select>
+        )}
       </form>
     </section>
   );
