@@ -34,3 +34,12 @@ export const createEvent = async (paramArray: (string | number)[]) => {
     return error;
   }
 };
+
+export const getEvents = async () => {
+  try {
+    const { data, status } = await server.get("/events");
+    return { data, status };
+  } catch (error) {
+    return error;
+  }
+};
