@@ -78,6 +78,25 @@
       }
     }
   }
+  &__dots {
+    &__dot {
+      height: 5px;
+      width: 5px;
+      border-radius: 50%;
+      background-color: rgba($color: rgb(255, 255, 255), $alpha: 0.7);
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      z-index: 3;
+      &__name {
+        color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
+        font-family: "Roboto Mono", monospace;
+        position: relative;
+        bottom: 50px;
+        width: max-content;
+      }
+    }
+  }
 }
 
 @-webkit-keyframes shake-horizontal {

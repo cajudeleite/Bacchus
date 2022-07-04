@@ -1,10 +1,17 @@
 import React, { useRef, useState } from "react";
 import "./styles.scss";
 import { searchEvent, createEvent } from "../../api/event";
+import Dots from "./dots";
 
 type IEvent = [name: string, description: string, status: string, address: string, date: string, invite_quantity: number];
 
-const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") => void }) => {
+const Home = ({
+  setRoute,
+  clientCoordinates,
+}: {
+  setRoute: (input: "home" | "login" | "register") => void;
+  clientCoordinates: { lat: number; lng: number };
+}) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [createEventTrigger, setCreateEventTrigger] = useState<boolean>(false);
   const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
@@ -118,6 +125,7 @@ const Home = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") =
           </select>
         )}
       </form>
+      <Dots clientCoordinates={clientCoordinates} />
     </section>
   );
 };
