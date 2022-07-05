@@ -125,7 +125,7 @@ const Home = ({
           </select>
         )}
       </form>
-      <Dots clientCoordinates={clientCoordinates} />
+      <Dots clientCoordinates={clientCoordinates} setRoute={setRoute} />
     </section>
   );
 };

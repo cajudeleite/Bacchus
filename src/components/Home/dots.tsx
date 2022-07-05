@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { getEvents } from "../../api/event";
 import Dot from "./dot";
 
-const Dots = ({ clientCoordinates }: { clientCoordinates: { lat: number; lng: number } }) => {
+const Dots = ({
+  clientCoordinates,
+  setRoute,
+}: {
+  clientCoordinates: { lat: number; lng: number };
+  setRoute: (input: "home" | "login" | "register") => void;
+}) => {
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
@@ -25,7 +31,7 @@ const Dots = ({ clientCoordinates }: { clientCoordinates: { lat: number; lng: nu
   return (
     <div className="home__dots">
       {events.map((event) => {
-        return <Dot key={event.id} clientCoordinates={clientCoordinates} event={event} />;
+        return <Dot key={event.id} clientCoordinates={clientCoordinates} event={event} setRoute={setRoute} />;
       })}
     </div>
   );

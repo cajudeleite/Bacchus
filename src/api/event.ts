@@ -43,3 +43,12 @@ export const getEvents = async () => {
     return error;
   }
 };
+
+export const getEvent = async (id: string) => {
+  try {
+    const response = await server.get(`/events/${id}`, { headers });
+    return response;
+  } catch (error: any) {
+    return error.response;
+  }
+};
