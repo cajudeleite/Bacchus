@@ -37,7 +37,7 @@ export const createEvent = async (paramArray: (string | number)[]) => {
 
 export const getEvents = async () => {
   try {
-    const { data, status } = await server.get("/events");
+    const { data, status } = headers.Authorization ? await server.get("/events", { headers }) : await server.get("/events");
     return { data, status };
   } catch (error) {
     return error;
