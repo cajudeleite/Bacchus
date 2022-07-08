@@ -2,22 +2,27 @@ import React, { useState } from "react";
 import "./styles.scss";
 import { logInAPI } from "../../api/session";
 
-const LogIn = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") => void }) => {
+const LogIn = ({
+  setRoute,
+  activateLoading,
+}: {
+  setRoute: (input: "home" | "login" | "register") => void;
+  activateLoading: (callback: Promise<any>) => Promise<any>;
+}) => {
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const handleLogIn: (verify?: boolean) => void = async () => {
-    const response: any = await logInAPI(login, password);
-    switch (response) {
+    const response: any = await activateLoading(logInAPI(login, password));
+
+    switch (response.status) {
       case 202:
         window.location.reload();
         break;
       case 404:
-        console.log("User does not exist");
         setRoute("register");
         break;
-      case 406:
-        console.log("Password incorrect");
+      case 401:
         setPassword("");
         break;
       default:

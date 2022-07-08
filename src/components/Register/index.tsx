@@ -3,7 +3,13 @@ import "./styles.scss";
 import { logInAPI, signUpAPI } from "../../api/session";
 import { IUser } from "../../types";
 
-const Register = ({ setRoute }: { setRoute: (input: "home" | "login" | "register") => void }) => {
+const Register = ({
+  setRoute,
+  activateLoading,
+}: {
+  setRoute: (input: "home" | "login" | "register") => void;
+  activateLoading: (callback: Promise<any>) => Promise<any>;
+}) => {
   const [inputValue, setInputValue] = useState<string>("");
   const user = useRef<IUser>({
     username: "",
@@ -13,7 +19,7 @@ const Register = ({ setRoute }: { setRoute: (input: "home" | "login" | "register
   const [userStep, setUserStep] = useState<number>(0);
 
   const handleSignUp: () => void = async () => {
-    const response: any = await signUpAPI(user.current);
+    const response: any = await activateLoading(signUpAPI(user.current));
     if (response.status === 201) {
       await logInAPI(user.current.email, user.current.password);
       window.location.reload();

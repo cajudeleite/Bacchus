@@ -28,10 +28,11 @@ export const createEvent = async (paramArray: (string | number)[]) => {
   };
 
   try {
-    const { data, status } = await server.post("/events", { event }, { headers });
-    return { data, status };
-  } catch (error) {
-    return error;
+    const response = await server.post("/events", { event }, { headers });
+    return response;
+  } catch (error: any) {
+    console.error(error);
+    return error.response;
   }
 };
 
