@@ -35,8 +35,7 @@ const Dots = ({
   return (
     <div className="home__dots">
       {events.map((event) => {
-        const timeBeforeShow =
-          60000 / (userReputation === 0 ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
+        const timeBeforeShow = 60000 / (!userReputation ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
 
         return (
           <Dot

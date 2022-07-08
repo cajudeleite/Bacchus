@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Home from "./Home";
+import Loading from "./Loading";
 import LogIn from "./Login";
 import Register from "./Register";
 import "./styles.scss";
@@ -10,6 +11,14 @@ const App = () => {
     lat: number;
     lng: number;
   }>({ lat: 0, lng: 0 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
+
+  const activateLoading = (callback: Promise<any>) => {
+    setLoadingCallback(callback);
+    setIsLoading(true);
+    return callback;
+  };
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -22,10 +31,14 @@ const App = () => {
 
   return (
     <section className="app">
-      {route === "home" && <Home setRoute={setRoute} clientCoordinates={clientCoordinates} />}
-      {route === "login" && <LogIn setRoute={setRoute} />}
-      {route === "register" && <Register setRoute={setRoute} />}
-      <h1 className="app__logo">MEDUSA</h1>
+      {isLoading ? (
+        <Loading callback={loadingCallback} setIsLoading={setIsLoading} />
+      ) : (
+        (route === "home" && <Home setRoute={setRoute} clientCoordinates={clientCoordinates} />) ||
+        (route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />) ||
+        (route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />)
+      )}
+      {!isLoading && <h1 className="app__logo">MEDUSA</h1>}
     </section>
   );
 };
