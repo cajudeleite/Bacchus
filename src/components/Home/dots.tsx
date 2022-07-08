@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { getEvents } from "../../api/event";
+import { IEvent } from "../../types";
 import Dot from "./dot";
 
-const Dots = ({ clientCoordinates }: { clientCoordinates: { lat: number; lng: number } }) => {
-  const [events, setEvents] = useState<any[]>([]);
+const Dots = ({
+  clientCoordinates,
+  setRoute,
+}: {
+  clientCoordinates: { lat: number; lng: number };
+  setRoute: (input: "home" | "login" | "register") => void;
+}) => {
+  const [events, setEvents] = useState<IEvent[]>([]);
+  const [userReputation, setUserReputation] = useState<number>(0);
+  const enableTimeout: boolean = true;
 
   useEffect(() => {
     let ignore = false;
@@ -11,7 +20,8 @@ const Dots = ({ clientCoordinates }: { clientCoordinates: { lat: number; lng: nu
     const getEventsInApi = async () => {
       const response: any = await getEvents();
       if (!ignore) {
-        setEvents(response.data);
+        setEvents(response.data.events);
+        setUserReputation(response.data.reputation);
       }
     };
 
@@ -25,7 +35,19 @@ const Dots = ({ clientCoordinates }: { clientCoordinates: { lat: number; lng: nu
   return (
     <div className="home__dots">
       {events.map((event) => {
-        return <Dot key={event.id} clientCoordinates={clientCoordinates} event={event} />;
+        const timeBeforeShow =
+          60000 / (userReputation === 0 ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
+
+        return (
+          <Dot
+            key={event.id}
+            clientCoordinates={clientCoordinates}
+            event={event}
+            setRoute={setRoute}
+            timeBeforeShow={timeBeforeShow}
+            enableTimeout={enableTimeout}
+          />
+        );
       })}
     </div>
   );

@@ -7,6 +7,11 @@
   color: rgba($color: rgb(255, 0, 0), $alpha: 0.4) !important;
 }
 
+.scale-in-center {
+  -webkit-animation: scale-in-center 7s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: scale-in-center 7s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
 .error {
   color: rgba($color: rgb(255, 0, 0), $alpha: 0.4) !important;
 }
@@ -80,14 +85,13 @@
   }
   &__dots {
     &__dot {
-      height: 5px;
-      width: 5px;
       border-radius: 50%;
       background-color: rgba($color: rgb(255, 255, 255), $alpha: 0.7);
       display: flex;
       justify-content: center;
       position: absolute;
       z-index: 3;
+      cursor: pointer;
       &__name {
         color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
         font-family: "Roboto Mono", monospace;
@@ -153,5 +157,30 @@
   90% {
     -webkit-transform: translateX(-8px);
     transform: translateX(-8px);
+  }
+}
+
+@-webkit-keyframes scale-in-center {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes scale-in-center {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
   }
 }

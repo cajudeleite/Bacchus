@@ -1,9 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import "./styles.scss";
 import { searchEvent, createEvent } from "../../api/event";
 import Dots from "./dots";
-
-type IEvent = [name: string, description: string, status: string, address: string, date: string, invite_quantity: number];
 
 const Home = ({
   setRoute,
@@ -16,14 +14,15 @@ const Home = ({
   const [createEventTrigger, setCreateEventTrigger] = useState<boolean>(false);
   const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
   const [eventStep, setEventStep] = useState<number>(0);
-  const eventInfo: IEvent = useRef<IEvent>(["", "", "open", "", "", 0]).current;
+  const [eventInfo, setEventInfo] = useState<any[]>([]);
   const [inputError, setInputError] = useState<boolean>(false);
+  const [showDots, setShowDots] = useState<boolean>(true);
 
   const handleEvent: () => void = async () => {
     const response: any = await searchEvent(inputValue);
     switch (response.status) {
       case 404:
-        console.log("Event does not exist");
+        setShowDots(false);
         setCreateEventTrigger(true);
         break;
 
@@ -32,6 +31,7 @@ const Home = ({
         break;
 
       case 401:
+        setShowDots(false);
         setInputValue("");
         setRoute("login");
         break;
@@ -54,11 +54,12 @@ const Home = ({
     if (eventStep === eventSteps.length - 1) {
       await createEvent(eventInfo);
       setCreateEventTrigger(false);
+      setShowDots(true);
       setInputValue("");
       setEventStep(0);
       return;
     }
-    eventInfo[eventStep] = inputValue;
+    setEventInfo([...eventInfo, inputValue]);
     setEventStep(eventStep + 1);
     setInputValue("");
   };
@@ -109,6 +110,7 @@ const Home = ({
             name="input"
             id="input"
             className="home__wrap__input"
+            value="open"
             onChange={(event) => {
               setInputValue(event.target.value);
               console.log(event.target.value);
@@ -125,7 +127,7 @@ const Home = ({
           </select>
         )}
       </form>
-      <Dots clientCoordinates={clientCoordinates} />
+      {showDots && <Dots clientCoordinates={clientCoordinates} setRoute={setRoute} />}
     </section>
   );
 };
