@@ -8,9 +8,9 @@ import "./styles.scss";
 const App = () => {
   const [route, setRoute] = useState<"home" | "login" | "register">("home");
   const [clientCoordinates, setClientCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  }>({ lat: 0, lng: 0 });
+    lat: number | null;
+    lng: number | null;
+  }>({ lat: null, lng: null });
   const [isLoading, setIsLoading] = useState(false);
   const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
 

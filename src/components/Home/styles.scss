@@ -29,6 +29,7 @@
     align-items: center;
     justify-content: center;
     gap: 2rem;
+    z-index: 5;
     &__title {
       font-size: 20px;
       font-family: "Roboto Mono", monospace;
@@ -93,11 +94,12 @@
       z-index: 3;
       cursor: pointer;
       &__name {
-        color: rgba($color: rgb(255, 255, 255), $alpha: 0.4);
+        color: rgba($color: rgb(255, 255, 255), $alpha: 0.8);
         font-family: "Roboto Mono", monospace;
         position: relative;
         bottom: 50px;
         width: max-content;
+        font-size: 17px;
       }
     }
   }

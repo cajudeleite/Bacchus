@@ -4,6 +4,7 @@ import "./fonts/SevereLowerCase.ttf";
 import "./index.scss";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(

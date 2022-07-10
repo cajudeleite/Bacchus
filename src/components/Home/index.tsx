@@ -8,7 +8,7 @@ const Home = ({
   clientCoordinates,
 }: {
   setRoute: (input: "home" | "login" | "register") => void;
-  clientCoordinates: { lat: number; lng: number };
+  clientCoordinates: { lat: number | null; lng: number | null };
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [createEventTrigger, setCreateEventTrigger] = useState<boolean>(false);
@@ -17,6 +17,7 @@ const Home = ({
   const [eventInfo, setEventInfo] = useState<any[]>([]);
   const [inputError, setInputError] = useState<boolean>(false);
   const [showDots, setShowDots] = useState<boolean>(true);
+  const [showInput, setShowInput] = useState<boolean>(false);
 
   const handleEvent: () => void = async () => {
     const response: any = await searchEvent(inputValue);
@@ -74,59 +75,61 @@ const Home = ({
 
   return (
     <section className="home">
-      <form
-        id="form-wrap"
-        className="home__wrap"
-        onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-        }}
-      >
-        {createEventTrigger && (
-          <label htmlFor="input" className={"home__wrap__title" + (inputError ? " shake-horizontal" : "")}>
-            {eventSteps[eventStep]}
-          </label>
-        )}
-        {eventStep !== 2 && (
-          <input
-            value={inputValue}
-            type={eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
-            min="0"
-            name="input"
-            id="input"
-            className={"home__wrap__input" + (inputError ? " shake-horizontal" : "")}
-            autoComplete="off"
-            onChange={(event) => {
-              setInputValue(event.target.value);
-            }}
-            onKeyDownCapture={(event) => {
-              if (event.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-          />
-        )}
-        {eventStep === 2 && (
-          <select
-            name="input"
-            id="input"
-            className="home__wrap__input"
-            value="open"
-            onChange={(event) => {
-              setInputValue(event.target.value);
-              console.log(event.target.value);
-            }}
-            onKeyDownCapture={(event) => {
-              if (event.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-          >
-            <option value="open">Open</option>
-            <option value="closed">Closed</option>
-            <option value="locked">Locked</option>
-          </select>
-        )}
-      </form>
+      {showInput && (
+        <form
+          id="form-wrap"
+          className="home__wrap"
+          onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+          }}
+        >
+          {createEventTrigger && (
+            <label htmlFor="input" className={"home__wrap__title" + (inputError ? " shake-horizontal" : "")}>
+              {eventSteps[eventStep]}
+            </label>
+          )}
+          {eventStep !== 2 && (
+            <input
+              value={inputValue}
+              type={eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
+              min="0"
+              name="input"
+              id="input"
+              className={"home__wrap__input" + (inputError ? " shake-horizontal" : "")}
+              autoComplete="off"
+              onChange={(event) => {
+                setInputValue(event.target.value);
+              }}
+              onKeyDownCapture={(event) => {
+                if (event.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+            />
+          )}
+          {eventStep === 2 && (
+            <select
+              name="input"
+              id="input"
+              className="home__wrap__input"
+              value="open"
+              onChange={(event) => {
+                setInputValue(event.target.value);
+                console.log(event.target.value);
+              }}
+              onKeyDownCapture={(event) => {
+                if (event.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+            >
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+              <option value="locked">Locked</option>
+            </select>
+          )}
+        </form>
+      )}
       {showDots && <Dots clientCoordinates={clientCoordinates} setRoute={setRoute} />}
     </section>
   );
