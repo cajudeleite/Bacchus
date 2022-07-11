@@ -8,10 +8,10 @@ import "./styles.scss";
 const App = () => {
   const [route, setRoute] = useState<"home" | "login" | "register">("home");
   const [clientCoordinates, setClientCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  }>({ lat: 0, lng: 0 });
-  const [isLoading, setIsLoading] = useState(false);
+    lat: number | null;
+    lng: number | null;
+  }>({ lat: null, lng: null });
+  const [isLoading, setIsLoading] = useState(true);
   const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
 
   const activateLoading = (callback: Promise<any>) => {
@@ -31,14 +31,13 @@ const App = () => {
 
   return (
     <section className="app">
-      {isLoading ? (
-        <Loading callback={loadingCallback} setIsLoading={setIsLoading} />
-      ) : (
-        (route === "home" && <Home setRoute={setRoute} clientCoordinates={clientCoordinates} />) ||
-        (route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />) ||
-        (route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />)
-      )}
-      {!isLoading && <h1 className="app__logo">MEDUSA</h1>}
+      {isLoading && <Loading callback={loadingCallback} setIsLoading={setIsLoading} />}
+
+      {route === "home" && <Home setRoute={setRoute} clientCoordinates={clientCoordinates} setIsLoading={setIsLoading} />}
+      {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
+      {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}
+
+      <h1 className="app__logo">MEDUSA</h1>
     </section>
   );
 };
