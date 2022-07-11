@@ -18,6 +18,8 @@ export const searchEvent = async (name: string) => {
 };
 
 export const createEvent = async (paramArray: (string | number)[]) => {
+  console.warn(paramArray);
+
   const event = {
     name: paramArray[0],
     description: paramArray[1],
@@ -39,6 +41,15 @@ export const createEvent = async (paramArray: (string | number)[]) => {
 export const getEvents = async () => {
   try {
     const { data, status } = headers.Authorization ? await server.get("/events", { headers }) : await server.get("/events");
+    return { data, status };
+  } catch (error) {
+    return error;
+  }
+};
+
+export const getEventsNearby = async (clientCoordinates: { lat: number | null; lng: number | null }) => {
+  try {
+    const { data, status } = await server.post("/events/nearby", { latitude: clientCoordinates.lat, longitude: clientCoordinates.lng }, { headers });
     return { data, status };
   } catch (error) {
     return error;

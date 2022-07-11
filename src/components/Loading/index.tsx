@@ -27,7 +27,7 @@ const Loading = ({
       }
 
       const closeItself = setTimeout(() => {
-        setIsLoading(false);
+        // setIsLoading(false);
       }, 1000);
 
       return () => clearTimeout(closeItself);
@@ -52,9 +52,11 @@ const Loading = ({
   }, [rotateDirection]);
 
   return (
-    <h1 style={{ color: loadingColor }} className={`loading rotate-${rotateDirection}`}>
-      M
-    </h1>
+    <div className="loading">
+      <h1 style={{ color: loadingColor }} className={`loading__logo rotate-${rotateDirection}`}>
+        M
+      </h1>
+    </div>
   );
 };
 

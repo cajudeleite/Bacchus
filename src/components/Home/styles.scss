@@ -29,7 +29,6 @@
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    z-index: 5;
     &__title {
       font-size: 20px;
       font-family: "Roboto Mono", monospace;
@@ -100,6 +99,22 @@
         bottom: 50px;
         width: max-content;
         font-size: 17px;
+      }
+      &__main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &__logo {
+          color: rgba($color: rgb(255, 255, 255), $alpha: 0.7);
+          font-family: SevereLowerCase;
+          font-size: 40px;
+          margin: 0;
+          &:hover {
+            cursor: pointer;
+            color: rgba($color: rgb(255, 255, 255), $alpha: 0.8);
+            font-size: 50px;
+          }
+        }
       }
     }
   }
