@@ -46,13 +46,13 @@ const Dots = ({
 
   return (
     <Map
-      mapboxAccessToken="pk.eyJ1IjoiY2FqdWRlbGVpdGUiLCJhIjoiY2w1ZnAzNTlmMWQ0ZzNqbXM3MzcyYW1lcCJ9.U2ie-C9LIEMdFQP7nJEGzQ"
+      mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       initialViewState={{
         longitude: clientCoordinates.lng,
         latitude: clientCoordinates.lat,
         zoom: 11,
       }}
-      interactive={false}
+      interactive={true}
       style={{ width: "100%", height: "100%", position: "absolute" }}
       mapStyle="mapbox://styles/cajudeleite/cl5fnkcqk00e616p3fk1nk88n"
     >

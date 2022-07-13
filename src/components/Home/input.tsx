@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { createEvent, searchEvent } from "../../api/event";
+import Input from "../Input";
 
 const MainInput = ({
   setShowDots,
   setRoute,
+  activateLoading,
 }: {
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
   setRoute: (input: "home" | "login" | "register") => void;
+  activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [createEventTrigger, setCreateEventTrigger] = useState<boolean>(false);
+  const [eventTrigger, setEventTrigger] = useState<boolean>(false);
   const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
   const [eventStep, setEventStep] = useState<number>(0);
   const [eventInfo, setEventInfo] = useState<any[]>([]);
@@ -20,7 +23,7 @@ const MainInput = ({
     switch (response.status) {
       case 404:
         setShowDots(false);
-        setCreateEventTrigger(true);
+        setEventTrigger(true);
         break;
 
       case 200:
@@ -50,8 +53,8 @@ const MainInput = ({
     }
     if ((eventStep === eventSteps.length - 2 && eventInfo[2] !== "locked") || eventStep === eventSteps.length - 1) {
       setInputValue("");
-      await createEvent([...eventInfo, inputValue]);
-      setCreateEventTrigger(false);
+      await activateLoading(createEvent([...eventInfo, inputValue]));
+      setEventTrigger(false);
       setShowDots(true);
       setInputValue("");
       setEventStep(0);
@@ -63,66 +66,22 @@ const MainInput = ({
   };
 
   const handleSubmit: () => void = async () => {
-    if (createEventTrigger) {
+    if (eventTrigger) {
       handleCreateEventTrigger();
     } else {
       handleEvent();
     }
   };
   return (
-    <form
-      id="form-wrap"
-      className="home__wrap"
-      onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-      }}
-    >
-      {createEventTrigger && (
-        <label htmlFor="input" className={"home__wrap__title" + (inputError ? " shake-horizontal" : "")}>
-          {eventSteps[eventStep]}
-        </label>
-      )}
-      {eventStep !== 2 && (
-        <input
-          value={inputValue}
-          type={eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
-          min="0"
-          name="input"
-          id="input"
-          className={"home__wrap__input" + (inputError ? " shake-horizontal" : "")}
-          autoComplete="off"
-          onChange={(event) => {
-            setInputValue(event.target.value);
-          }}
-          onKeyDownCapture={(event) => {
-            if (event.key === "Enter") {
-              handleSubmit();
-            }
-          }}
-        />
-      )}
-      {eventStep === 2 && (
-        <select
-          name="input"
-          id="input"
-          className="home__wrap__input"
-          value={inputValue ? inputValue : "open"}
-          onChange={(event) => {
-            setInputValue(event.target.value);
-            console.log(event.target.value);
-          }}
-          onKeyDownCapture={(event) => {
-            if (event.key === "Enter") {
-              handleSubmit();
-            }
-          }}
-        >
-          <option value="open">Open</option>
-          <option value="closed">Closed</option>
-          <option value="locked">Locked</option>
-        </select>
-      )}
-    </form>
+    <Input
+      inputValue={inputValue}
+      setInputValue={setInputValue}
+      inputError={inputError}
+      label={eventTrigger ? eventSteps[eventStep] : "Search event"}
+      type={eventStep === 2 ? "select" : eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
+      handleSubmit={handleSubmit}
+      options={["open", "closed", "locked"]}
+    />
   );
 };
 

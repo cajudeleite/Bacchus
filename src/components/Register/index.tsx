@@ -19,12 +19,12 @@ const Register = ({
   const [userStep, setUserStep] = useState<number>(0);
 
   const handleSignUp: () => void = async () => {
-    const response: any = await activateLoading(signUpAPI(user.current));
-    if (response.status === 201) {
+    try {
+      await activateLoading(signUpAPI(user.current));
       await logInAPI(user.current.email, user.current.password);
       window.location.reload();
-    } else {
-      console.log("Error in sign up");
+    } catch (error) {
+      console.error(error);
     }
   };
 

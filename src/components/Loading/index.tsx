@@ -16,18 +16,17 @@ const Loading = ({
     if (callback === undefined) return;
 
     const waitForResponse = async () => {
-      const response: any = await callback;
-      if (response === undefined) return;
-      if (response.status.toString()[0] === "2") {
+      try {
+        await callback;
         setLoadingColor("rgba(0, 255, 0, 0.8)");
         setRotateDirection("out");
-      } else {
+      } catch (error) {
         setLoadingColor("rgba(255, 0, 0, 0.8)");
         setRotateDirection("out");
       }
 
       const closeItself = setTimeout(() => {
-        // setIsLoading(false);
+        setIsLoading(false);
       }, 1000);
 
       return () => clearTimeout(closeItself);
