@@ -18,8 +18,6 @@ export const searchEvent = async (name: string) => {
 };
 
 export const createEvent = async (paramArray: (string | number)[]) => {
-  console.warn(paramArray);
-
   const event = {
     name: paramArray[0],
     description: paramArray[1],
