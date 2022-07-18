@@ -45,7 +45,7 @@ export const getEvents = async () => {
   }
 };
 
-export const getEventsNearby = async (clientCoordinates: { lat: number | null; lng: number | null }) => {
+export const getEventsNearby = async (clientCoordinates: { lat: number | undefined; lng: number | undefined }) => {
   try {
     const { data, status } = await server.post("/events/nearby", { latitude: clientCoordinates.lat, longitude: clientCoordinates.lng }, { headers });
     return { data, status };
@@ -57,6 +57,7 @@ export const getEventsNearby = async (clientCoordinates: { lat: number | null; l
 export const getEvent = async (id: string) => {
   try {
     const response = await server.get(`/events/${id}`, { headers });
+    console.log(response);
     return response;
   } catch (error: any) {
     return error.response;

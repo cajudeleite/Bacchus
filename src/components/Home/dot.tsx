@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Marker } from "react-map-gl";
 import { getEvent } from "../../api/event";
-import { IEvent } from "../../types";
+import { IEvent, IRoute, IUser } from "../../types";
 
 const Dot = ({
   event,
   setRoute,
   timeBeforeShow,
   enableTimeout,
+  setEvent,
+  setEventUser,
 }: {
   event: IEvent;
-  setRoute: (input: "home" | "login" | "register") => void;
+  setRoute: (input: IRoute) => void;
   timeBeforeShow: number;
   enableTimeout: boolean;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
+  setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));
   const eventCoordinates = event.location.split(",");
@@ -25,7 +29,9 @@ const Dot = ({
     if (response.status === 401) {
       setRoute("login");
     } else if (response.status === 200) {
-      console.log(response.data);
+      setEvent(event);
+      setEventUser(response.data.user);
+      setRoute("show");
     }
   };
 

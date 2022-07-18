@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import "./styles.scss";
 import { logInAPI } from "../../api/session";
+import { IRoute } from "../../types";
 
-const LogIn = ({
-  setRoute,
-  activateLoading,
-}: {
-  setRoute: (input: "home" | "login" | "register") => void;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
-}) => {
+const LogIn = ({ setRoute, activateLoading }: { setRoute: (input: IRoute) => void; activateLoading: (callback: Promise<any>) => Promise<any> }) => {
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 

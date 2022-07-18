@@ -6,7 +6,7 @@ const MainDot = ({
   setIsLoading,
   setShowDots,
 }: {
-  clientCoordinates: { lat: number | null; lng: number | null };
+  clientCoordinates: { lat: number | undefined; lng: number | undefined };
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {

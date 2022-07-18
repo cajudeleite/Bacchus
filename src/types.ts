@@ -19,3 +19,5 @@ export type IEvent = {
   location: string;
   views: string[];
 };
+
+export type IRoute = "home" | "login" | "register" | "location" | "show";

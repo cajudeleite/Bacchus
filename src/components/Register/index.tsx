@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
 import "./styles.scss";
 import { logInAPI, signUpAPI } from "../../api/session";
-import { IUser } from "../../types";
+import { IRoute, IUser } from "../../types";
 
 const Register = ({
   setRoute,
   activateLoading,
 }: {
-  setRoute: (input: "home" | "login" | "register") => void;
+  setRoute: (input: IRoute) => void;
   activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
