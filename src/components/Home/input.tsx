@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { createEvent, searchEvent } from "../../api/event";
+import { IEvent, IRoute, IUser } from "../../types";
 import Input from "../Input";
 
 const MainInput = ({
   setShowDots,
   setRoute,
   activateLoading,
+  setEvent,
+  setEventUser,
 }: {
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
-  setRoute: (input: "home" | "login" | "register") => void;
+  setRoute: (input: IRoute) => void;
   activateLoading: (callback: Promise<any>) => Promise<any>;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
+  setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [eventTrigger, setEventTrigger] = useState<boolean>(false);
@@ -28,6 +33,9 @@ const MainInput = ({
 
       case 200:
         console.log(response.data);
+        setEvent(response.data.event);
+        setEventUser(response.data.user);
+        setRoute("show");
         break;
 
       case 401:

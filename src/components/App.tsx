@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
+import { IEvent, IRoute, IUser } from "../types";
 import Home from "./Home";
 import Input from "./Input";
 import Loading from "./Loading";
 import LogIn from "./Login";
 import Register from "./Register";
+import Show from "./Show";
 import "./styles.scss";
 
 const App = () => {
-  const [route, setRoute] = useState<"home" | "login" | "register" | "location">("home");
+  const [route, setRoute] = useState<IRoute>("home");
   const [clientCoordinates, setClientCoordinates] = useState<{
-    lat: number | null;
-    lng: number | null;
-  }>({ lat: null, lng: null });
+    lat: number | undefined;
+    lng: number | undefined;
+  }>({ lat: undefined, lng: undefined });
   const [isLoading, setIsLoading] = useState(true);
   const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
   const [clientAddress, setClientAddress] = useState<string>("");
+  const [event, setEvent] = useState<IEvent | undefined>();
+  const [eventUser, setEventUser] = useState<IUser | undefined>();
+  const [showDots, setShowDots] = useState<boolean>(true);
 
   const activateLoading = (callback: Promise<any>) => {
     setLoadingCallback(callback);
@@ -54,10 +59,21 @@ const App = () => {
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
       setClientAddress("");
-      console.log(clientCoordinates);
     } catch (error) {
       console.error(error);
       setRoute("location");
+    }
+  };
+
+  const handleMedusa = () => {
+    switch (route) {
+      case "home":
+        setShowDots(!showDots);
+        break;
+
+      default:
+        setRoute("home");
+        break;
     }
   };
 
@@ -72,14 +88,26 @@ const App = () => {
     });
 
     return () => {
-      setClientCoordinates({ lat: null, lng: null });
+      setClientCoordinates({ lat: undefined, lng: undefined });
     };
   }, []);
 
   return (
     <section className="app">
       {route === "home" && (
-        <Home setRoute={setRoute} clientCoordinates={clientCoordinates} setIsLoading={setIsLoading} activateLoading={activateLoading} />
+        <Home
+          setRoute={setRoute}
+          clientCoordinates={clientCoordinates}
+          setIsLoading={setIsLoading}
+          activateLoading={activateLoading}
+          setEvent={setEvent}
+          setEventUser={setEventUser}
+          showDots={showDots}
+          setShowDots={setShowDots}
+        />
+      )}
+      {route === "show" && event && eventUser && clientCoordinates && (
+        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} />
       )}
       {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
       {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}
@@ -92,7 +120,13 @@ const App = () => {
         />
       )}
 
-      {isLoading ? <Loading callback={loadingCallback} setIsLoading={setIsLoading} /> : <h1 className="app__logo">MEDUSA</h1>}
+      {isLoading ? (
+        <Loading callback={loadingCallback} setIsLoading={setIsLoading} />
+      ) : (
+        <h1 className="app__logo" onClick={handleMedusa}>
+          MEDUSA
+        </h1>
+      )}
     </section>
   );
 };
