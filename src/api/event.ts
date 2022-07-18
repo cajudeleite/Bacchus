@@ -57,7 +57,6 @@ export const getEventsNearby = async (clientCoordinates: { lat: number | undefin
 export const getEvent = async (id: string) => {
   try {
     const response = await server.get(`/events/${id}`, { headers });
-    console.log(response);
     return response;
   } catch (error: any) {
     return error.response;
