@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createEvent, searchEvent } from "../../api/event";
+import { createEvent, searchEvent, checkInvite } from "../../api/event";
 import { IEvent, IRoute, IUser } from "../../types";
 import Input from "../Input";
 
@@ -7,13 +7,17 @@ const MainInput = ({
   setShowDots,
   setRoute,
   activateLoading,
+  event,
   setEvent,
+  eventUser,
   setEventUser,
 }: {
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
   setRoute: (input: IRoute) => void;
   activateLoading: (callback: Promise<any>) => Promise<any>;
+  event: IEvent | undefined;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
+  eventUser: IUser | undefined;
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
@@ -22,41 +26,61 @@ const MainInput = ({
   const [eventStep, setEventStep] = useState<number>(0);
   const [eventInfo, setEventInfo] = useState<any[]>([]);
   const [inputError, setInputError] = useState<boolean>(false);
+  const [checkToken, setCheckToken] = useState<boolean>(false);
+
+  const shakeInput: () => void = () => {
+    setInputError(true);
+    setTimeout(() => {
+      setInputError(false);
+    }, 400);
+  };
 
   const handleEvent: () => void = async () => {
-    const response: any = await searchEvent(inputValue);
-    switch (response.status) {
-      case 404:
-        setShowDots(false);
-        setEventTrigger(true);
-        break;
+    if (checkToken) {
+      if (!event) return;
+      handleCheckToken();
+    } else {
+      const response: any = await activateLoading(searchEvent(inputValue));
+      switch (response.status) {
+        case 404:
+          setShowDots(false);
+          setEventTrigger(true);
+          break;
 
-      case 200:
-        console.log(response.data);
-        setEvent(response.data.event);
-        setEventUser(response.data.user);
-        setRoute("show");
-        break;
+        case 200:
+          console.log("Passinggg");
 
-      case 401:
-        setShowDots(false);
-        setInputValue("");
-        setRoute("login");
-        break;
+          if (response.data.event.status === "locked") {
+            console.log("Event is locked");
+            setEvent(response.data.event);
+            setEventUser(response.data.user);
+            setInputValue("");
+            setCheckToken(true);
+          } else {
+            setEvent(response.data.event);
+            setEventUser(response.data.user);
+            setRoute("show");
+          }
 
-      default:
-        console.error("Error in event get");
-        break;
+          break;
+
+        case 401:
+          setShowDots(false);
+          setInputValue("");
+          setRoute("login");
+          break;
+
+        default:
+          console.error("Error in event get");
+          break;
+      }
     }
   };
 
   const handleCreateEventTrigger: () => void = async () => {
     if (!inputValue) {
       console.error("Event name is required");
-      setInputError(true);
-      setTimeout(() => {
-        setInputError(false);
-      }, 400);
+      shakeInput();
       return;
     }
     if ((eventStep === eventSteps.length - 2 && eventInfo[2] !== "locked") || eventStep === eventSteps.length - 1) {
@@ -73,6 +97,19 @@ const MainInput = ({
     setInputValue("");
   };
 
+  const handleCheckToken: () => void = async () => {
+    if (!event) return;
+    try {
+      const response = await activateLoading(checkInvite(event.id, inputValue));
+      if (response.status[0] !== 2) throw new Error("Wrong token");
+      setRoute("show");
+    } catch (e) {
+      setTimeout(() => {
+        shakeInput();
+      }, 1000);
+    }
+  };
+
   const handleSubmit: () => void = async () => {
     if (eventTrigger) {
       handleCreateEventTrigger();
@@ -85,7 +122,7 @@ const MainInput = ({
       inputValue={inputValue}
       setInputValue={setInputValue}
       inputError={inputError}
-      label={eventTrigger ? eventSteps[eventStep] : "Search event"}
+      label={eventTrigger ? eventSteps[eventStep] : checkToken ? "Event invite token" : "Search event"}
       type={eventStep === 2 ? "select" : eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
       handleSubmit={handleSubmit}
       options={["open", "closed", "locked"]}

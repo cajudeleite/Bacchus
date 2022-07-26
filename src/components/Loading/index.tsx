@@ -17,10 +17,10 @@ const Loading = ({
 
     const waitForResponse = async () => {
       try {
-        await callback;
-        setLoadingColor("rgba(0, 255, 0, 0.8)");
-        setRotateDirection("out");
+        const response = await callback;
+        if (response.status.toString()[0] !== "2") throw new Error("Error in loading");
       } catch (error) {
+        console.error(error);
         setLoadingColor("rgba(255, 0, 0, 0.8)");
         setRotateDirection("out");
       }

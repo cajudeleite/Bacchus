@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import "./styles.scss";
-import Dots from "./dots";
+import Dots from "./map";
 import MainInput from "./input";
 import { IEvent, IRoute, IUser } from "../../types";
 
@@ -9,7 +9,9 @@ const Home = ({
   clientCoordinates,
   setIsLoading,
   activateLoading,
+  event,
   setEvent,
+  eventUser,
   setEventUser,
   showDots,
   setShowDots,
@@ -18,7 +20,9 @@ const Home = ({
   clientCoordinates: { lat: number | undefined; lng: number | undefined };
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   activateLoading: (callback: Promise<any>) => Promise<any>;
+  event: IEvent | undefined;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
+  eventUser: IUser | undefined;
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
   showDots: boolean;
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,7 +38,15 @@ const Home = ({
         setEventUser={setEventUser}
       />
     ) : (
-      <MainInput setShowDots={setShowDots} setRoute={setRoute} activateLoading={activateLoading} setEvent={setEvent} setEventUser={setEventUser} />
+      <MainInput
+        setShowDots={setShowDots}
+        setRoute={setRoute}
+        activateLoading={activateLoading}
+        event={event}
+        setEvent={setEvent}
+        eventUser={eventUser}
+        setEventUser={setEventUser}
+      />
     )}
   </section>
 );

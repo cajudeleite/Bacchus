@@ -100,7 +100,9 @@ const App = () => {
           clientCoordinates={clientCoordinates}
           setIsLoading={setIsLoading}
           activateLoading={activateLoading}
+          event={event}
           setEvent={setEvent}
+          eventUser={eventUser}
           setEventUser={setEventUser}
           showDots={showDots}
           setShowDots={setShowDots}

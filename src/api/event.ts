@@ -62,3 +62,18 @@ export const getEvent = async (id: string) => {
     return error.response;
   }
 };
+
+export const checkInvite = async (event_id: string, invite_id: string) => {
+  const body = {
+    event_id: event_id,
+    invite_id: invite_id,
+  };
+
+  try {
+    const response = await server.post("/events/use_invite", { ...body }, { headers });
+
+    return response;
+  } catch (error: any) {
+    console.error(error);
+  }
+};

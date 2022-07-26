@@ -104,13 +104,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        cursor: help;
         &__logo {
           color: rgba($color: rgb(255, 255, 255), $alpha: 0.7);
           font-family: SevereLowerCase;
           font-size: 40px;
           margin: 0;
           &:hover {
-            cursor: pointer;
             color: rgba($color: rgb(255, 255, 255), $alpha: 0.8);
             font-size: 50px;
           }

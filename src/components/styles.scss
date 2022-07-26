@@ -18,5 +18,9 @@
     margin: 0 0 1rem;
     cursor: help;
     text-align: center;
+    &:hover {
+      color: rgba($color: rgb(255, 255, 255), $alpha: 0.9);
+      font-size: 2.6rem;
+    }
   }
 }
