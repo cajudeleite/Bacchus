@@ -6,8 +6,8 @@ const server = axios.create({
 
 export const convertAddressToCoordinates = async (address: string) => {
   try {
-    const { data, status } = await server.post("/convert_address", { address });
-    return { data, status };
+    const { data } = await server.post("/convert_address", { address });
+    return { data };
   } catch (error: any) {
     console.error(error);
     return error.response;

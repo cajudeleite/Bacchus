@@ -13,7 +13,7 @@ export const searchEvent = async (name: string) => {
     const { data, status } = await server.post("/events/find_event", { name }, { headers });
     return { data, status };
   } catch (error: any) {
-    return error.response;
+    return error.response.status;
   }
 };
 
@@ -28,20 +28,9 @@ export const createEvent = async (paramArray: (string | number)[]) => {
   };
 
   try {
-    const response = await server.post("/events", { event }, { headers });
-    return response;
+    await server.post("/events", { event }, { headers });
   } catch (error: any) {
     console.error(error);
-    return error.response;
-  }
-};
-
-export const getEvents = async () => {
-  try {
-    const { data, status } = headers.Authorization ? await server.get("/events", { headers }) : await server.get("/events");
-    return { data, status };
-  } catch (error) {
-    return error;
   }
 };
 
@@ -49,17 +38,17 @@ export const getEventsNearby = async (clientCoordinates: { lat: number | undefin
   try {
     const { data, status } = await server.post("/events/nearby", { latitude: clientCoordinates.lat, longitude: clientCoordinates.lng }, { headers });
     return { data, status };
-  } catch (error) {
-    return error;
+  } catch (error: any) {
+    return error.response.status;
   }
 };
 
 export const getEvent = async (id: string) => {
   try {
-    const response = await server.get(`/events/${id}`, { headers });
-    return response;
+    const { data, status } = await server.get(`/events/${id}`, { headers });
+    return { data, status };
   } catch (error: any) {
-    return error.response;
+    return error.response.status;
   }
 };
 
@@ -70,10 +59,9 @@ export const checkInvite = async (event_id: string, invite_id: string) => {
   };
 
   try {
-    const response = await server.post("/events/use_invite", { ...body }, { headers });
-
-    return response;
+    const { status } = await server.post("/events/use_invite", { ...body }, { headers });
+    return { status };
   } catch (error: any) {
-    console.error(error);
+    return error.response.status;
   }
 };

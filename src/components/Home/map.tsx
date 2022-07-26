@@ -4,6 +4,7 @@ import { IEvent, IRoute, IUser } from "../../types";
 import Dot from "./dot";
 import Map from "react-map-gl";
 import MainDot from "./mainDot";
+import { AxiosResponse } from "axios";
 
 const Dots = ({
   clientCoordinates,

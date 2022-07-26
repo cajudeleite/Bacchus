@@ -7,11 +7,11 @@ const server = axios.create({
 
 export const logInAPI = async (login: string, password: string) => {
   try {
-    const response = await server.post(`/users/sign_in`, { user: { login, password } });
-    localStorage.setItem("token", response.headers.authorization);
-    return response;
+    const { headers, status } = await server.post(`/users/sign_in`, { user: { login, password } });
+    localStorage.setItem("token", headers.authorization);
+    return { status };
   } catch (error: any) {
-    return error.response;
+    return error.response.status;
   }
 };
 
@@ -20,6 +20,6 @@ export const signUpAPI = async (user: IUser) => {
     const { status } = await server.post(`/users`, { user: user });
     return { status };
   } catch (error: any) {
-    return error.response;
+    return error.response.status;
   }
 };

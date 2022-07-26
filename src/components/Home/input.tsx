@@ -48,8 +48,6 @@ const MainInput = ({
           break;
 
         case 200:
-          console.log("Passinggg");
-
           if (response.data.event.status === "locked") {
             console.log("Event is locked");
             setEvent(response.data.event);
@@ -85,11 +83,15 @@ const MainInput = ({
     }
     if ((eventStep === eventSteps.length - 2 && eventInfo[2] !== "locked") || eventStep === eventSteps.length - 1) {
       setInputValue("");
-      await activateLoading(createEvent([...eventInfo, inputValue]));
-      setEventTrigger(false);
-      setShowDots(true);
-      setInputValue("");
-      setEventStep(0);
+      try {
+        await activateLoading(createEvent([...eventInfo, inputValue]));
+        setEventTrigger(false);
+        setShowDots(true);
+        setInputValue("");
+        setEventStep(0);
+      } catch (e) {
+        console.error(e);
+      }
       return;
     }
     setEventInfo([...eventInfo, inputValue]);
