@@ -11,27 +11,32 @@ import "./styles.scss";
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("home");
-  const [clientCoordinates, setClientCoordinates] = useState<{
-    lat: number | undefined;
-    lng: number | undefined;
-  }>({ lat: undefined, lng: undefined });
   const [isLoading, setIsLoading] = useState(true);
   const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
   const [eventUser, setEventUser] = useState<IUser | undefined>();
   const [showDots, setShowDots] = useState<boolean>(true);
+  const [clientCoordinates, setClientCoordinates] = useState<{
+    lat: number | undefined;
+    lng: number | undefined;
+  }>({ lat: undefined, lng: undefined });
 
-  const activateLoading = (callback: Promise<any>) => {
-    setLoadingCallback(callback);
-    setIsLoading(true);
-    return callback;
-  };
+  useEffect(() => {
+    checkIfLocating();
+  }, []);
 
   const checkIfLocating = () => {
     navigator.geolocation.watchPosition(
       () => {
         localStorage.removeItem("clientAddress");
+        navigator.geolocation.getCurrentPosition((position) => {
+          setClientCoordinates({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setIsLoading(false);
+        });
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
@@ -46,6 +51,12 @@ const App = () => {
         }
       }
     );
+  };
+
+  const activateLoading = (callback: Promise<any>) => {
+    setLoadingCallback(callback);
+    setIsLoading(true);
+    return callback;
   };
 
   const setCustomLocation = async (address: string) => {
@@ -76,21 +87,6 @@ const App = () => {
         break;
     }
   };
-
-  useEffect(() => {
-    checkIfLocating();
-    navigator.geolocation.getCurrentPosition((position) => {
-      setClientCoordinates({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
-      setIsLoading(false);
-    });
-
-    return () => {
-      setClientCoordinates({ lat: undefined, lng: undefined });
-    };
-  }, []);
 
   return (
     <section className="app">
