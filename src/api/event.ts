@@ -13,7 +13,7 @@ export const searchEvent = async (name: string) => {
     const { data, status } = await server.post("/events/find_event", { name }, { headers });
     return { data, status };
   } catch (error: any) {
-    return error.response.status;
+    return error.response;
   }
 };
 
@@ -39,7 +39,7 @@ export const getEventsNearby = async (clientCoordinates: { lat: number | undefin
     const { data, status } = await server.post("/events/nearby", { latitude: clientCoordinates.lat, longitude: clientCoordinates.lng }, { headers });
     return { data, status };
   } catch (error: any) {
-    return error.response.status;
+    return error.response;
   }
 };
 
@@ -48,7 +48,7 @@ export const getEvent = async (id: string) => {
     const { data, status } = await server.get(`/events/${id}`, { headers });
     return { data, status };
   } catch (error: any) {
-    return error.response.status;
+    return error.response;
   }
 };
 
@@ -62,6 +62,6 @@ export const checkInvite = async (event_id: string, invite_id: string) => {
     const { status } = await server.post("/events/use_invite", { ...body }, { headers });
     return { status };
   } catch (error: any) {
-    return error.response.status;
+    return error.response;
   }
 };

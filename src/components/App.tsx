@@ -12,7 +12,7 @@ import "./styles.scss";
 const App = () => {
   const [route, setRoute] = useState<IRoute>("home");
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
+  const [callbackSuccess, setCallbackSuccess] = useState<boolean | undefined>();
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
   const [eventUser, setEventUser] = useState<IUser | undefined>();
@@ -53,15 +53,24 @@ const App = () => {
     );
   };
 
-  const activateLoading = (callback: Promise<any>) => {
-    setLoadingCallback(callback);
+  const activateLoading = async (callback: Promise<any>) => {
     setIsLoading(true);
-    return callback;
+    try {
+      const response = await callback;
+
+      console.warn(response.status);
+      if (response.status >= 400) throw new Error(response.statusText, response.status);
+      setCallbackSuccess(true);
+      return response;
+    } catch (e: any) {
+      setCallbackSuccess(false);
+      return e;
+    }
   };
 
   const setCustomLocation = async (address: string) => {
     try {
-      const response = await activateLoading(convertAddressToCoordinates(address));
+      const response: any = await activateLoading(convertAddressToCoordinates(address));
       const coords = response.data.coordinates.split(",");
       const transformedCoords = {
         lat: parseFloat(coords[0]),
@@ -119,7 +128,7 @@ const App = () => {
       )}
 
       {isLoading ? (
-        <Loading callback={loadingCallback} setIsLoading={setIsLoading} />
+        <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
       ) : (
         <h1 className="app__logo" onClick={handleMedusa}>
           MEDUSA

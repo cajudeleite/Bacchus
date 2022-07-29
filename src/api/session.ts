@@ -11,7 +11,7 @@ export const logInAPI = async (login: string, password: string) => {
     localStorage.setItem("token", headers.authorization);
     return { status };
   } catch (error: any) {
-    return error.response.status;
+    return error.response;
   }
 };
 
@@ -20,6 +20,6 @@ export const signUpAPI = async (user: IUser) => {
     const { status } = await server.post(`/users`, { user: user });
     return { status };
   } catch (error: any) {
-    return error.response.status;
+    return error.response;
   }
 };
