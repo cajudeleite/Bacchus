@@ -41,6 +41,7 @@ const MainInput = ({
       handleCheckToken();
     } else {
       const response: any = await activateLoading(searchEvent(inputValue));
+
       switch (response.status) {
         case 404:
           setShowDots(false);

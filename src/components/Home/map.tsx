@@ -4,7 +4,6 @@ import { IEvent, IRoute, IUser } from "../../types";
 import Dot from "./dot";
 import Map from "react-map-gl";
 import MainDot from "./mainDot";
-import { AxiosResponse } from "axios";
 
 const Dots = ({
   clientCoordinates,
@@ -29,6 +28,8 @@ const Dots = ({
     let ignore = false;
 
     const getEventsInApi = async () => {
+      console.log("getEventsInApi");
+
       const response: any = await getEventsNearby(clientCoordinates);
       if (!ignore) {
         setEvents(response.data.events);

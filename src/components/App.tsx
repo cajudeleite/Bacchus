@@ -46,7 +46,6 @@ const App = () => {
           } else {
             setRoute("location");
           }
-
           setIsLoading(false);
         }
       }
@@ -58,13 +57,12 @@ const App = () => {
     try {
       const response = await callback;
 
-      console.warn(response.status);
-      if (response.status >= 400) throw new Error(response.statusText, response.status);
+      if (response.status >= 400) throw response;
       setCallbackSuccess(true);
       return response;
     } catch (e: any) {
       setCallbackSuccess(false);
-      return e;
+      return { message: e.data.message, status: e.status };
     }
   };
 
@@ -78,11 +76,11 @@ const App = () => {
       };
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
-      setClientAddress("");
+      setRoute("home");
     } catch (error) {
       console.error(error);
-      setRoute("location");
     }
+    setClientAddress("");
   };
 
   const handleMedusa = () => {
