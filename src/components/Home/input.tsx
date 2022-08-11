@@ -104,7 +104,7 @@ const MainInput = ({
     if (!event) return;
     try {
       const response = await activateLoading(checkInvite(event.id, inputValue));
-      if (response.status[0] !== 2) throw new Error("Wrong token");
+      if (response.status >= 400) throw new Error("Wrong token");
       setRoute("show");
     } catch (e) {
       setTimeout(() => {

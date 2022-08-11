@@ -5,13 +5,14 @@ import Dot from "./dot";
 import Map from "react-map-gl";
 import MainDot from "./mainDot";
 
-const Dots = ({
+const MainMap = ({
   clientCoordinates,
   setRoute,
   setIsLoading,
   setShowDots,
   setEvent,
   setEventUser,
+  activateLoading,
 }: {
   clientCoordinates: { lat: number | undefined; lng: number | undefined };
   setRoute: (input: IRoute) => void;
@@ -19,36 +20,23 @@ const Dots = ({
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
+  activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [userReputation, setUserReputation] = useState<number>(0);
   const enableTimeout: boolean = true;
 
   useEffect(() => {
-    let ignore = false;
-
     const getEventsInApi = async () => {
-      console.log("getEventsInApi");
-
       const response: any = await getEventsNearby(clientCoordinates);
-      if (!ignore) {
-        setEvents(response.data.events);
-        setUserReputation(response.data.reputation);
-      }
+      setEvents(response.data.events);
+      setUserReputation(response.data.reputation);
     };
 
-    if (clientCoordinates.lat && clientCoordinates.lng) {
+    if (clientCoordinates.lat && clientCoordinates.lng && events.length === 0) {
       getEventsInApi();
     }
-
-    return () => {
-      ignore = true;
-    };
-  }, [clientCoordinates]);
-
-  if (!clientCoordinates.lat || !clientCoordinates.lng) {
-    return null;
-  }
+  }, [clientCoordinates, events]);
 
   return (
     <Map
@@ -74,6 +62,7 @@ const Dots = ({
             enableTimeout={enableTimeout}
             setEvent={setEvent}
             setEventUser={setEventUser}
+            activateLoading={activateLoading}
           />
         );
       })}
@@ -81,4 +70,4 @@ const Dots = ({
   );
 };
 
-export default Dots;
+export default MainMap;
