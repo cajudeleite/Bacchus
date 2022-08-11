@@ -21,10 +21,6 @@ const MainDot = ({
     };
   }, [setIsLoading]);
 
-  if (!clientCoordinates.lat || !clientCoordinates.lng) {
-    return null;
-  }
-
   return (
     <Marker key="medusa" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={() => setShowDots(false)}>
       <div className="home__dots__dot__main">

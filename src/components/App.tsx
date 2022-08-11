@@ -11,27 +11,32 @@ import "./styles.scss";
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("home");
-  const [clientCoordinates, setClientCoordinates] = useState<{
-    lat: number | undefined;
-    lng: number | undefined;
-  }>({ lat: undefined, lng: undefined });
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingCallback, setLoadingCallback] = useState<Promise<any>>();
+  const [callbackSuccess, setCallbackSuccess] = useState<boolean | undefined>();
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
   const [eventUser, setEventUser] = useState<IUser | undefined>();
   const [showDots, setShowDots] = useState<boolean>(true);
+  const [clientCoordinates, setClientCoordinates] = useState<{
+    lat: number | undefined;
+    lng: number | undefined;
+  }>({ lat: undefined, lng: undefined });
 
-  const activateLoading = (callback: Promise<any>) => {
-    setLoadingCallback(callback);
-    setIsLoading(true);
-    return callback;
-  };
+  useEffect(() => {
+    checkIfLocating();
+  }, []);
 
   const checkIfLocating = () => {
     navigator.geolocation.watchPosition(
       () => {
         localStorage.removeItem("clientAddress");
+        navigator.geolocation.getCurrentPosition((position) => {
+          setClientCoordinates({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setIsLoading(false);
+        });
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
@@ -41,16 +46,29 @@ const App = () => {
           } else {
             setRoute("location");
           }
-
           setIsLoading(false);
         }
       }
     );
   };
 
+  const activateLoading = async (callback: Promise<any>) => {
+    setIsLoading(true);
+    try {
+      const response = await callback;
+
+      if (response.status >= 400) throw response;
+      setCallbackSuccess(true);
+      return response;
+    } catch (e: any) {
+      setCallbackSuccess(false);
+      return { message: e.data.message, status: e.status };
+    }
+  };
+
   const setCustomLocation = async (address: string) => {
     try {
-      const response = await activateLoading(convertAddressToCoordinates(address));
+      const response: any = await activateLoading(convertAddressToCoordinates(address));
       const coords = response.data.coordinates.split(",");
       const transformedCoords = {
         lat: parseFloat(coords[0]),
@@ -58,11 +76,11 @@ const App = () => {
       };
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
-      setClientAddress("");
+      setRoute("home");
     } catch (error) {
       console.error(error);
-      setRoute("location");
     }
+    setClientAddress("");
   };
 
   const handleMedusa = () => {
@@ -76,21 +94,6 @@ const App = () => {
         break;
     }
   };
-
-  useEffect(() => {
-    checkIfLocating();
-    navigator.geolocation.getCurrentPosition((position) => {
-      setClientCoordinates({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
-      setIsLoading(false);
-    });
-
-    return () => {
-      setClientCoordinates({ lat: undefined, lng: undefined });
-    };
-  }, []);
 
   return (
     <section className="app">
@@ -123,7 +126,7 @@ const App = () => {
       )}
 
       {isLoading ? (
-        <Loading callback={loadingCallback} setIsLoading={setIsLoading} />
+        <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
       ) : (
         <h1 className="app__logo" onClick={handleMedusa}>
           MEDUSA

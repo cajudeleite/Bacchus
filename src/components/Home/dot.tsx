@@ -10,6 +10,7 @@ const Dot = ({
   enableTimeout,
   setEvent,
   setEventUser,
+  activateLoading,
 }: {
   event: IEvent;
   setRoute: (input: IRoute) => void;
@@ -17,6 +18,7 @@ const Dot = ({
   enableTimeout: boolean;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
+  activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));
   const eventCoordinates = event.location.split(",");
@@ -24,14 +26,15 @@ const Dot = ({
   const [showDot, setShowDot] = useState<boolean>(!enableTimeout);
 
   const handdleClick = async () => {
-    const response: any = await getEvent(event.id);
-
-    if (response.status === 401) {
-      setRoute("login");
-    } else if (response.status === 200) {
+    try {
+      const response: any = await activateLoading(getEvent(event.id));
+      if (response.status >= 400) throw response;
       setEvent(event);
       setEventUser(response.data.user);
       setRoute("show");
+    } catch (error: any) {
+      if (error.status === 401) setRoute("login");
+      else console.error(error);
     }
   };
 

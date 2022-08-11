@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.scss";
-import Dots from "./map";
+import MainMap from "./map";
 import MainInput from "./input";
 import { IEvent, IRoute, IUser } from "../../types";
 
@@ -26,29 +26,44 @@ const Home = ({
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
   showDots: boolean;
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
-}) => (
-  <section className="home">
-    {showDots ? (
-      <Dots
-        clientCoordinates={clientCoordinates}
-        setRoute={setRoute}
-        setIsLoading={setIsLoading}
-        setShowDots={setShowDots}
-        setEvent={setEvent}
-        setEventUser={setEventUser}
-      />
-    ) : (
-      <MainInput
-        setShowDots={setShowDots}
-        setRoute={setRoute}
-        activateLoading={activateLoading}
-        event={event}
-        setEvent={setEvent}
-        eventUser={eventUser}
-        setEventUser={setEventUser}
-      />
-    )}
-  </section>
-);
+}) => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (clientCoordinates.lat && clientCoordinates.lng) {
+      setLoaded(true);
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [clientCoordinates, setIsLoading]);
+
+  if (!loaded) return null;
+
+  return (
+    <section className="home">
+      {showDots ? (
+        <MainMap
+          clientCoordinates={clientCoordinates}
+          setRoute={setRoute}
+          setIsLoading={setIsLoading}
+          setShowDots={setShowDots}
+          setEvent={setEvent}
+          setEventUser={setEventUser}
+          activateLoading={activateLoading}
+        />
+      ) : (
+        <MainInput
+          setShowDots={setShowDots}
+          setRoute={setRoute}
+          activateLoading={activateLoading}
+          event={event}
+          setEvent={setEvent}
+          setEventUser={setEventUser}
+        />
+      )}
+    </section>
+  );
+};
 
 export default Home;
