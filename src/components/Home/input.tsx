@@ -9,7 +9,6 @@ const MainInput = ({
   activateLoading,
   event,
   setEvent,
-  eventUser,
   setEventUser,
 }: {
   setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +16,6 @@ const MainInput = ({
   activateLoading: (callback: Promise<any>) => Promise<any>;
   event: IEvent | undefined;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  eventUser: IUser | undefined;
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
@@ -28,76 +26,53 @@ const MainInput = ({
   const [inputError, setInputError] = useState<boolean>(false);
   const [checkToken, setCheckToken] = useState<boolean>(false);
 
-  const shakeInput: () => void = () => {
+  const shakeInput = () => {
     setInputError(true);
     setTimeout(() => {
       setInputError(false);
     }, 400);
   };
 
-  const handleEvent: () => void = async () => {
-    if (checkToken) {
-      if (!event) return;
-      handleCheckToken();
+  const handleSubmit: () => void = async () => {
+    if (eventTrigger) {
+      handleCreateEventTrigger();
     } else {
+      checkToken ? handleCheckToken() : handleSearchEvent();
+    }
+  };
+
+  const handleSearchEvent = async () => {
+    try {
       const response: any = await activateLoading(searchEvent(inputValue));
-
-      switch (response.status) {
-        case 404:
-          setShowDots(false);
-          setEventTrigger(true);
-          break;
-
-        case 200:
-          if (response.data.event.status === "locked") {
-            console.log("Event is locked");
-            setEvent(response.data.event);
-            setEventUser(response.data.user);
-            setInputValue("");
-            setCheckToken(true);
-          } else {
-            setEvent(response.data.event);
-            setEventUser(response.data.user);
-            setRoute("show");
-          }
-
-          break;
-
+      if (response.status >= 400) throw response;
+      if (response.data.event.status === "locked") {
+        setEvent(response.data.event);
+        setEventUser(response.data.user);
+        setInputValue("");
+        setCheckToken(true);
+      } else {
+        setEvent(response.data.event);
+        setEventUser(response.data.user);
+        setRoute("show");
+      }
+    } catch (error: any) {
+      switch (error.status) {
         case 401:
           setShowDots(false);
           setInputValue("");
           setRoute("login");
           break;
 
+        case 404:
+          setShowDots(false);
+          setEventTrigger(true);
+          break;
+
         default:
-          console.error("Error in event get");
+          console.error("Error in event search", error);
           break;
       }
     }
-  };
-
-  const handleCreateEventTrigger: () => void = async () => {
-    if (!inputValue) {
-      console.error("Event name is required");
-      shakeInput();
-      return;
-    }
-    if ((eventStep === eventSteps.length - 2 && eventInfo[2] !== "locked") || eventStep === eventSteps.length - 1) {
-      setInputValue("");
-      try {
-        await activateLoading(createEvent([...eventInfo, inputValue]));
-        setEventTrigger(false);
-        setShowDots(true);
-        setInputValue("");
-        setEventStep(0);
-      } catch (e) {
-        console.error(e);
-      }
-      return;
-    }
-    setEventInfo([...eventInfo, inputValue]);
-    setEventStep(eventStep + 1);
-    setInputValue("");
   };
 
   const handleCheckToken: () => void = async () => {
@@ -106,20 +81,37 @@ const MainInput = ({
       const response = await activateLoading(checkInvite(event.id, inputValue));
       if (response.status >= 400) throw new Error("Wrong token");
       setRoute("show");
-    } catch (e) {
+    } catch (error) {
       setTimeout(() => {
         shakeInput();
       }, 1000);
     }
   };
 
-  const handleSubmit: () => void = async () => {
-    if (eventTrigger) {
-      handleCreateEventTrigger();
-    } else {
-      handleEvent();
+  const handleCreateEventTrigger: () => void = async () => {
+    if (!inputValue) {
+      shakeInput();
+      return;
     }
+
+    if ((eventStep === eventSteps.length - 2 && eventInfo[2] !== "locked") || eventStep === eventSteps.length - 1) {
+      setInputValue("");
+      try {
+        await activateLoading(createEvent([...eventInfo, inputValue]));
+        setEventTrigger(false);
+        setShowDots(true);
+        setEventStep(0);
+      } catch (e) {
+        console.error(e);
+      }
+      return;
+    }
+
+    setEventInfo([...eventInfo, inputValue]);
+    setEventStep(eventStep + 1);
+    setInputValue("");
   };
+
   return (
     <Input
       inputValue={inputValue}

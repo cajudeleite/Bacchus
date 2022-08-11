@@ -59,7 +59,6 @@ const Home = ({
           activateLoading={activateLoading}
           event={event}
           setEvent={setEvent}
-          eventUser={eventUser}
           setEventUser={setEventUser}
         />
       )}

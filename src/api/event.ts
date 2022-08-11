@@ -31,6 +31,7 @@ export const createEvent = async (paramArray: (string | number)[]) => {
     await server.post("/events", { event }, { headers });
   } catch (error: any) {
     console.error(error);
+    throw error;
   }
 };
 
