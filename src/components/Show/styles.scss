@@ -1,0 +1,50 @@
+.event {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    &__content {
+        width: 50%;
+        height: 100%;
+        font-family: "Roboto Mono", monospace;
+        margin-right: 2rem;
+        &__name{
+            color: rgba(255, 255, 255, 0.7);
+            font-family: "SevereLowerCase";
+            font-size: 70px;
+            margin: 3rem 0 0;
+        }
+        &__username {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+        }
+        &__address {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 18px;
+            margin-bottom: 3rem;
+        }
+        &__description {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 17px;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+    }
+    &__map {
+        width: 50%;
+        height: 80%;
+        border: solid 1px rgba(255, 255, 255, 0.5);
+        &__dot{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &__logo{
+                color: rgba($color: rgb(255, 255, 255), $alpha: 0.7);
+                font-family: SevereLowerCase;
+                font-size: 40px;
+                margin: 0;
+            }
+        }
+    }
+}
