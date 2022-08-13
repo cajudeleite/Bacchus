@@ -60,8 +60,8 @@ export const checkInvite = async (event_id: string, invite_id: string) => {
   };
 
   try {
-    const { status } = await server.post("/events/use_invite", { ...body }, { headers });
-    return { status };
+    const { data, status } = await server.post("/events/use_invite", { ...body }, { headers });
+    return { data, status };
   } catch (error: any) {
     return error.response;
   }
