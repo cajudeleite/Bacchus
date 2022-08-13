@@ -25,6 +25,7 @@ const MainInput = ({
   const [eventInfo, setEventInfo] = useState<any[]>([]);
   const [inputError, setInputError] = useState<boolean>(false);
   const [checkToken, setCheckToken] = useState<boolean>(false);
+  const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
 
   const shakeInput = () => {
     setInputError(true);
@@ -45,22 +46,22 @@ const MainInput = ({
     try {
       const response: any = await activateLoading(searchEvent(inputValue));
       if (response.status >= 400) throw response;
-      if (response.data.event.status === "locked") {
-        setEvent(response.data.event);
-        setEventUser(response.data.user);
-        setInputValue("");
-        setCheckToken(true);
-      } else {
-        setEvent(response.data.event);
-        setEventUser(response.data.user);
-        setRoute("show");
-      }
+
+      setEvent(response.data.event);
+      setEventUser(response.data.user);
+      setRoute("show");
     } catch (error: any) {
       switch (error.status) {
         case 401:
           setShowDots(false);
           setInputValue("");
           setRoute("login");
+          break;
+
+        case 403:
+          setInputValue("");
+          setCheckToken(true);
+          setEventIdToBeChecked(error.message.split(" ")[1]);
           break;
 
         case 404:
@@ -76,12 +77,18 @@ const MainInput = ({
   };
 
   const handleCheckToken: () => void = async () => {
-    if (!event) return;
     try {
-      const response = await activateLoading(checkInvite(event.id, inputValue));
+      const response = await activateLoading(checkInvite(eventIdToBeChecked, inputValue));
       if (response.status >= 400) throw new Error("Wrong token");
+
+      console.log(response);
+
+      setEvent(response.data.event);
+      setEventUser(response.data.user);
       setRoute("show");
     } catch (error) {
+      console.log(error);
+
       setTimeout(() => {
         shakeInput();
       }, 1000);
