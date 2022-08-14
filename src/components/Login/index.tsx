@@ -21,7 +21,6 @@ const LogIn = ({ setRoute, activateLoading }: { setRoute: (input: IRoute) => voi
         setPassword("");
         break;
       default:
-        console.error("Error in log in");
         break;
     }
   };

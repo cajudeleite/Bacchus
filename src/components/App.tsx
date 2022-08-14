@@ -77,9 +77,7 @@ const App = () => {
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
       setRoute("home");
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
     setClientAddress("");
   };
 

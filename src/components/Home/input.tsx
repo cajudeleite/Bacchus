@@ -70,7 +70,6 @@ const MainInput = ({
           break;
 
         default:
-          console.error("Error in event search", error);
           break;
       }
     }
@@ -108,9 +107,7 @@ const MainInput = ({
         setEventTrigger(false);
         setShowDots(true);
         setEventStep(0);
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
       return;
     }
 

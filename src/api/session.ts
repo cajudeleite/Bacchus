@@ -2,7 +2,7 @@ import axios from "axios";
 import { IUser } from "../types";
 
 const server = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://medusaink.herokuapp.com",
 });
 
 export const logInAPI = async (login: string, password: string) => {
