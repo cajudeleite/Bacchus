@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const server = axios.create({
-  baseURL: "https://medusaink.herokuapp.com",
+  // baseURL: "https://medusaink.herokuapp.com", // REFACTO
+  baseURL: "http://localhost:3000",
 });
 
 const headers: any = {
@@ -28,9 +29,10 @@ export const createEvent = async (paramArray: (string | number)[]) => {
   };
 
   try {
-    await server.post("/events", { event }, { headers });
+    const { status, data } = await server.post("/events", { event }, { headers });
+    return { status, data };
   } catch (error: any) {
-    throw error;
+    return error.response;
   }
 };
 
