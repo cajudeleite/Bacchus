@@ -21,10 +21,18 @@ const App = () => {
     lat: number | undefined;
     lng: number | undefined;
   }>({ lat: undefined, lng: undefined });
+  const [triggerError, setTriggerError] = useState<boolean>(false);
 
   useEffect(() => {
     checkIfLocating();
   }, []);
+
+  const triggerShake = (delay = 0) => {
+    setTimeout(() => {
+      setTriggerError(true);
+      setTriggerError(false);
+    }, delay);
+  };
 
   const checkIfLocating = () => {
     navigator.geolocation.watchPosition(
@@ -78,7 +86,7 @@ const App = () => {
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
       setRoute("home");
     } catch (error) {
-      console.error(error);
+      triggerShake(1000);
     }
     setClientAddress("");
   };
@@ -122,6 +130,7 @@ const App = () => {
           setInputValue={setClientAddress}
           handleSubmit={() => setCustomLocation(clientAddress)}
           label="What is your location?"
+          triggerError={triggerError}
         />
       )}
 

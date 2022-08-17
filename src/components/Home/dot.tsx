@@ -34,7 +34,6 @@ const Dot = ({
       setRoute("show");
     } catch (error: any) {
       if (error.status === 401) setRoute("login");
-      else console.error(error);
     }
   };
 

@@ -1,42 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createEvent, searchEvent, checkInvite } from "../../api/event";
 import { IEvent, IRoute, IUser } from "../../types";
 import Input from "../Input";
 
 const MainInput = ({
-  setShowDots,
   setRoute,
   activateLoading,
-  event,
   setEvent,
   setEventUser,
 }: {
-  setShowDots: React.Dispatch<React.SetStateAction<boolean>>;
   setRoute: (input: IRoute) => void;
   activateLoading: (callback: Promise<any>) => Promise<any>;
-  event: IEvent | undefined;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [eventTrigger, setEventTrigger] = useState<boolean>(false);
-  const eventSteps = ["Name", "Description", "Status", "Address", "Date", "Invite Quantity"];
+  const [showButton, setShowButton] = useState<boolean>(false);
+  const eventSteps = ["Description", "Status", "Address", "Date", "Invite Quantity"];
   const [eventStep, setEventStep] = useState<number>(0);
   const [eventInfo, setEventInfo] = useState<any[]>([]);
-  const [inputError, setInputError] = useState<boolean>(false);
   const [checkToken, setCheckToken] = useState<boolean>(false);
   const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
+  const [triggerError, setTriggerError] = useState<boolean>(false);
 
-  const shakeInput = () => {
-    setInputError(true);
+  useEffect(() => {
+    if (showButton && inputValue !== eventInfo[0]) {
+      setEventInfo([]);
+      setShowButton(false);
+    }
+  }, [inputValue, eventInfo, showButton]);
+
+  const triggerShake = (delay = 0) => {
     setTimeout(() => {
-      setInputError(false);
-    }, 400);
+      setTriggerError(true);
+      setTriggerError(false);
+    }, delay);
   };
 
   const handleSubmit: () => void = async () => {
     if (eventTrigger) {
       handleCreateEventTrigger();
+    } else if (showButton) {
+      setEventTrigger(true);
+      setShowButton(false);
+      setInputValue("");
     } else {
       checkToken ? handleCheckToken() : handleSearchEvent();
     }
@@ -53,7 +61,6 @@ const MainInput = ({
     } catch (error: any) {
       switch (error.status) {
         case 401:
-          setShowDots(false);
           setInputValue("");
           setRoute("login");
           break;
@@ -65,12 +72,13 @@ const MainInput = ({
           break;
 
         case 404:
-          setShowDots(false);
-          setEventTrigger(true);
+          setEventInfo([inputValue]);
+          triggerShake(1000);
+
+          setShowButton(true);
           break;
 
         default:
-          console.error("Error in event search", error);
           break;
       }
     }
@@ -81,35 +89,27 @@ const MainInput = ({
       const response = await activateLoading(checkInvite(eventIdToBeChecked, inputValue));
       if (response.status >= 400) throw new Error("Wrong token");
 
-      console.log(response);
-
       setEvent(response.data.event);
       setEventUser(response.data.user);
       setRoute("show");
     } catch (error) {
-      console.log(error);
-
-      setTimeout(() => {
-        shakeInput();
-      }, 1000);
+      triggerShake(1000);
     }
   };
 
   const handleCreateEventTrigger: () => void = async () => {
-    if (!inputValue) {
-      shakeInput();
-      return;
-    }
-
-    if ((eventStep === eventSteps.length - 2 && eventInfo[2] !== "locked") || eventStep === eventSteps.length - 1) {
+    if ((eventStep === eventSteps.length - 2 && eventInfo[1] !== "locked") || eventStep === eventSteps.length - 1) {
       setInputValue("");
       try {
-        await activateLoading(createEvent([...eventInfo, inputValue]));
+        const response = await activateLoading(createEvent([...eventInfo, inputValue]));
+        if (response.status >= 400) throw response;
+
         setEventTrigger(false);
-        setShowDots(true);
+        setEvent(response.data.event);
         setEventStep(0);
+        setRoute("show");
       } catch (e) {
-        console.error(e);
+        triggerShake();
       }
       return;
     }
@@ -123,11 +123,13 @@ const MainInput = ({
     <Input
       inputValue={inputValue}
       setInputValue={setInputValue}
-      inputError={inputError}
       label={eventTrigger ? eventSteps[eventStep] : checkToken ? "Event invite token" : "Search event"}
-      type={eventStep === 2 ? "select" : eventStep === 4 ? "date" : eventStep === 5 ? "number" : "text"}
+      type={eventStep === 1 ? "select" : eventStep === 3 ? "date" : eventStep === 4 ? "number" : "text"}
       handleSubmit={handleSubmit}
       options={["open", "closed", "locked"]}
+      buttonText={showButton ? "Create event" : undefined}
+      regex={eventTrigger ? undefined : /^\S*$/}
+      triggerError={triggerError}
     />
   );
 };

@@ -5,6 +5,11 @@ import Dot from "./dot";
 import Map from "react-map-gl";
 import MainDot from "./mainDot";
 
+import mapboxgl from "mapbox-gl";
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax, import/no-unresolved
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
 const MainMap = ({
   clientCoordinates,
   setRoute,

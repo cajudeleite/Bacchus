@@ -23,9 +23,7 @@ const Register = ({
       await activateLoading(signUpAPI(user.current));
       await logInAPI(user.current.email, user.current.password);
       window.location.reload();
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   };
 
   const handleSubmit = () => {

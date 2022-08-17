@@ -2,6 +2,7 @@ import axios from "axios";
 import { IUser } from "../types";
 
 const server = axios.create({
+  // baseURL: "https://medusaink.herokuapp.com", // REFACTO
   baseURL: "http://localhost:3000",
 });
 

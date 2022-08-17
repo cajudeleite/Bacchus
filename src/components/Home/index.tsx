@@ -53,14 +53,7 @@ const Home = ({
           activateLoading={activateLoading}
         />
       ) : (
-        <MainInput
-          setShowDots={setShowDots}
-          setRoute={setRoute}
-          activateLoading={activateLoading}
-          event={event}
-          setEvent={setEvent}
-          setEventUser={setEventUser}
-        />
+        <MainInput setRoute={setRoute} activateLoading={activateLoading} setEvent={setEvent} setEventUser={setEventUser} />
       )}
     </section>
   );
