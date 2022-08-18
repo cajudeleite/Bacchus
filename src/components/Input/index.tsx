@@ -34,8 +34,7 @@ const Input = ({
 
   const handleEvent = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Enter" && inputValue.length > 0) handleSubmit();
-      else shakeInput();
+      if (e.key === "Enter") inputValue.length > 0 ? handleSubmit() : shakeInput();
     },
     [handleSubmit, inputValue]
   );
