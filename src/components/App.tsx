@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Home from "./Home";
@@ -23,21 +23,9 @@ const App = () => {
   }>({ lat: undefined, lng: undefined });
   const [triggerError, setTriggerError] = useState<boolean>(false);
 
-  useEffect(() => {
-    checkIfLocating();
-  }, []);
-
-  const triggerShake = (delay = 0) => {
-    setTimeout(() => {
-      setTriggerError(true);
-      setTriggerError(false);
-    }, delay);
-  };
-
-  const checkIfLocating = () => {
+  const checkIfLocating = useCallback(() => {
     navigator.geolocation.watchPosition(
       () => {
-        localStorage.removeItem("clientAddress");
         navigator.geolocation.getCurrentPosition((position) => {
           setClientCoordinates({
             lat: position.coords.latitude,
@@ -58,6 +46,17 @@ const App = () => {
         }
       }
     );
+  }, []);
+
+  useEffect(() => {
+    checkIfLocating();
+  }, [checkIfLocating]);
+
+  const triggerShake = (delay = 0) => {
+    setTimeout(() => {
+      setTriggerError(true);
+      setTriggerError(false);
+    }, delay);
   };
 
   const activateLoading = async (callback: Promise<any>) => {
@@ -111,9 +110,7 @@ const App = () => {
           clientCoordinates={clientCoordinates}
           setIsLoading={setIsLoading}
           activateLoading={activateLoading}
-          event={event}
           setEvent={setEvent}
-          eventUser={eventUser}
           setEventUser={setEventUser}
           showDots={showDots}
           setShowDots={setShowDots}
