@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Home from "./Home";
@@ -21,15 +21,11 @@ const App = () => {
     lat: number | undefined;
     lng: number | undefined;
   }>({ lat: undefined, lng: undefined });
+  const [triggerError, setTriggerError] = useState<boolean>(false);
 
-  useEffect(() => {
-    checkIfLocating();
-  }, []);
-
-  const checkIfLocating = () => {
+  const checkIfLocating = useCallback(() => {
     navigator.geolocation.watchPosition(
       () => {
-        localStorage.removeItem("clientAddress");
         navigator.geolocation.getCurrentPosition((position) => {
           setClientCoordinates({
             lat: position.coords.latitude,
@@ -50,6 +46,17 @@ const App = () => {
         }
       }
     );
+  }, []);
+
+  useEffect(() => {
+    checkIfLocating();
+  }, [checkIfLocating]);
+
+  const triggerShake = (delay = 0) => {
+    setTimeout(() => {
+      setTriggerError(true);
+      setTriggerError(false);
+    }, delay);
   };
 
   const activateLoading = async (callback: Promise<any>) => {
@@ -77,7 +84,9 @@ const App = () => {
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
       setRoute("home");
-    } catch (error) {}
+    } catch (error) {
+      triggerShake(1000);
+    }
     setClientAddress("");
   };
 
@@ -101,9 +110,7 @@ const App = () => {
           clientCoordinates={clientCoordinates}
           setIsLoading={setIsLoading}
           activateLoading={activateLoading}
-          event={event}
           setEvent={setEvent}
-          eventUser={eventUser}
           setEventUser={setEventUser}
           showDots={showDots}
           setShowDots={setShowDots}
@@ -120,6 +127,7 @@ const App = () => {
           setInputValue={setClientAddress}
           handleSubmit={() => setCustomLocation(clientAddress)}
           label="What is your location?"
+          triggerError={triggerError}
         />
       )}
 

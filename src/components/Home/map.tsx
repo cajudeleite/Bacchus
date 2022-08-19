@@ -32,15 +32,21 @@ const MainMap = ({
   const enableTimeout: boolean = true;
 
   useEffect(() => {
+    let mounted = true;
+
     const getEventsInApi = async () => {
       const response: any = await getEventsNearby(clientCoordinates);
       setEvents(response.data.events);
       setUserReputation(response.data.reputation);
     };
 
-    if (clientCoordinates.lat && clientCoordinates.lng && events.length === 0) {
+    if (clientCoordinates.lat && clientCoordinates.lng && events.length === 0 && mounted) {
       getEventsInApi();
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [clientCoordinates, events]);
 
   return (
@@ -57,7 +63,7 @@ const MainMap = ({
     >
       <MainDot clientCoordinates={clientCoordinates} setIsLoading={setIsLoading} setShowDots={setShowDots} />
       {events.map((event) => {
-        const timeBeforeShow = 60000 / (!userReputation ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
+        const timeBeforeShow = 10000 / (!userReputation ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
         return (
           <Dot
             key={event.id}

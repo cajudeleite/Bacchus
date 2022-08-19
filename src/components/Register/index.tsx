@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import "./styles.scss";
 import { logInAPI, signUpAPI } from "../../api/session";
-import { IRoute, IUser } from "../../types";
+import { IRoute } from "../../types";
 
 const Register = ({
   setRoute,
@@ -11,7 +11,7 @@ const Register = ({
   activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
-  const user = useRef<IUser>({
+  const user = useRef({
     username: "",
     email: "",
     password: "",
