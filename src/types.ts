@@ -1,7 +1,9 @@
 export type IUser = {
+  id: string;
   username: string;
-  email: string;
-  password: string;
+  reputation: number;
+  verified: boolean;
+  admin: boolean;
 };
 
 export type IEvent = {
