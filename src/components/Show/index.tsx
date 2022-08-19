@@ -35,11 +35,29 @@ const Show = ({
     lng: clientCoordinates.lng - (clientCoordinates.lng - eventCoordinates.lng) / 2,
   };
 
+  const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
+
   return (
     <section className="event">
       <div className="event__content">
         <h1 className="event__content__name">{event.name}</h1>
-        <p className="event__content__username">{eventUser.username}</p>
+        <div className="event__content__user">
+          <p
+            className="event__content__user__name"
+            style={{
+              fontFamily: eventUser.verified ? "SevereLowerCase" : "",
+              fontSize: eventUser.verified ? 35 : 18,
+              color: eventUser.verified ? "#0F530D" : "",
+            }}
+          >
+            {eventUser.username}
+          </p>
+          {!eventUser.verified && (
+            <div className="event__content__user__wrap">
+              <div className="event__content__user__wrap__bar" style={{ width: `${eventUserReputation}rem` }} />
+            </div>
+          )}
+        </div>
         <p className="event__content__address">{event.address}</p>
         <h2 className="event__content__description">{event.description}</h2>
       </div>

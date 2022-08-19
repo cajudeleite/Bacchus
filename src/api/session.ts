@@ -1,5 +1,4 @@
 import axios from "axios";
-import { IUser } from "../types";
 
 const server = axios.create({
   baseURL: "https://medusaink.herokuapp.com",
@@ -16,7 +15,7 @@ export const logInAPI = async (login: string, password: string) => {
   }
 };
 
-export const signUpAPI = async (user: IUser) => {
+export const signUpAPI = async (user: { username: string; email: string; password: string }) => {
   try {
     const { status } = await server.post(`/users`, { user: user });
     return { status };
