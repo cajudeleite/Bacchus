@@ -35,9 +35,13 @@ const MainMap = ({
     let mounted = true;
 
     const getEventsInApi = async () => {
-      const response: any = await getEventsNearby(clientCoordinates);
-      setEvents(response.data.events);
-      setUserReputation(response.data.reputation);
+      try {
+        const response: any = await getEventsNearby(clientCoordinates);
+        setEvents(response.data.events);
+        setUserReputation(response.data.reputation);
+      } catch (error) {
+        setRoute("error");
+      }
     };
 
     if (clientCoordinates.lat && clientCoordinates.lng && events.length === 0 && mounted) {

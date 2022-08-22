@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
+import Error from "./Error";
 import Home from "./Home";
 import Input from "./Input";
 import Loading from "./Loading";
@@ -24,6 +25,8 @@ const App = () => {
   const [triggerError, setTriggerError] = useState<boolean>(false);
 
   const checkIfLocating = useCallback(() => {
+    console.log("checkIfLocating");
+
     navigator.geolocation.watchPosition(
       () => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -130,6 +133,7 @@ const App = () => {
           triggerError={triggerError}
         />
       )}
+      {route === "error" && <Error />}
 
       {isLoading ? (
         <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
