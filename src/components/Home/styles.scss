@@ -1,6 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
-@import "../../index.scss";
-
 
 .shake-horizontal {
   -webkit-animation: shake-horizontal 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
@@ -19,11 +17,6 @@
 }
 
 .home {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
   &__wrap {
     background: none;
     display: flex;

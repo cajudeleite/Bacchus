@@ -51,7 +51,7 @@ const MainMap = ({
     return () => {
       mounted = false;
     };
-  }, [clientCoordinates, events]);
+  }, [clientCoordinates, events, setRoute]);
 
   return (
     <Map

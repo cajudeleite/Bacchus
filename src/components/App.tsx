@@ -8,7 +8,6 @@ import Loading from "./Loading";
 import LogIn from "./Login";
 import Register from "./Register";
 import Show from "./Show";
-import "./styles.scss";
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("home");
@@ -106,7 +105,7 @@ const App = () => {
   };
 
   return (
-    <section className="app">
+    <section className="w-screen h-screen flex justify-center items-center bg-background">
       {route === "home" && (
         <Home
           setRoute={setRoute}
@@ -134,11 +133,13 @@ const App = () => {
         />
       )}
       {route === "error" && <Error />}
-
       {isLoading ? (
         <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
       ) : (
-        <h1 className="app__logo" onClick={handleMedusa}>
+        <h1
+          className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
+          onClick={handleMedusa}
+        >
           MEDUSA
         </h1>
       )}

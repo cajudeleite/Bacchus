@@ -37,7 +37,7 @@ const Home = ({
   if (!loaded) return null;
 
   return (
-    <section className="home">
+    <section className="h-full w-full flex justify-center items-center">
       {showDots ? (
         <MainMap
           clientCoordinates={clientCoordinates}
