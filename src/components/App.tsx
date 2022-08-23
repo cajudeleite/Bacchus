@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
@@ -24,18 +24,14 @@ const App = () => {
   }>({ lat: undefined, lng: undefined });
   const [triggerError, setTriggerError] = useState<boolean>(false);
 
-  const checkIfLocating = useCallback(() => {
-    console.log("checkIfLocating");
-
+  useEffect(() => {
     navigator.geolocation.watchPosition(
-      () => {
-        navigator.geolocation.getCurrentPosition((position) => {
-          setClientCoordinates({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          setIsLoading(false);
+      (position) => {
+        setClientCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
         });
+        setIsLoading(false);
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
@@ -50,10 +46,6 @@ const App = () => {
       }
     );
   }, []);
-
-  useEffect(() => {
-    checkIfLocating();
-  }, [checkIfLocating]);
 
   const triggerShake = (delay = 0) => {
     setTimeout(() => {
