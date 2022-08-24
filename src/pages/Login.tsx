@@ -28,13 +28,7 @@ const LogIn = ({ setRoute, activateLoading }: { setRoute: (input: IRoute) => voi
 
   return (
     <section className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 items-center">
-      <Input
-        inputValue={login}
-        setInputValue={setLogin}
-        label="Log In"
-        handleSubmit={handleLogIn}
-        errorCondition={login.length === 0 && password.length === 0}
-      />
+      <Input inputValue={login} setInputValue={setLogin} handleSubmit={handleLogIn} errorCondition={login.length === 0 && password.length === 0} />
       <Input
         inputValue={password}
         setInputValue={setPassword}
