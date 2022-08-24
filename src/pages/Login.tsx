@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import "./styles.scss";
 import { logInAPI } from "../api/session";
 import { IRoute } from "../types";
-import Input from "./Input";
-import Button from "./Button";
+import Input from "../components/Input";
+import Button from "../components/Button";
 
 const LogIn = ({ setRoute, activateLoading }: { setRoute: (input: IRoute) => void; activateLoading: (callback: Promise<any>) => Promise<any> }) => {
   const [login, setLogin] = useState<string>("");
@@ -28,7 +27,7 @@ const LogIn = ({ setRoute, activateLoading }: { setRoute: (input: IRoute) => voi
   };
 
   return (
-    <section className="w-full flex flex-col space-y-4 items-center">
+    <section className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 items-center">
       <Input
         inputValue={login}
         setInputValue={setLogin}

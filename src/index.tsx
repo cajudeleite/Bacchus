@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./fonts/SevereLowerCase.ttf";
 import "./index.css";
-import App from "./components/App";
+import App from "./pages/App";
 import reportWebVitals from "./reportWebVitals";
 import "mapbox-gl/dist/mapbox-gl.css";
 

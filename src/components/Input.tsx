@@ -10,6 +10,7 @@ const Input = ({
   handleSubmit,
   options,
   label,
+  labelAlignment = "center",
   buttonText,
   regex,
   triggerError = false,
@@ -21,6 +22,7 @@ const Input = ({
   handleSubmit: any;
   options?: string[];
   label?: string;
+  labelAlignment?: "center" | "start";
   buttonText?: string;
   regex?: RegExp;
   triggerError?: boolean;
@@ -28,23 +30,28 @@ const Input = ({
 }) => {
   const [inputError, setInputError] = useState<string>("");
 
-  const shakeInput = () => {
+  const shakeInput = useCallback(() => {
     setInputError(" shake-horizontal");
     setTimeout(() => {
       setInputError("");
     }, 400);
-  };
+  }, []);
+
+  const checkCondition = useCallback(
+    () => (inputValue.length === 0 || errorCondition ? shakeInput() : handleSubmit()),
+    [errorCondition, shakeInput, handleSubmit, inputValue]
+  );
 
   const handleEnter = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Enter") inputValue.length > 0 ? handleSubmit() : shakeInput();
+      if (e.key === "Enter") inputValue.length > 0 ? checkCondition() : shakeInput();
     },
-    [handleSubmit, inputValue]
+    [checkCondition, inputValue, shakeInput]
   );
 
   useEffect(() => {
     if (triggerError) shakeInput();
-  }, [triggerError]);
+  }, [triggerError, shakeInput]);
 
   useEffect(() => {
     addEventListener("keydown", handleEnter);
@@ -57,9 +64,12 @@ const Input = ({
     "h-12 w-full px-2 border-2 border-white opacity-40 bg-transparent text-center text-white outline-none appearance-none" + inputError;
 
   return (
-    <div id="form-wrap" className="w-1/4 flex flex-col space-y-4 text-white text-xl">
+    <div id="form-wrap" className="w-full flex flex-col space-y-4 text-white text-xl">
       {label && (
-        <label htmlFor="input" className={"text-center opacity-40" + inputError}>
+        <label
+          htmlFor="input"
+          className={`text-${labelAlignment} opacity-40 capitalize ${inputError} ${labelAlignment === "start" && "after:content-[':']"}`}
+        >
           {label}
         </label>
       )}
@@ -93,7 +103,7 @@ const Input = ({
           }}
         />
       )}
-      {buttonText && <Button text={buttonText} callback={inputValue.length > 0 ? handleSubmit : shakeInput} />}
+      {buttonText && <Button text={buttonText} callback={inputValue.length > 0 ? checkCondition : shakeInput} />}
     </div>
   );
 };

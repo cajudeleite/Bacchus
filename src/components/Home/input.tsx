@@ -120,17 +120,19 @@ const MainInput = ({
   };
 
   return (
-    <Input
-      inputValue={inputValue}
-      setInputValue={setInputValue}
-      label={eventTrigger ? eventSteps[eventStep] : checkToken ? "Event invite token" : "Search event"}
-      type={eventStep === 1 ? "select" : eventStep === 3 ? "date" : eventStep === 4 ? "number" : "text"}
-      handleSubmit={handleSubmit}
-      options={["open", "closed", "locked"]}
-      buttonText={showButton ? "Create event" : undefined}
-      regex={eventTrigger ? undefined : /^\S*$/}
-      triggerError={triggerError}
-    />
+    <div className="w-1/2 lg:w-1/3 xl:w-1/4">
+      <Input
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        label={eventTrigger ? eventSteps[eventStep] : checkToken ? "Event invite token" : "Search event"}
+        type={eventStep === 1 ? "select" : eventStep === 3 ? "date" : eventStep === 4 ? "number" : "text"}
+        handleSubmit={handleSubmit}
+        options={["open", "closed", "locked"]}
+        buttonText={showButton ? "Create event" : undefined}
+        regex={eventTrigger ? undefined : /^\S*$/}
+        triggerError={triggerError}
+      />
+    </div>
   );
 };
 

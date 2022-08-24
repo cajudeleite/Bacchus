@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
-import Home from "./Home";
-import Input from "./Input";
-import Loading from "./Loading";
+import Home from "../components/Home";
+import Input from "../components/Input";
+import Loading from "../components/Loading";
 import LogIn from "./Login";
 import Register from "./Register";
 import Show from "./Show";
@@ -111,7 +111,7 @@ const App = () => {
         />
       )}
       {route === "show" && event && eventUser && clientCoordinates && (
-        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} />
+        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
       )}
       {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
       {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}

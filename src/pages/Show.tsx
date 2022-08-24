@@ -1,12 +1,12 @@
 import React from "react";
-import { IEvent, IUser } from "../../types";
+import { IEvent, IRoute, IUser } from "../types";
 import Map, { Marker } from "react-map-gl";
-import "./styles.scss";
 
 const Show = ({
   event,
   clientCoordinates,
   eventUser,
+  setRoute,
 }: {
   event: IEvent;
   clientCoordinates: {
@@ -14,6 +14,7 @@ const Show = ({
     lng: number | undefined;
   };
   eventUser: IUser;
+  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
 }) => {
   const eventCoordinates = {
     lat: parseFloat(event.location.split(",")[0]),
@@ -38,12 +39,12 @@ const Show = ({
   const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
 
   return (
-    <section className="event">
-      <div className="event__content">
-        <h1 className="event__content__name">{event.name}</h1>
-        <div className="event__content__user">
+    <section className="h-full w-full flex text-white py-20 mx-5">
+      <div className="w-1/2 flex flex-col">
+        <h1 className="severe-lower-case text-8xl opacity-70 mb-2">{event.name}</h1>
+        <div className="flex items-center mb-6">
           <p
-            className="event__content__user__name"
+            className="opacity-60"
             style={{
               fontFamily: eventUser.verified ? "SevereLowerCase" : "",
               fontSize: eventUser.verified ? 35 : 18,
@@ -53,15 +54,15 @@ const Show = ({
             {eventUser.username}
           </p>
           {!eventUser.verified && (
-            <div className="event__content__user__wrap">
-              <div className="event__content__user__wrap__bar" style={{ width: `${eventUserReputation}rem` }} />
+            <div className="h-[0.3rem] w-20 bg-white opacity-20 ml-4">
+              <div className="h-full bg-white opacity-40" style={{ width: `${eventUserReputation}rem` }} />
             </div>
           )}
         </div>
-        <p className="event__content__address">{event.address}</p>
-        <h2 className="event__content__description">{event.description}</h2>
+        <p className="opacity-40 mb-5">{event.address}</p>
+        <h2 className="opacity-50 text-justify">{event.description}</h2>
       </div>
-      <div className="event__map">
+      <div className="h-full w-1/2 border border-white border-opacity-50">
         <Map
           mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
           initialViewState={{
@@ -72,10 +73,8 @@ const Show = ({
           style={{ width: "100%", height: "100%" }}
           mapStyle="mapbox://styles/cajudeleite/cl5fnkcqk00e616p3fk1nk88n"
         >
-          <Marker key="medusa" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center">
-            <div className="event__map__dot">
-              <p className="event__map__dot__logo">M</p>
-            </div>
+          <Marker key="medusa" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={() => setRoute("home")}>
+            <p className="severe-lower-case text-5xl opacity-70 hover:opacity-90 hover:text-6xl cursor-help">M</p>
           </Marker>
           <Marker longitude={eventCoordinates.lng} latitude={eventCoordinates.lat} />
         </Map>
