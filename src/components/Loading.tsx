@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { randomNumber } from "../../utils";
+import { randomNumber } from "../utils";
 import "./styles.scss";
 
 const Loading = ({
@@ -41,10 +41,10 @@ const Loading = ({
   }, [rotateDirection]);
 
   return (
-    <div className="loading">
+    <div className="h-full w-full absolute flex justify-center items-center bg-background">
       <h1
         style={{ color: callbackSuccess === false ? "rgba(255, 0, 0, 0.8)" : "rgba(255, 255, 255, 0.8)" }}
-        className={`loading__logo rotate-${rotateDirection}`}
+        className={`severe-lower-case text-8xl rotate-${rotateDirection}`}
       >
         M
       </h1>
