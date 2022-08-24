@@ -2,21 +2,22 @@ import React, { useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
-import Home from "../components/Home";
 import Input from "../components/Input";
 import Loading from "../components/Loading";
 import LogIn from "./Login";
 import Register from "./Register";
 import Show from "./Show";
+import Map from "./MedusaMap";
+import Search from "./Search";
+import "../index.css";
 
 const App = () => {
-  const [route, setRoute] = useState<IRoute>("home");
+  const [route, setRoute] = useState<IRoute>("map");
   const [isLoading, setIsLoading] = useState(true);
   const [callbackSuccess, setCallbackSuccess] = useState<boolean | undefined>();
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
   const [eventUser, setEventUser] = useState<IUser | undefined>();
-  const [showDots, setShowDots] = useState<boolean>(true);
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number | undefined;
     lng: number | undefined;
@@ -36,7 +37,7 @@ const App = () => {
         if (error.code === error.PERMISSION_DENIED) {
           if (localStorage.getItem("clientCoordinates")) {
             setClientCoordinates(JSON.parse(localStorage.getItem("clientCoordinates") as string));
-            setRoute("home");
+            setRoute("map");
           } else {
             setRoute("location");
           }
@@ -77,7 +78,7 @@ const App = () => {
       };
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
-      setRoute("home");
+      setRoute("map");
     } catch (error) {
       triggerShake(1000);
     }
@@ -86,30 +87,29 @@ const App = () => {
 
   const handleMedusa = () => {
     switch (route) {
-      case "home":
-        setShowDots(!showDots);
+      case "map":
+        setRoute("search");
         break;
 
       default:
-        setRoute("home");
+        setRoute("map");
         break;
     }
   };
 
   return (
     <section className="w-screen h-screen flex justify-center items-center bg-background">
-      {route === "home" && (
-        <Home
+      {route === "map" && (
+        <Map
           setRoute={setRoute}
-          clientCoordinates={clientCoordinates}
           setIsLoading={setIsLoading}
-          activateLoading={activateLoading}
           setEvent={setEvent}
           setEventUser={setEventUser}
-          showDots={showDots}
-          setShowDots={setShowDots}
+          activateLoading={activateLoading}
+          clientCoordinates={clientCoordinates}
         />
       )}
+      {route === "search" && <Search setRoute={setRoute} activateLoading={activateLoading} setEvent={setEvent} setEventUser={setEventUser} />}
       {route === "show" && event && eventUser && clientCoordinates && (
         <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
       )}

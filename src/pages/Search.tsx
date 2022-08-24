@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, searchEvent, checkInvite } from "../../api/event";
-import { IEvent, IRoute, IUser } from "../../types";
-import Input from "../Input";
+import { createEvent, searchEvent, checkInvite } from "../api/event";
+import { IEvent, IRoute, IUser } from "../types";
+import Input from "../components/Input";
 
-const MainInput = ({
+const Search = ({
   setRoute,
   activateLoading,
   setEvent,
@@ -120,7 +120,7 @@ const MainInput = ({
   };
 
   return (
-    <div className="w-1/2 lg:w-1/3 xl:w-1/4">
+    <div className="w-1/2 lg:w-1/3 xl:w-1/4 font-mono">
       <Input
         inputValue={inputValue}
         setInputValue={setInputValue}
@@ -136,4 +136,4 @@ const MainInput = ({
   );
 };
 
-export default MainInput;
+export default Search;

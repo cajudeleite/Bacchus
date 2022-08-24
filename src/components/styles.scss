@@ -1,3 +1,5 @@
+@import "../index.css";
+
 input {
   &::-webkit-calendar-picker-indicator {
     filter: invert(1) opacity(0.4);
@@ -178,4 +180,34 @@ input {
 .rotate-shake {
   -webkit-animation: shake-horizontal 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
   animation: shake-horizontal 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+}
+
+@-webkit-keyframes scale-in-center {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes scale-in-center {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.scale-in-center {
+  -webkit-animation: scale-in-center 7s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: scale-in-center 7s cubic-bezier(0.19, 1, 0.22, 1) both;
 }

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: "Roboto Mono", monospace;
+  }
+}
+
 html {
   height: 100%;
   width: 100%;
