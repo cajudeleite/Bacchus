@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createEvent, searchEvent, checkInvite } from "../api/event";
 import { IEvent, IRoute, IUser } from "../types";
 import Input from "../components/Input";
+import Button from "../components/Button";
 
 const Search = ({
   setRoute,
@@ -23,6 +24,8 @@ const Search = ({
   const [checkToken, setCheckToken] = useState<boolean>(false);
   const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
   const [triggerError, setTriggerError] = useState<boolean>(false);
+
+  console.log(eventInfo);
 
   useEffect(() => {
     if (showButton && inputValue !== eventInfo[0]) {
@@ -98,7 +101,7 @@ const Search = ({
   };
 
   const handleCreateEventTrigger: () => void = async () => {
-    if ((eventStep === eventSteps.length - 2 && eventInfo[1] !== "locked") || eventStep === eventSteps.length - 1) {
+    if ((eventStep === 4 && eventInfo[1] !== "locked") || eventStep === 5) {
       setInputValue("");
       try {
         const response = await activateLoading(createEvent([...eventInfo, inputValue]));
@@ -116,11 +119,12 @@ const Search = ({
 
     setEventInfo([...eventInfo, inputValue]);
     setEventStep(eventStep + 1);
-    setInputValue("");
+    if (eventStep === 0) setInputValue("open");
+    else setInputValue("");
   };
 
   return (
-    <div className="w-1/2 lg:w-1/3 xl:w-1/4 font-mono">
+    <div className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 font-mono">
       <Input
         inputValue={inputValue}
         setInputValue={setInputValue}
@@ -128,10 +132,27 @@ const Search = ({
         type={eventStep === 1 ? "select" : eventStep === 3 ? "date" : eventStep === 4 ? "number" : "text"}
         handleSubmit={handleSubmit}
         options={["open", "closed", "locked"]}
-        buttonText={showButton ? "Create event" : undefined}
+        buttonText={showButton ? "Create event" : inputValue.length > 0 && !eventTrigger ? "Search event" : undefined}
         regex={eventTrigger ? undefined : /^\S*$/}
         triggerError={triggerError}
       />
+      {eventTrigger && (
+        <div className={`w-full flex flex-wrap-reverse ${eventStep > 0 ? "justify-between" : "justify-end"}`}>
+          {eventStep > 0 && (
+            <Button
+              text="<- Back"
+              callback={() => {
+                setEventStep(eventStep - 1);
+                document.querySelector("input")?.focus();
+              }}
+              variant="secondary"
+            />
+          )}
+          {inputValue.length > 0 && (
+            <Button text={eventStep === 4 ? "Create" : "Next ->"} callback={handleSubmit} variant={eventStep === 4 ? "primary" : "secondary"} />
+          )}
+        </div>
+      )}
     </div>
   );
 };

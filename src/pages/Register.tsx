@@ -61,7 +61,6 @@ const Register = ({
         handleSubmit={handleSubmit}
         label={Object.keys(user.current)[userStep]}
         labelAlignment="start"
-        buttonText={userStep === 2 ? "Register" : undefined}
         regex={userStep === 0 ? /^\S*$/ : undefined}
         errorCondition={userStep === 1 ? !emailRegex.test(inputValue) : undefined}
       />
@@ -79,7 +78,9 @@ const Register = ({
               variant="secondary"
             />
           )}
-          <Button text="Next ->" callback={handleSubmit} variant={userStep === 2 ? "primary" : "secondary"} />
+          {inputValue.length > 0 && (
+            <Button text={userStep === 2 ? "Register" : "Next ->"} callback={handleSubmit} variant={userStep === 2 ? "primary" : "secondary"} />
+          )}
         </div>
       )}
     </section>
