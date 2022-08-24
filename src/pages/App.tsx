@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { convertAddressToCoordinates } from "../api/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
-import Home from "./Home";
-import Input from "./Input";
-import Loading from "./Loading";
+import Input from "../components/Input";
+import Loading from "../components/Loading";
 import LogIn from "./Login";
 import Register from "./Register";
 import Show from "./Show";
-import "./styles.scss";
+import Map from "./MedusaMap";
+import Search from "./Search";
+import "../index.css";
 
 const App = () => {
-  const [route, setRoute] = useState<IRoute>("home");
+  const [route, setRoute] = useState<IRoute>("map");
   const [isLoading, setIsLoading] = useState(true);
   const [callbackSuccess, setCallbackSuccess] = useState<boolean | undefined>();
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
   const [eventUser, setEventUser] = useState<IUser | undefined>();
-  const [showDots, setShowDots] = useState<boolean>(true);
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number | undefined;
     lng: number | undefined;
@@ -37,7 +37,7 @@ const App = () => {
         if (error.code === error.PERMISSION_DENIED) {
           if (localStorage.getItem("clientCoordinates")) {
             setClientCoordinates(JSON.parse(localStorage.getItem("clientCoordinates") as string));
-            setRoute("home");
+            setRoute("map");
           } else {
             setRoute("location");
           }
@@ -78,7 +78,7 @@ const App = () => {
       };
       localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
       setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
-      setRoute("home");
+      setRoute("map");
     } catch (error) {
       triggerShake(1000);
     }
@@ -87,32 +87,31 @@ const App = () => {
 
   const handleMedusa = () => {
     switch (route) {
-      case "home":
-        setShowDots(!showDots);
+      case "map":
+        setRoute("search");
         break;
 
       default:
-        setRoute("home");
+        setRoute("map");
         break;
     }
   };
 
   return (
-    <section className="app">
-      {route === "home" && (
-        <Home
+    <section className="w-screen h-screen flex justify-center items-center bg-background">
+      {route === "map" && (
+        <Map
           setRoute={setRoute}
-          clientCoordinates={clientCoordinates}
           setIsLoading={setIsLoading}
-          activateLoading={activateLoading}
           setEvent={setEvent}
           setEventUser={setEventUser}
-          showDots={showDots}
-          setShowDots={setShowDots}
+          activateLoading={activateLoading}
+          clientCoordinates={clientCoordinates}
         />
       )}
+      {route === "search" && <Search setRoute={setRoute} activateLoading={activateLoading} setEvent={setEvent} setEventUser={setEventUser} />}
       {route === "show" && event && eventUser && clientCoordinates && (
-        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} />
+        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
       )}
       {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
       {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}
@@ -126,11 +125,13 @@ const App = () => {
         />
       )}
       {route === "error" && <Error />}
-
       {isLoading ? (
         <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
       ) : (
-        <h1 className="app__logo" onClick={handleMedusa}>
+        <h1
+          className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
+          onClick={handleMedusa}
+        >
           MEDUSA
         </h1>
       )}

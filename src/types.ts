@@ -22,4 +22,4 @@ export type IEvent = {
   views: string[];
 };
 
-export type IRoute = "home" | "login" | "register" | "location" | "show" | "error";
+export type IRoute = "map" | "search" | "login" | "register" | "location" | "show" | "error";

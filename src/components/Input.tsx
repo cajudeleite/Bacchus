@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import React, { useCallback, useEffect, useState } from "react";
+import Button from "./Button";
 import "./styles.scss";
 
 const Input = ({
@@ -9,9 +10,11 @@ const Input = ({
   handleSubmit,
   options,
   label,
+  labelAlignment = "center",
   buttonText,
   regex,
-  triggerError,
+  triggerError = false,
+  errorCondition = false,
 }: {
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
@@ -19,41 +22,54 @@ const Input = ({
   handleSubmit: any;
   options?: string[];
   label?: string;
+  labelAlignment?: "center" | "start";
   buttonText?: string;
   regex?: RegExp;
-  triggerError: boolean;
+  triggerError?: boolean;
+  errorCondition?: boolean;
 }) => {
   const [inputError, setInputError] = useState<string>("");
 
-  const shakeInput = () => {
+  const shakeInput = useCallback(() => {
     setInputError(" shake-horizontal");
     setTimeout(() => {
       setInputError("");
     }, 400);
-  };
+  }, []);
 
-  const handleEvent = useCallback(
+  const checkCondition = useCallback(
+    () => (inputValue.length === 0 || errorCondition ? shakeInput() : handleSubmit()),
+    [errorCondition, shakeInput, handleSubmit, inputValue]
+  );
+
+  const handleEnter = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Enter") inputValue.length > 0 ? handleSubmit() : shakeInput();
+      if (e.key === "Enter") inputValue.length > 0 ? checkCondition() : shakeInput();
     },
-    [handleSubmit, inputValue]
+    [checkCondition, inputValue, shakeInput]
   );
 
   useEffect(() => {
     if (triggerError) shakeInput();
-  }, [triggerError]);
+  }, [triggerError, shakeInput]);
 
   useEffect(() => {
-    addEventListener("keydown", handleEvent);
+    addEventListener("keydown", handleEnter);
     return () => {
-      removeEventListener("keydown", handleEvent);
+      removeEventListener("keydown", handleEnter);
     };
-  }, [handleEvent]);
+  }, [handleEnter]);
+
+  const inputStyle =
+    "h-12 w-full px-2 border-2 border-white opacity-40 bg-transparent text-center text-white outline-none appearance-none" + inputError;
 
   return (
-    <div id="form-wrap" className="wrap">
+    <div id="form-wrap" className="w-full flex flex-col space-y-4 text-white text-xl">
       {label && (
-        <label htmlFor="input" className={"wrap__title" + inputError}>
+        <label
+          htmlFor="input"
+          className={`text-${labelAlignment} opacity-40 capitalize ${inputError} ${labelAlignment === "start" && "after:content-[':']"}`}
+        >
           {label}
         </label>
       )}
@@ -61,7 +77,7 @@ const Input = ({
         <select
           name="input"
           id="input"
-          className={"wrap__input" + inputError}
+          className={inputStyle}
           style={{ textTransform: "capitalize" }}
           value={inputValue ? inputValue : options[0]}
           onChange={(event) => setInputValue(event.target.value)}
@@ -80,18 +96,14 @@ const Input = ({
           min="0"
           name="input"
           id="input"
-          className={"wrap__input" + inputError}
+          className={inputStyle}
           autoComplete="off"
           onChange={(event) => {
             regex && !event.target.value.match(regex) ? shakeInput() : setInputValue(event.target.value);
           }}
         />
       )}
-      {buttonText && (
-        <button className="wrap__button" onClick={inputValue.length > 0 ? handleSubmit : shakeInput}>
-          {buttonText}
-        </button>
-      )}
+      {buttonText && <Button text={buttonText} callback={inputValue.length > 0 ? checkCondition : shakeInput} />}
     </div>
   );
 };
