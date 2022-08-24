@@ -25,8 +25,6 @@ const Search = ({
   const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
   const [triggerError, setTriggerError] = useState<boolean>(false);
 
-  console.log(eventInfo);
-
   useEffect(() => {
     if (showButton && inputValue !== eventInfo[0]) {
       setEventInfo([]);
