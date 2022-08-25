@@ -44,9 +44,10 @@ const MainMap = ({
     let mounted = true;
 
     const getEventsInApi = async () => {
+      console.log("Getting events");
       try {
         const response: any = await getEventsNearby(clientCoordinates);
-        setEvents(response.data.events);
+        if (response.data.events.length > 0) setEvents(response.data.events);
         setUserReputation(response.data.reputation);
       } catch (error) {
         setRoute("error");
