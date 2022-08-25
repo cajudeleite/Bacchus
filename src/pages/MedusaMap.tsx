@@ -44,7 +44,6 @@ const MainMap = ({
     let mounted = true;
 
     const getEventsInApi = async () => {
-      console.log("Getting events");
       try {
         const response: any = await getEventsNearby(clientCoordinates);
         if (response.data.events.length > 0) setEvents(response.data.events);
