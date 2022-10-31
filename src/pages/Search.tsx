@@ -19,11 +19,12 @@ const Search = ({
   const [eventTrigger, setEventTrigger] = useState<boolean>(false);
   const [showButton, setShowButton] = useState<boolean>(false);
   const eventSteps = ["Description", "Status", "Address", "Date", "Invite Quantity"];
-  const [eventStep, setEventStep] = useState<number>(0);
   const [eventInfo, setEventInfo] = useState<any[]>([]);
   const [checkToken, setCheckToken] = useState<boolean>(false);
   const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
   const [triggerError, setTriggerError] = useState<boolean>(false);
+
+  console.log(eventInfo, eventInfo.length);
 
   useEffect(() => {
     if (showButton && inputValue !== eventInfo[0]) {
@@ -99,7 +100,7 @@ const Search = ({
   };
 
   const handleCreateEventTrigger: () => void = async () => {
-    if ((eventStep === 4 && eventInfo[1] !== "locked") || eventStep === 5) {
+    if ((eventInfo.length === 4 && eventInfo[2] !== "locked") || eventInfo.length === 5) {
       setInputValue("");
       try {
         const response = await activateLoading(createEvent([...eventInfo, inputValue]));
@@ -107,7 +108,7 @@ const Search = ({
 
         setEventTrigger(false);
         setEvent(response.data.event);
-        setEventStep(0);
+        setEventInfo([]);
         setRoute("show");
       } catch (e) {
         triggerShake();
@@ -116,8 +117,7 @@ const Search = ({
     }
 
     setEventInfo([...eventInfo, inputValue]);
-    setEventStep(eventStep + 1);
-    if (eventStep === 0) setInputValue("open");
+    if (eventInfo.length === 1) setInputValue("open");
     else setInputValue("");
   };
 
@@ -126,8 +126,8 @@ const Search = ({
       <Input
         inputValue={inputValue}
         setInputValue={setInputValue}
-        label={eventTrigger ? eventSteps[eventStep] : checkToken ? "Event invite token" : "Search event"}
-        type={eventStep === 1 ? "select" : eventStep === 3 ? "date" : eventStep === 4 ? "number" : "text"}
+        label={eventTrigger ? eventSteps[eventInfo.length - 1] : checkToken ? "Event invite token" : "Search event"}
+        type={eventInfo.length === 2 ? "select" : eventInfo.length === 4 ? "date" : eventInfo.length === 5 ? "number" : "text"}
         handleSubmit={handleSubmit}
         options={["open", "closed", "locked"]}
         buttonText={showButton ? "Create event" : inputValue.length > 0 && !eventTrigger ? "Search event" : undefined}
@@ -135,19 +135,26 @@ const Search = ({
         triggerError={triggerError}
       />
       {eventTrigger && (
-        <div className={`w-full flex flex-wrap-reverse ${eventStep > 0 ? "justify-between" : "justify-end"}`}>
-          {eventStep > 0 && (
+        <div className={`w-full flex flex-wrap-reverse ${eventInfo.length > 0 ? "justify-between" : "justify-end"}`}>
+          {eventInfo.length > 0 && (
             <Button
               text="<- Back"
               callback={() => {
-                setEventStep(eventStep - 1);
+                const popedEventInfo = [...eventInfo];
+                const popedElement = popedEventInfo.pop();
+                setInputValue(popedElement);
+                setEventInfo(popedEventInfo);
                 document.querySelector("input")?.focus();
               }}
               variant="secondary"
             />
           )}
           {inputValue.length > 0 && (
-            <Button text={eventStep === 4 ? "Create" : "Next ->"} callback={handleSubmit} variant={eventStep === 4 ? "primary" : "secondary"} />
+            <Button
+              text={eventInfo.length === 4 ? "Create" : "Next ->"}
+              callback={handleSubmit}
+              variant={eventInfo.length === 4 ? "primary" : "secondary"}
+            />
           )}
         </div>
       )}
