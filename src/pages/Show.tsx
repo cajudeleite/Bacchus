@@ -73,8 +73,8 @@ const Show = ({
           style={{ width: "100%", height: "100%" }}
           mapStyle="mapbox://styles/cajudeleite/cl5fnkcqk00e616p3fk1nk88n"
         >
-          <Marker key="medusa" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={() => setRoute("map")}>
-            <p className="severe-lower-case text-5xl opacity-70 hover:opacity-90 hover:text-6xl cursor-help">M</p>
+          <Marker key="bacchus" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={() => setRoute("map")}>
+            <p className="severe-lower-case text-5xl opacity-70 hover:opacity-90 hover:text-6xl cursor-help">B</p>
           </Marker>
           <Marker longitude={eventCoordinates.lng} latitude={eventCoordinates.lat} />
         </Map>
