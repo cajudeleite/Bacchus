@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "#010027",
+        background: "#150003",
       },
       fontFamily: {
         mono: ["Roboto Mono", "monospace"],

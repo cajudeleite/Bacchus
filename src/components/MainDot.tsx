@@ -22,8 +22,8 @@ const MainDot = ({
   }, [setIsLoading]);
 
   return (
-    <Marker key="medusa" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={callback}>
-      <p className="severe-lower-case text-5xl text-white opacity-70 hover:opacity-90 hover:text-6xl cursor-help">M</p>
+    <Marker key="bacchus" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={callback}>
+      <p className="severe-lower-case text-5xl text-white opacity-70 hover:opacity-90 hover:text-6xl cursor-help">B</p>
     </Marker>
   );
 };

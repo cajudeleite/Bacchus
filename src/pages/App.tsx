@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import LogIn from "./Login";
 import Register from "./Register";
 import Show from "./Show";
-import Map from "./MedusaMap";
+import Map from "./Map";
 import Search from "./Search";
 import "../index.css";
 
@@ -85,7 +85,7 @@ const App = () => {
     setClientAddress("");
   };
 
-  const handleMedusa = () => {
+  const handleBacchus = () => {
     switch (route) {
       case "map":
         setRoute("search");
@@ -132,9 +132,9 @@ const App = () => {
       ) : (
         <h1
           className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
-          onClick={handleMedusa}
+          onClick={handleBacchus}
         >
-          MEDUSA
+          BACCHUS
         </h1>
       )}
     </section>
