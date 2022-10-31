@@ -116,13 +116,15 @@ const App = () => {
       {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
       {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}
       {route === "location" && (
-        <Input
-          inputValue={clientAddress}
-          setInputValue={setClientAddress}
-          handleSubmit={() => setCustomLocation(clientAddress)}
-          label="What is your location?"
-          triggerError={triggerError}
-        />
+        <div className="w-1/2">
+          <Input
+            inputValue={clientAddress}
+            setInputValue={setClientAddress}
+            handleSubmit={() => setCustomLocation(clientAddress)}
+            label="What is your location?"
+            triggerError={triggerError}
+          />
+        </div>
       )}
       {route === "error" && <Error />}
       {isLoading ? (

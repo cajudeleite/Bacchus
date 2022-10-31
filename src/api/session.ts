@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const server = axios.create({
-  baseURL: "https://medusaink.herokuapp.com",
-  // baseURL: "http://localhost:3000",
+  // baseURL: "https://medusaink.herokuapp.com", // REFACTO
+  baseURL: "http://localhost:3000",
 });
 
 export const logInAPI = async (login: string, password: string) => {

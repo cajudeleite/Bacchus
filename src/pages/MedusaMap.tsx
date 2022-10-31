@@ -44,7 +44,6 @@ const MainMap = ({
     let mounted = true;
 
     const getEventsInApi = async () => {
-      console.log("Getting events");
       try {
         const response: any = await getEventsNearby(clientCoordinates);
         if (response.data.events.length > 0) setEvents(response.data.events);
@@ -71,7 +70,7 @@ const MainMap = ({
       initialViewState={{
         longitude: clientCoordinates.lng,
         latitude: clientCoordinates.lat,
-        zoom: 11,
+        zoom: 12,
       }}
       interactive={true}
       style={{ width: "100%", height: "100%", position: "absolute" }}
