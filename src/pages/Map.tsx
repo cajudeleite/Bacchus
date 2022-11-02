@@ -15,15 +15,13 @@ const MainMap = ({
   setRoute,
   setIsLoading,
   setEvent,
-  // setEventUser,
-  activateLoading,
-}: {
+}: // setEventUser,
+{
   clientCoordinates: { lat: number | undefined; lng: number | undefined };
   setRoute: (input: IRoute) => void;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   const [events, setEvents] = useState<IPartialEvent[]>([]);
   // const [userReputation, setUserReputation] = useState<number>(0);
@@ -43,15 +41,16 @@ const MainMap = ({
     let mounted = true;
 
     const getEventsInDApp = async () => {
+      setIsLoading(true);
       try {
         const response = await getEvents();
-        console.log(response);
 
         if (response.length > 0) setEvents(response);
         // setUserReputation(response.data.reputation);
       } catch (error) {
         setRoute("error");
       }
+      setIsLoading(false);
     };
 
     if (clientCoordinates.lat && clientCoordinates.lng && events.length === 0 && mounted) {
@@ -61,7 +60,7 @@ const MainMap = ({
     return () => {
       mounted = false;
     };
-  }, [clientCoordinates, events, setRoute]);
+  }, [clientCoordinates, events, setRoute, setIsLoading]);
 
   if (!loaded) return null;
 
@@ -89,8 +88,8 @@ const MainMap = ({
             timeBeforeShow={timeBeforeShow}
             enableTimeout={enableTimeout}
             setEvent={setEvent}
+            setIsLoading={setIsLoading}
             // setEventUser={setEventUser}
-            activateLoading={activateLoading}
           />
         );
       })}

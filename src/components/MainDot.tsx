@@ -10,16 +10,16 @@ const MainDot = ({
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   callback: () => void;
 }) => {
-  const mounted = useRef(false);
+  // const mounted = useRef(false);
 
-  useEffect(() => {
-    mounted.current = true;
-    setIsLoading(!mounted.current);
+  // useEffect(() => {
+  //   mounted.current = true;
+  //   // setIsLoading(!mounted.current);
 
-    return () => {
-      mounted.current = false;
-    };
-  }, [setIsLoading]);
+  //   return () => {
+  //     mounted.current = false;
+  //   };
+  // }, [setIsLoading]);
 
   return (
     <Marker key="bacchus" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={callback}>

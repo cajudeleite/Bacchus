@@ -21,7 +21,7 @@ const Loading = () => {
   }, [rotateDirection]);
 
   return (
-    <div className="h-full w-full flex justify-center items-center bg-background z-20">
+    <div className="h-screen w-screen absolute flex justify-center items-center bg-background z-20">
       <h1 style={{ color: "rgba(255, 255, 255, 0.8)" }} className={`severe-lower-case text-8xl rotate-${rotateDirection}`}>
         B
       </h1>

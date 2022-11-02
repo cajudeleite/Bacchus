@@ -10,16 +10,16 @@ const Dot = ({
   timeBeforeShow,
   enableTimeout,
   setEvent,
-  // setEventUser,
-  activateLoading,
-}: {
+  setIsLoading,
+}: // setEventUser,
+{
   event: IPartialEvent;
   setRoute: (input: IRoute) => void;
   timeBeforeShow: number;
   enableTimeout: boolean;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
 }) => {
   // const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));
   const dotSize = 8;
@@ -28,14 +28,16 @@ const Dot = ({
   const [showDot, setShowDot] = useState<boolean>(!enableTimeout);
 
   const handdleClick = async () => {
+    setIsLoading(true);
     try {
-      const response: any = await activateLoading(getEvent(event.id));
+      const response: any = await getEvent(event.id);
       setEvent(response);
       // setEventUser(response.data.user);
       setRoute("show");
     } catch (error: any) {
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
