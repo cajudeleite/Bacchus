@@ -98,7 +98,6 @@ const App = () => {
       case "map":
         setRoute("search");
         break;
-
       default:
         setRoute("map");
         break;
@@ -142,7 +141,7 @@ const App = () => {
       )}
       {route === "error" && <Error />}
       {isLoading ? (
-        <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
+        <Loading />
       ) : (
         <h1
           className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
