@@ -6,13 +6,13 @@ import Button from "../components/Button";
 
 const Search = ({
   setRoute,
-  activateLoading,
   setEvent,
+  setIsLoading,
 }: // setEventUser,
 {
   setRoute: (input: IRoute) => void;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
@@ -23,8 +23,6 @@ const Search = ({
   // const [checkToken, setCheckToken] = useState<boolean>(false);
   const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
   const [triggerError, setTriggerError] = useState<boolean>(false);
-
-  console.log(eventInfo, eventInfo.length);
 
   useEffect(() => {
     if (showButton && inputValue !== eventInfo[0]) {
@@ -54,9 +52,9 @@ const Search = ({
   };
 
   const handleSearchEvent = async () => {
+    setIsLoading(true);
     try {
-      const response: IEvent = await activateLoading(searchEvent(inputValue));
-
+      const response: IEvent = await searchEvent(inputValue);
       setEvent(response);
       setRoute("show");
     } catch (error: any) {
@@ -83,6 +81,7 @@ const Search = ({
           break;
       }
     }
+    setIsLoading(false);
   };
 
   // const handleCheckToken: () => void = async () => {
@@ -101,8 +100,9 @@ const Search = ({
   const handleCreateEventTrigger: () => void = async () => {
     if ((eventInfo.length === 4 && eventInfo[2] !== "locked") || eventInfo.length === 5) {
       setInputValue("");
+      setIsLoading(true);
       try {
-        const response = await activateLoading(createEvent([...eventInfo, inputValue]));
+        const response = await createEvent([...eventInfo, inputValue]);
         if (response.status >= 400) throw response;
 
         setEventTrigger(false);
@@ -112,6 +112,7 @@ const Search = ({
       } catch (e) {
         triggerShake();
       }
+      setIsLoading(false);
       return;
     }
 

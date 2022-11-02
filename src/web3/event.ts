@@ -1,12 +1,12 @@
 import { IEvent, IPartialEvent } from "../types";
 import { eventAbi } from "./abi/eventAbi";
-import { dAppAddress, provider } from "./provider";
+import { dAppAddress, provider, userAccount } from "./provider";
 
 const contract = new provider.eth.Contract(eventAbi, dAppAddress);
 
-export const searchEvent: (name: string) => Promise<Partial<IEvent>> = async (name: string) => {
+export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
   try {
-    const response: Partial<IEvent> = await contract.methods.searchEvent(name).call();
+    const response: IEvent = await contract.methods.searchEvent(name).call();
     return response;
   } catch (error: any) {
     return error;
@@ -22,7 +22,7 @@ export const createEvent = async (paramArray: (string | number)[]) => {
   };
 
   try {
-    const response = await contract.methods.createEvent(name, description, location, date).send({ from: ("userAccount" as any)[0] });
+    const response = await contract.methods.createEvent(name, description, location, date).send({ from: userAccount });
     return response;
   } catch (error: any) {
     return error;
