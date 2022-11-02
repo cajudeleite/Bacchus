@@ -7,19 +7,23 @@ export type IUser = {
 };
 
 export type IEvent = {
-  id: string;
-  userId: string;
   name: string;
   description: string;
-  status: "open" | "closed " | "locked";
-  address: string;
-  date: string;
-  invite_quantity: number;
-  reputation: number;
-  censored: boolean;
-  closed: boolean;
   location: string;
-  views: string[];
+  date: number;
 };
 
-export type IRoute = "map" | "search" | "login" | "register" | "location" | "show" | "error";
+export type IPartialEvent = {
+  id: number;
+  name: string;
+  location: string;
+};
+
+export type IRoute = "map" | "search" | "login" | "location" | "show" | "error";
+
+declare global {
+  interface Window {
+    ethereum?: any;
+    web3?: any;
+  }
+}

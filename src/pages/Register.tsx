@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { logInAPI, signUpAPI } from "../api/session";
+import { logInAPI, signUpAPI } from "../web3/session";
 import { IRoute } from "../types";
 import Button from "../components/Button";
 import Input from "../components/Input";

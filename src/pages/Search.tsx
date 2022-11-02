@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, searchEvent, checkInvite } from "../api/event";
+import { createEvent, searchEvent } from "../web3/event";
 import { IEvent, IRoute, IUser } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -8,19 +8,19 @@ const Search = ({
   setRoute,
   activateLoading,
   setEvent,
-  setEventUser,
-}: {
+}: // setEventUser,
+{
   setRoute: (input: IRoute) => void;
   activateLoading: (callback: Promise<any>) => Promise<any>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
+  // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [eventTrigger, setEventTrigger] = useState<boolean>(false);
   const [showButton, setShowButton] = useState<boolean>(false);
-  const eventSteps = ["Description", "Status", "Address", "Date", "Invite Quantity"];
+  const eventSteps = ["Description", "Address", "Date"];
   const [eventInfo, setEventInfo] = useState<any[]>([]);
-  const [checkToken, setCheckToken] = useState<boolean>(false);
+  // const [checkToken, setCheckToken] = useState<boolean>(false);
   const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
   const [triggerError, setTriggerError] = useState<boolean>(false);
 
@@ -48,17 +48,16 @@ const Search = ({
       setShowButton(false);
       setInputValue("");
     } else {
-      checkToken ? handleCheckToken() : handleSearchEvent();
+      // checkToken ? handleCheckToken() : handleSearchEvent();
+      handleSearchEvent();
     }
   };
 
   const handleSearchEvent = async () => {
     try {
-      const response: any = await activateLoading(searchEvent(inputValue));
-      if (response.status >= 400) throw response;
+      const response: IEvent = await activateLoading(searchEvent(inputValue));
 
-      setEvent(response.data.event);
-      setEventUser(response.data.user);
+      setEvent(response);
       setRoute("show");
     } catch (error: any) {
       switch (error.status) {
@@ -69,7 +68,7 @@ const Search = ({
 
         case 403:
           setInputValue("");
-          setCheckToken(true);
+          // setCheckToken(true);
           setEventIdToBeChecked(error.message.split(" ")[1]);
           break;
 
@@ -86,18 +85,18 @@ const Search = ({
     }
   };
 
-  const handleCheckToken: () => void = async () => {
-    try {
-      const response = await activateLoading(checkInvite(eventIdToBeChecked, inputValue));
-      if (response.status >= 400) throw new Error("Wrong token");
+  // const handleCheckToken: () => void = async () => {
+  //   try {
+  //     const response = await activateLoading(checkInvite(eventIdToBeChecked, inputValue));
+  //     if (response.status >= 400) throw new Error("Wrong token");
 
-      setEvent(response.data.event);
-      setEventUser(response.data.user);
-      setRoute("show");
-    } catch (error) {
-      triggerShake(1000);
-    }
-  };
+  //     setEvent(response.data.event);
+  //     setEventUser(response.data.user);
+  //     setRoute("show");
+  //   } catch (error) {
+  //     triggerShake(1000);
+  //   }
+  // };
 
   const handleCreateEventTrigger: () => void = async () => {
     if ((eventInfo.length === 4 && eventInfo[2] !== "locked") || eventInfo.length === 5) {
@@ -126,7 +125,8 @@ const Search = ({
       <Input
         inputValue={inputValue}
         setInputValue={setInputValue}
-        label={eventTrigger ? eventSteps[eventInfo.length - 1] : checkToken ? "Event invite token" : "Search event"}
+        // label={eventTrigger ? eventSteps[eventInfo.length - 1] : checkToken ? "Event invite token" : "Search event"}
+        label="Search event"
         type={eventInfo.length === 2 ? "select" : eventInfo.length === 4 ? "date" : eventInfo.length === 5 ? "number" : "text"}
         handleSubmit={handleSubmit}
         options={["open", "closed", "locked"]}

@@ -1,43 +1,27 @@
-import React, { useState } from "react";
-import { logInAPI } from "../api/session";
+import React, { useEffect, useState } from "react";
 import { IRoute } from "../types";
-import Input from "../components/Input";
 import Button from "../components/Button";
+import { connectToWallet } from "../web3/provider";
 
-const LogIn = ({ setRoute, activateLoading }: { setRoute: (input: IRoute) => void; activateLoading: (callback: Promise<any>) => Promise<any> }) => {
-  const [login, setLogin] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+const LogIn = ({ setRoute }: { setRoute: (input: IRoute) => void }) => {
+  const [userGotWallet, setUserGotWallet] = useState(false);
 
-  const handleLogIn: (verify?: boolean) => void = async () => {
-    const response: any = await activateLoading(logInAPI(login, password));
+  useEffect(() => {
+    setUserGotWallet(window.ethereum || window.web3);
+  }, []);
 
-    switch (response.status) {
-      case 202:
-        window.location.reload();
-        break;
-      case 404:
-        setRoute("register");
-        break;
-      case 401:
-        setPassword("");
-        break;
-      default:
-        break;
+  const connectWallet = async () => {
+    try {
+      await connectToWallet();
+      setRoute("map");
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
-    <section className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 items-center">
-      <Input inputValue={login} setInputValue={setLogin} handleSubmit={handleLogIn} errorCondition={login.length === 0 && password.length === 0} />
-      <Input
-        inputValue={password}
-        setInputValue={setPassword}
-        type="password"
-        handleSubmit={handleLogIn}
-        errorCondition={login.length === 0 && password.length === 0}
-        buttonText="Log In"
-      />
-      <Button text="Create new account" callback={() => setRoute("register")} variant="secondary" />
+    <section className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 items-center text-white">
+      {userGotWallet ? <Button text="Connect" callback={connectWallet} /> : <p>You don't have any wallet</p>}
     </section>
   );
 };
