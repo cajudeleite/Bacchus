@@ -59,7 +59,7 @@ const Show = ({
             </div>
           )}
         </div>
-        <p className="opacity-40 mb-5">{event.address}</p>
+        <p className="opacity-40 mb-5">{event.location}</p>
         <h2 className="opacity-50 text-justify">{event.description}</h2>
       </div>
       <div className="h-full w-1/2 border border-white border-opacity-50">

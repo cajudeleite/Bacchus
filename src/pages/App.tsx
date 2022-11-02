@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { convertAddressToCoordinates } from "../api/address";
+import { convertAddressToCoordinates } from "../web3/address";
 import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
 import Input from "../components/Input";
@@ -10,6 +10,7 @@ import Show from "./Show";
 import Map from "./Map";
 import Search from "./Search";
 import "../index.css";
+import { isUserConnected } from "../web3/provider";
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
@@ -17,14 +18,21 @@ const App = () => {
   const [callbackSuccess, setCallbackSuccess] = useState<boolean | undefined>();
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
-  const [eventUser, setEventUser] = useState<IUser | undefined>();
+  // const [eventUser, setEventUser] = useState<IUser | undefined>();
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number | undefined;
     lng: number | undefined;
   }>({ lat: undefined, lng: undefined });
   const [triggerError, setTriggerError] = useState<boolean>(false);
 
+  const checkIfUserIsConnected = async () => {
+    const response = await isUserConnected();
+    if (!response) setRoute("login");
+  };
+
   useEffect(() => {
+    checkIfUserIsConnected();
+
     navigator.geolocation.watchPosition(
       (position) => {
         setClientCoordinates({
@@ -90,7 +98,6 @@ const App = () => {
       case "map":
         setRoute("search");
         break;
-
       default:
         setRoute("map");
         break;
@@ -104,17 +111,23 @@ const App = () => {
           setRoute={setRoute}
           setIsLoading={setIsLoading}
           setEvent={setEvent}
-          setEventUser={setEventUser}
+          // setEventUser={setEventUser}
           activateLoading={activateLoading}
           clientCoordinates={clientCoordinates}
         />
       )}
-      {route === "search" && <Search setRoute={setRoute} activateLoading={activateLoading} setEvent={setEvent} setEventUser={setEventUser} />}
-      {route === "show" && event && eventUser && clientCoordinates && (
-        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
+      {route === "search" && (
+        <Search
+          setRoute={setRoute}
+          activateLoading={activateLoading}
+          setEvent={setEvent}
+          // setEventUser={setEventUser}
+        />
       )}
-      {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
-      {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}
+      {/* {route === "show" && event && eventUser && clientCoordinates && (
+        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
+      )} */}
+      {route === "login" && <LogIn setRoute={setRoute} />}
       {route === "location" && (
         <div className="w-1/2">
           <Input
@@ -128,7 +141,7 @@ const App = () => {
       )}
       {route === "error" && <Error />}
       {isLoading ? (
-        <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
+        <Loading />
       ) : (
         <h1
           className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
