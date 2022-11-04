@@ -12,9 +12,9 @@ const Button = ({
   size?: "normal" | "full";
 }) => (
   <button
-    className={`${size === "full" && "w-full"} h-12 flex justify-center ${
-      variant === "primary" ? "items-center px-6 border-2 border-white text-xl" : "items-end underline text-lg"
-    } bg-transparent opacity-40 text-center text-white`}
+    className={`${size === "full" && "w-full"} flex justify-center items-center bg-transparent opacity-40 text-center text-white ${
+      variant === "primary" ? "h-12 px-6 border-2 border-white text-xl" : "underline text-lg"
+    }`}
     onClick={callback}
   >
     {text}

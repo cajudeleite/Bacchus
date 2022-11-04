@@ -11,9 +11,11 @@ const Input = ({
   options,
   label,
   labelAlignment = "center",
+  showButton = false,
   buttonText,
   regex,
   triggerError = false,
+  setTriggerError,
   errorCondition = false,
 }: {
   inputValue: string;
@@ -23,9 +25,11 @@ const Input = ({
   options?: string[];
   label?: string;
   labelAlignment?: "center" | "start";
+  showButton?: boolean;
   buttonText?: string;
   regex?: RegExp;
   triggerError?: boolean;
+  setTriggerError?: React.Dispatch<React.SetStateAction<boolean>>;
   errorCondition?: boolean;
 }) => {
   const [inputError, setInputError] = useState<string>("");
@@ -34,31 +38,27 @@ const Input = ({
     setInputError(" shake-horizontal");
     setTimeout(() => {
       setInputError("");
+      setTriggerError && setTriggerError(false);
     }, 400);
-  }, []);
+  }, [setTriggerError]);
 
   const checkCondition = useCallback(
     () => (inputValue.length === 0 || errorCondition ? shakeInput() : handleSubmit()),
-    [errorCondition, shakeInput, handleSubmit, inputValue]
+    [errorCondition, handleSubmit, inputValue, shakeInput]
   );
 
-  const handleEnter = useCallback(
-    (e: KeyboardEvent) => {
+  useEffect(() => {
+    const handleEnter = (e: KeyboardEvent) => {
       if (e.key === "Enter") inputValue.length > 0 ? checkCondition() : shakeInput();
-    },
-    [checkCondition, inputValue, shakeInput]
-  );
+    };
 
-  useEffect(() => {
     if (triggerError) shakeInput();
-  }, [triggerError, shakeInput]);
 
-  useEffect(() => {
     addEventListener("keydown", handleEnter);
     return () => {
       removeEventListener("keydown", handleEnter);
     };
-  }, [handleEnter]);
+  }, [triggerError, inputValue, handleSubmit, shakeInput, checkCondition]);
 
   const inputStyle =
     "h-12 w-full px-2 border-2 border-white opacity-40 bg-transparent text-center text-white outline-none appearance-none" + inputError;
@@ -103,7 +103,7 @@ const Input = ({
           }}
         />
       )}
-      {buttonText && <Button text={buttonText} callback={inputValue.length > 0 ? checkCondition : shakeInput} />}
+      {buttonText && showButton && <Button text={buttonText} callback={inputValue.length > 0 ? checkCondition : shakeInput} />}
     </div>
   );
 };

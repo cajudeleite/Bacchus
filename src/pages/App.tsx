@@ -9,6 +9,7 @@ import Search from "./Search";
 import "../index.css";
 import { isUserConnected } from "../web3/provider";
 import { addressToCoordinates } from "../api/geocoder";
+import Create from "./Create";
 
 const Map = lazy(() => import("./Map"));
 
@@ -109,6 +110,7 @@ const App = () => {
             // setEventUser={setEventUser}
           />
         )}
+        {route === "create" && <Create setRoute={setRoute} setEvent={setEvent} setIsLoading={setIsLoading} />}
         {/* {route === "show" && event && eventUser && clientCoordinates && (
         <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
       )} */}
