@@ -11,8 +11,8 @@ export const addressToCoordinates = async (address: string) => {
     const coords: { lat: number; lng: number } = response.data.results[0].geometry.location;
 
     return coords;
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    throw error.message;
   }
 };
 
@@ -25,7 +25,7 @@ export const coordinatesToAddress = async (coordinates: string) => {
     if (response.data.status === "ZERO_RESULTS") throw new Error(`Couldn't find coordinates of ${coordinates}`);
 
     return response.data.results[0].formatted_address;
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    throw error.message;
   }
 };
