@@ -18,7 +18,7 @@ const Dot = ({
   timeBeforeShow: number;
   enableTimeout: boolean;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   // const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));

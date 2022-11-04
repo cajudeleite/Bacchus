@@ -7,7 +7,7 @@ const MainDot = ({
   callback,
 }: {
   clientCoordinates: { lat: number | undefined; lng: number | undefined };
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   callback: () => void;
 }) => {
   // const mounted = useRef(false);

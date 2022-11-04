@@ -9,11 +9,13 @@ const Create = ({
   setRoute,
   setEvent,
   setIsLoading,
+  setErrorText,
 }: // setEventUser,
 {
   setRoute: (input: IRoute) => void;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
+  setErrorText: React.Dispatch<React.SetStateAction<string>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -61,22 +63,20 @@ const Create = ({
   };
 
   const handleCreateEvent: (eventInfo: [string, string, string, string]) => void = async (eventInfo: [string, string, string, string]) => {
-    setIsLoading(true);
+    setIsLoading("Your event is being created, this can take a while");
     try {
       const coordsObj = await addressToCoordinates(eventInfo[2]);
 
       const coords = `${coordsObj?.lat},${coordsObj?.lng}`;
       const date = Date.parse(eventInfo[3]);
 
-      const response = await createEvent(eventInfo[0], eventInfo[1], coords, date);
-      console.log(response);
+      await createEvent(eventInfo[0], eventInfo[1], coords, date);
 
-      // setEvent(response.data.event);
+      setEvent({ name: eventInfo[0], description: eventInfo[1], location: coords, date });
       //   setRoute("show");
-    } catch (error) {
-      console.error(error);
-
-      triggerShake();
+    } catch (error: any) {
+      setErrorText(error);
+      setRoute("error");
     }
     setInputValue("");
     setIsLoading(false);

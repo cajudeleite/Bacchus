@@ -9,17 +9,17 @@ export const searchEvent: (name: string) => Promise<IEvent> = async (name: strin
     const response: IEvent = await contract.methods.searchEvent(name).call();
     return response;
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 };
 
 export const createEvent = async (name: string, description: string, location: string, date: number) => {
   try {
     const account = await userAccount();
-    const response = await contract.methods.createEvent(name, description, location, date).send({ from: account });
-    return { name, description, location, date, response };
+    await contract.methods.createEvent(name, description, location, date).send({ from: account });
+    await contract.events.NewEvent({ filter: { user: account } });
   } catch (error: any) {
-    return error;
+    throw error.message.slice(error.message.indexOf("'") + 1, error.message.length - 1);
   }
 };
 

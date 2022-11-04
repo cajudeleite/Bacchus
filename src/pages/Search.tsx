@@ -12,7 +12,7 @@ const Search = ({
 {
   setRoute: (input: IRoute) => void;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
