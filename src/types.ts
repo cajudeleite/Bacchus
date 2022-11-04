@@ -19,7 +19,7 @@ export type IPartialEvent = {
   location: string;
 };
 
-export type IRoute = "map" | "search" | "login" | "location" | "show" | "error";
+export type IRoute = "map" | "search" | "create" | "login" | "location" | "show" | "error";
 
 declare global {
   interface Window {

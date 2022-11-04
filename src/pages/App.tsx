@@ -9,12 +9,13 @@ import Search from "./Search";
 import "../index.css";
 import { isUserConnected } from "../web3/provider";
 import { addressToCoordinates } from "../api/geocoder";
+import Create from "./Create";
 
 const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean | string>(true);
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
   // const [eventUser, setEventUser] = useState<IUser | undefined>();
@@ -23,6 +24,7 @@ const App = () => {
     lng: number | undefined;
   }>({ lat: undefined, lng: undefined });
   const [triggerError, setTriggerError] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState("An error has occurred, please try again later");
 
   const checkIfUserIsConnected = async () => {
     const response = await isUserConnected();
@@ -109,6 +111,7 @@ const App = () => {
             // setEventUser={setEventUser}
           />
         )}
+        {route === "create" && <Create setRoute={setRoute} setEvent={setEvent} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
         {/* {route === "show" && event && eventUser && clientCoordinates && (
         <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
       )} */}
@@ -124,9 +127,9 @@ const App = () => {
             />
           </div>
         )}
-        {route === "error" && <Error />}
+        {route === "error" && <Error text={errorText} />}
       </Suspense>
-      {isLoading && <Loading />}
+      {isLoading && <Loading isLoading={isLoading} />}
       <h1
         className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
         onClick={handleBacchus}

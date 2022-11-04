@@ -19,7 +19,7 @@ const MainMap = ({
 {
   clientCoordinates: { lat: number | undefined; lng: number | undefined };
   setRoute: (input: IRoute) => void;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
