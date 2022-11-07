@@ -64,9 +64,11 @@ const Search = ({
         options={["open", "closed", "locked"]}
         showButton={inputValue.length > 0}
         buttonText="Search"
-        regex={/^[a-zA-Z0-9]*$/}
+        regex={/^[a-z0-9-]*$/}
+        maxLength={20}
         triggerError={triggerError}
         setTriggerError={setTriggerError}
+        replaceCharByAnother={[[" ", "-"]]}
       />
       {!inputValue && !userHasEvent && <Button text="Create event" callback={() => setRoute("create")} variant="secondary" />}
     </div>

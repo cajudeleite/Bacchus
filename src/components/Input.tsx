@@ -14,9 +14,11 @@ const Input = ({
   showButton = false,
   buttonText,
   regex,
+  maxLength,
   triggerError = false,
   setTriggerError,
   errorCondition = false,
+  replaceCharByAnother,
 }: {
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
@@ -28,9 +30,11 @@ const Input = ({
   showButton?: boolean;
   buttonText?: string;
   regex?: RegExp;
+  maxLength?: number;
   triggerError?: boolean;
   setTriggerError?: React.Dispatch<React.SetStateAction<boolean>>;
   errorCondition?: boolean;
+  replaceCharByAnother?: string[][];
 }) => {
   const [inputError, setInputError] = useState<string>("");
 
@@ -99,7 +103,24 @@ const Input = ({
           className={inputStyle}
           autoComplete="off"
           onChange={(event) => {
-            regex && !event.target.value.match(regex) ? shakeInput() : setInputValue(event.target.value);
+            const value = event.target.value;
+
+            if (replaceCharByAnother) {
+              for (let i = 0; i < replaceCharByAnother.length; i++) {
+                const charAndReplacer = replaceCharByAnother[i];
+                if (value[value.length - 1] === charAndReplacer[0]) {
+                  setInputValue(inputValue + charAndReplacer[1]);
+                  return;
+                }
+              }
+            }
+
+            if ((regex && !value.match(regex)) || (maxLength && value.length > maxLength)) {
+              shakeInput();
+              return;
+            }
+
+            setInputValue(value);
           }}
         />
       )}

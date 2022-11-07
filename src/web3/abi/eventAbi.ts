@@ -172,13 +172,7 @@ export const eventAbi: any = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_eventId",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     name: "closeEvent",
     outputs: [],
     stateMutability: "nonpayable",
@@ -370,11 +364,6 @@ export const eventAbi: any = [
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "_eventId",
-        type: "uint256",
-      },
       {
         internalType: "string",
         name: "_name",

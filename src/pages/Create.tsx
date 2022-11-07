@@ -93,7 +93,9 @@ const Create = ({
         labelAlignment={!eventStep && !inputValue ? "center" : "start"}
         type={eventStep === 3 ? "date" : "text"}
         handleSubmit={handleSubmit}
-        regex={!eventStep ? /^[a-zA-Z0-9]*$/ : undefined}
+        regex={!eventStep ? /^[a-z0-9-]*$/ : undefined}
+        maxLength={!eventStep ? 20 : undefined}
+        replaceCharByAnother={!eventStep ? [[" ", "-"]] : undefined}
       />
       {eventStep || inputValue ? (
         <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
