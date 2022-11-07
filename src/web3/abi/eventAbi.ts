@@ -3,6 +3,12 @@ export const eventAbi: any = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "eventId",
@@ -21,6 +27,12 @@ export const eventAbi: any = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
       {
         indexed: false,
         internalType: "uint256",
@@ -80,6 +92,12 @@ export const eventAbi: any = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "eventId",
@@ -113,29 +131,6 @@ export const eventAbi: any = [
     ],
     name: "OwnershipTransferred",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "_getEvents",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "idArray",
-        type: "uint256[]",
-      },
-      {
-        internalType: "string[]",
-        name: "nameArray",
-        type: "string[]",
-      },
-      {
-        internalType: "string[]",
-        name: "locationArray",
-        type: "string[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [
@@ -361,19 +356,6 @@ export const eventAbi: any = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "testGet",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -417,6 +399,25 @@ export const eventAbi: any = [
     name: "updateEvent",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "userToEventId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];

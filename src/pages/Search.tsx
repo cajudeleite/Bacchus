@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { searchEvent } from "../web3/event";
+import { searchEvent, userEvent } from "../web3/event";
 import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -16,14 +16,23 @@ const Search = ({
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [showButton, setShowButton] = useState<boolean>(false);
   const [triggerError, setTriggerError] = useState<boolean>(false);
+  const [userHasEvent, setUserHasEvent] = useState(false);
 
   useEffect(() => {
-    if (showButton) {
-      setShowButton(false);
-    }
-  }, [inputValue, showButton]);
+    const userHasEvent = async () => {
+      setIsLoading(true);
+      try {
+        const response = await userEvent();
+        setUserHasEvent(response > 0);
+      } catch (error) {
+        setRoute("error");
+      }
+      setIsLoading(false);
+    };
+
+    userHasEvent();
+  }, [setRoute, setIsLoading]);
 
   const triggerShake = (delay = 0) => {
     setTimeout(() => {
@@ -32,13 +41,12 @@ const Search = ({
   };
 
   const handleSearchEvent = async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       const response: IEvent = await searchEvent(inputValue);
-      console.log(response);
 
-      // setEvent(response);
-      // setRoute("show");
+      setEvent(response);
+      setRoute("show");
     } catch (error: any) {
       triggerShake();
       console.error(error);
@@ -51,7 +59,7 @@ const Search = ({
       <Input
         inputValue={inputValue}
         setInputValue={setInputValue}
-        label="Search event"
+        label={triggerError ? "Couldn't find event" : "Search event"}
         handleSubmit={handleSearchEvent}
         options={["open", "closed", "locked"]}
         showButton={inputValue.length > 0}
@@ -60,7 +68,7 @@ const Search = ({
         triggerError={triggerError}
         setTriggerError={setTriggerError}
       />
-      {!inputValue && <Button text="Create event" callback={() => setRoute("create")} variant="secondary" />}
+      {!inputValue && !userHasEvent && <Button text="Create event" callback={() => setRoute("create")} variant="secondary" />}
     </div>
   );
 };

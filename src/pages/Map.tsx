@@ -46,7 +46,6 @@ const MainMap = ({
         const response = await getEvents();
 
         if (response.length > 0) setEvents(response);
-        // setUserReputation(response.data.reputation);
       } catch (error) {
         setRoute("error");
       }
