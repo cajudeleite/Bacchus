@@ -4,6 +4,7 @@ import { IEvent, IRoute, IUser } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { addressToCoordinates } from "../api/geocoder";
+import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Create = ({
   setRoute,
@@ -21,6 +22,9 @@ const Create = ({
   const [inputValue, setInputValue] = useState("");
   const [eventInfo, setEventInfo] = useState<[string, string, string, string]>(["", "", "", ""]);
   const [eventStep, setEventStep] = useState(0);
+  const [minAndMaxNameLength, setMinAndMaxNameLength] = useState<[number, number]>([0, 0]);
+  const [triggerError, setTriggerError] = useState(false);
+
   const eventSteps = ["Name", "Description", "Address", "Date"];
 
   useEffect(() => {
@@ -36,7 +40,19 @@ const Create = ({
       setIsLoading(false);
     };
 
+    const getNameLengthValues = async () => {
+      try {
+        const response = await getMinAndMaxNameLength();
+        setMinAndMaxNameLength(response);
+      } catch (error) {
+        console.error(error);
+
+        setRoute("error");
+      }
+    };
+
     userHasEvent();
+    getNameLengthValues();
   }, [setRoute, setIsLoading, setErrorText]);
 
   const goForward = () => {
@@ -56,6 +72,10 @@ const Create = ({
   };
 
   const handleSubmit: () => void = async () => {
+    if (!eventStep && inputValue.length < minAndMaxNameLength[0]) {
+      setTriggerError(true);
+      return;
+    }
     const newEventInfo: [string, string, string, string] = [...eventInfo];
     newEventInfo[eventStep] = inputValue;
 
@@ -94,8 +114,10 @@ const Create = ({
         type={eventStep === 3 ? "date" : "text"}
         handleSubmit={handleSubmit}
         regex={!eventStep ? /^[a-z0-9-]*$/ : undefined}
-        maxLength={!eventStep ? 20 : undefined}
+        maxLength={!eventStep ? minAndMaxNameLength[1] : undefined}
         replaceCharByAnother={!eventStep ? [[" ", "-"]] : undefined}
+        triggerError={triggerError}
+        setTriggerError={setTriggerError}
       />
       {eventStep || inputValue ? (
         <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
