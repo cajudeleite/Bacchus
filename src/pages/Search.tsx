@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { searchEvent, userEvent } from "../web3/event";
+import { getEvent, searchEvent, userEvent } from "../web3/event";
 import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -25,6 +25,11 @@ const Search = ({
       try {
         const response = await userEvent();
         setUserHasEvent(response > 0);
+        if (response > 0) {
+          const event = await getEvent(response);
+
+          setEvent(event);
+        }
       } catch (error) {
         setRoute("error");
       }
@@ -32,7 +37,7 @@ const Search = ({
     };
 
     userHasEvent();
-  }, [setRoute, setIsLoading]);
+  }, [setRoute, setIsLoading, setEvent]);
 
   const triggerShake = (delay = 0) => {
     setTimeout(() => {
@@ -43,7 +48,7 @@ const Search = ({
   const handleSearchEvent = async () => {
     setIsLoading(true);
     try {
-      const response: IEvent = await searchEvent(inputValue);
+      const response = await searchEvent(inputValue);
 
       setEvent(response);
       setRoute("show");
@@ -70,7 +75,13 @@ const Search = ({
         setTriggerError={setTriggerError}
         replaceCharByAnother={[[" ", "-"]]}
       />
-      {!inputValue && !userHasEvent && <Button text="Create event" callback={() => setRoute("create")} variant="secondary" />}
+      {!inputValue && (
+        <Button
+          text={userHasEvent ? "See my event" : "Create event"}
+          callback={() => setRoute(userHasEvent ? "show" : "create")}
+          variant="secondary"
+        />
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
 import Input from "../components/Input";
 import Loading from "../components/Loading";
-import LogIn from "./Login";
+import LogIn from "./Connect";
 import Show from "./Show";
 import Search from "./Search";
 import "../index.css";
