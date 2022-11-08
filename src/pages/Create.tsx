@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, searchEvent } from "../web3/event";
+import { createEvent, searchEvent, userEvent } from "../web3/event";
 import { IEvent, IRoute, IUser } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { addressToCoordinates } from "../api/geocoder";
+import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Create = ({
   setRoute,
@@ -19,24 +20,40 @@ const Create = ({
   // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const [showButton, setShowButton] = useState(false);
   const [eventInfo, setEventInfo] = useState<[string, string, string, string]>(["", "", "", ""]);
   const [eventStep, setEventStep] = useState(0);
+  const [minAndMaxNameLength, setMinAndMaxNameLength] = useState<[number, number]>([0, 0]);
   const [triggerError, setTriggerError] = useState(false);
+
   const eventSteps = ["Name", "Description", "Address", "Date"];
 
   useEffect(() => {
-    if (showButton && inputValue !== eventInfo[0]) {
-      setShowButton(false);
-    }
-  }, [inputValue, eventInfo, showButton]);
+    const userHasEvent = async () => {
+      setIsLoading(true);
+      try {
+        const response = await userEvent();
+        if (response > 0) throw new Error("User already has an event");
+      } catch (error: any) {
+        setErrorText(error.message);
+        setRoute("error");
+      }
+      setIsLoading(false);
+    };
 
-  const triggerShake = (delay = 0) => {
-    setTimeout(() => {
-      setTriggerError(true);
-      setTriggerError(false);
-    }, delay);
-  };
+    const getNameLengthValues = async () => {
+      try {
+        const response = await getMinAndMaxNameLength();
+        setMinAndMaxNameLength(response);
+      } catch (error) {
+        console.error(error);
+
+        setRoute("error");
+      }
+    };
+
+    userHasEvent();
+    getNameLengthValues();
+  }, [setRoute, setIsLoading, setErrorText]);
 
   const goForward = () => {
     setInputValue(eventInfo[eventStep + 1]);
@@ -55,6 +72,10 @@ const Create = ({
   };
 
   const handleSubmit: () => void = async () => {
+    if (!eventStep && inputValue.length < minAndMaxNameLength[0]) {
+      setTriggerError(true);
+      return;
+    }
     const newEventInfo: [string, string, string, string] = [...eventInfo];
     newEventInfo[eventStep] = inputValue;
 
@@ -73,7 +94,7 @@ const Create = ({
       await createEvent(eventInfo[0], eventInfo[1], coords, date);
 
       setEvent({ name: eventInfo[0], description: eventInfo[1], location: coords, date });
-      //   setRoute("show");
+      setRoute("show");
     } catch (error: any) {
       setErrorText(error);
       setRoute("error");
@@ -92,8 +113,11 @@ const Create = ({
         labelAlignment={!eventStep && !inputValue ? "center" : "start"}
         type={eventStep === 3 ? "date" : "text"}
         handleSubmit={handleSubmit}
+        regex={!eventStep ? /^[a-z0-9-]*$/ : undefined}
+        maxLength={!eventStep ? minAndMaxNameLength[1] : undefined}
+        replaceCharByAnother={!eventStep ? [[" ", "-"]] : undefined}
         triggerError={triggerError}
-        regex={!eventStep ? /^[a-zA-Z0-9]*$/ : undefined}
+        setTriggerError={setTriggerError}
       />
       {eventStep || inputValue ? (
         <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>

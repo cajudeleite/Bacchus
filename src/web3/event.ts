@@ -6,8 +6,8 @@ const contract = new provider.eth.Contract(eventAbi, dAppAddress);
 
 export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
   try {
-    const response: IEvent = await contract.methods.searchEvent(name).call();
-    return response;
+    const response = await contract.methods.searchEvent(name).call();
+    return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) } as IEvent;
   } catch (error: any) {
     throw error;
   }
@@ -41,26 +41,28 @@ export const getEvents = async () => {
 
     return events;
   } catch (error: any) {
-    console.error(error);
-    return [];
+    throw error;
   }
 };
 
-export const getEvent = async (id: number) => {
+export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
   try {
     const response = await contract.methods.getEvent(id).call();
-    return response;
+    console.warn(response);
+
+    return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) };
   } catch (error: any) {
-    return error;
+    throw error;
   }
 };
 
-export const testGet = async () => {
+export const userEvent = async () => {
   try {
-    const response = await contract.methods.testGet().call();
+    const account = await userAccount();
+    const response: number = await contract.methods.userToEventId(account).call();
 
     return response;
   } catch (error) {
-    console.error(error);
+    throw error;
   }
 };

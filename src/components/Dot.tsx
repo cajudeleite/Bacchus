@@ -30,7 +30,7 @@ const Dot = ({
   const handdleClick = async () => {
     setIsLoading(true);
     try {
-      const response: any = await getEvent(event.id);
+      const response = await getEvent(event.id);
       setEvent(response);
       // setEventUser(response.data.user);
       setRoute("show");

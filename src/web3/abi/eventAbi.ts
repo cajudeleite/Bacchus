@@ -3,6 +3,12 @@ export const eventAbi: any = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "eventId",
@@ -21,6 +27,12 @@ export const eventAbi: any = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
       {
         indexed: false,
         internalType: "uint256",
@@ -80,6 +92,12 @@ export const eventAbi: any = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "eventId",
@@ -113,29 +131,6 @@ export const eventAbi: any = [
     ],
     name: "OwnershipTransferred",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "_getEvents",
-    outputs: [
-      {
-        internalType: "uint256[]",
-        name: "idArray",
-        type: "uint256[]",
-      },
-      {
-        internalType: "string[]",
-        name: "nameArray",
-        type: "string[]",
-      },
-      {
-        internalType: "string[]",
-        name: "locationArray",
-        type: "string[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [
@@ -177,13 +172,7 @@ export const eventAbi: any = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_eventId",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     name: "closeEvent",
     outputs: [],
     stateMutability: "nonpayable",
@@ -308,6 +297,32 @@ export const eventAbi: any = [
   },
   {
     inputs: [],
+    name: "nameMaxLength",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "nameMinLength",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "owner",
     outputs: [
       {
@@ -361,19 +376,6 @@ export const eventAbi: any = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "testGet",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -388,11 +390,6 @@ export const eventAbi: any = [
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "_eventId",
-        type: "uint256",
-      },
       {
         internalType: "string",
         name: "_name",
@@ -417,6 +414,25 @@ export const eventAbi: any = [
     name: "updateEvent",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "userToEventId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];

@@ -3,7 +3,7 @@ import { IEvent, IRoute, IUser } from "../types";
 import Error from "./Error";
 import Input from "../components/Input";
 import Loading from "../components/Loading";
-import LogIn from "./Login";
+import LogIn from "./Connect";
 import Show from "./Show";
 import Search from "./Search";
 import "../index.css";
@@ -112,9 +112,7 @@ const App = () => {
           />
         )}
         {route === "create" && <Create setRoute={setRoute} setEvent={setEvent} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
-        {/* {route === "show" && event && eventUser && clientCoordinates && (
-        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
-      )} */}
+        {route === "show" && event && clientCoordinates && <Show event={event} clientCoordinates={clientCoordinates} setRoute={setRoute} />}
         {route === "login" && <LogIn setRoute={setRoute} />}
         {route === "location" && (
           <div className="w-1/2">
