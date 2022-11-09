@@ -12,7 +12,7 @@ export const addressToCoordinates = async (address: string) => {
 
     return coords;
   } catch (error: any) {
-    throw error.message;
+    throw error;
   }
 };
 

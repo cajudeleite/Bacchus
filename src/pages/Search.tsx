@@ -7,17 +7,16 @@ import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Search = ({
   setRoute,
-  setEvent,
   setIsLoading,
-}: // setEventUser,
-{
+  setEvent,
+}: {
   setRoute: (input: IRoute) => void;
-  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
-  // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [triggerError, setTriggerError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("An error occured");
   const [userHasEvent, setUserHasEvent] = useState(false);
   const [minAndMaxNameLength, setMinAndMaxNameLength] = useState<[number, number]>([0, 0]);
 
@@ -53,24 +52,32 @@ const Search = ({
     getNameLengthValues();
   }, [setRoute, setIsLoading, setEvent]);
 
-  const triggerShake = (delay = 0) => {
-    setTimeout(() => {
+  const onChange = (value: string) => {
+    const newValue = value[value.length - 1] === " " ? inputValue + "-" : value;
+
+    if (!newValue.match(/^[a-z0-9-]*$/)) {
+      setErrorMessage("Invalid Character");
       setTriggerError(true);
-    }, delay);
+    } else if (newValue.length > minAndMaxNameLength[1]) {
+      setErrorMessage("Too Long");
+      setTriggerError(true);
+    } else {
+      setInputValue(newValue);
+    }
   };
 
-  const handleSearchEvent = async () => {
+  const onSubmit = async () => {
     setIsLoading(true);
     try {
-      if (inputValue.length < minAndMaxNameLength[0]) throw new Error("Name is too short");
+      if (inputValue.length < minAndMaxNameLength[0]) throw new Error("Too short");
 
       const response = await searchEvent(inputValue);
 
       setEvent(response);
       setRoute("show");
     } catch (error: any) {
-      triggerShake();
-      console.error(error);
+      setErrorMessage(error.message);
+      setTriggerError(true);
     }
     setIsLoading(false);
   };
@@ -79,22 +86,17 @@ const Search = ({
     <div className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 font-mono">
       <Input
         inputValue={inputValue}
-        setInputValue={setInputValue}
-        label={triggerError ? "Couldn't find event" : "Search event"}
-        handleSubmit={handleSearchEvent}
-        options={["open", "closed", "locked"]}
-        showButton={inputValue.length > 0}
-        buttonText="Search"
-        regex={/^[a-z0-9-]*$/}
-        maxLength={minAndMaxNameLength[1]}
+        onChange={onChange}
+        onSubmit={onSubmit}
+        label={triggerError ? errorMessage : "Search Event"}
         triggerError={triggerError}
         setTriggerError={setTriggerError}
-        replaceCharByAnother={[[" ", "-"]]}
       />
+      {inputValue && <Button text="Search" onClick={onSubmit} />}
       {!inputValue && (
         <Button
           text={userHasEvent ? "See my event" : "Create event"}
-          callback={() => setRoute(userHasEvent ? "show" : "create")}
+          onClick={() => setRoute(userHasEvent ? "show" : "create")}
           variant="secondary"
         />
       )}

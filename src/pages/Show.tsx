@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { IEvent, IRoute, IUser } from "../types";
+import { IEvent, IRoute } from "../types";
 import Map, { Marker } from "react-map-gl";
 import { coordinatesToAddress } from "../api/geocoder";
 
 const Show = ({
+  setRoute,
   event,
   clientCoordinates,
-  setRoute,
 }: {
+  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   event: IEvent;
   clientCoordinates: {
     lat: number | undefined;
     lng: number | undefined;
   };
-  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
 }) => {
   const [address, setAddress] = useState("");
 

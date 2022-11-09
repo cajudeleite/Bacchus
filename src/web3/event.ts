@@ -1,4 +1,5 @@
 import { IEvent, IPartialEvent } from "../types";
+import { formatErrorFromContract } from "../utils";
 import { eventAbi } from "./abi/eventAbi";
 import { dAppAddress, provider, userAccount } from "./provider";
 
@@ -9,7 +10,7 @@ export const searchEvent: (name: string) => Promise<IEvent> = async (name: strin
     const response = await contract.methods.searchEvent(name).call();
     return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) } as IEvent;
   } catch (error: any) {
-    throw error;
+    throw formatErrorFromContract(error);
   }
 };
 
@@ -19,7 +20,7 @@ export const createEvent = async (name: string, description: string, location: s
     await contract.methods.createEvent(name, description, location, date).send({ from: account });
     await contract.events.NewEvent({ filter: { user: account } });
   } catch (error: any) {
-    throw error.message.slice(error.message.indexOf("'") + 1, error.message.length - 1);
+    throw formatErrorFromContract(error);
   }
 };
 

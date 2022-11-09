@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, searchEvent, userEvent } from "../web3/event";
-import { IEvent, IRoute, IUser } from "../types";
+import { createEvent, userEvent } from "../web3/event";
+import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { addressToCoordinates } from "../api/geocoder";
@@ -8,16 +8,14 @@ import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Create = ({
   setRoute,
-  setEvent,
   setIsLoading,
+  setEvent,
   setErrorText,
-}: // setEventUser,
-{
+}: {
   setRoute: (input: IRoute) => void;
-  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setErrorText: React.Dispatch<React.SetStateAction<string>>;
-  // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [eventInfo, setEventInfo] = useState<[string, string, string, string]>(["", "", "", ""]);
@@ -71,6 +69,25 @@ const Create = ({
     document.querySelector("input")?.focus();
   };
 
+  const onChange = (value: string) => {
+    switch (eventStep) {
+      case 0:
+        const newValue = value[value.length - 1] === " " ? inputValue + "-" : value;
+
+        if (newValue.match(/^[a-z0-9-]*$/) && newValue.length <= minAndMaxNameLength[1]) {
+          setInputValue(newValue);
+        } else {
+          setTriggerError(true);
+        }
+
+        break;
+
+      default:
+        setInputValue(value);
+        break;
+    }
+  };
+
   const handleSubmit: () => void = async () => {
     if (!eventStep && inputValue.length < minAndMaxNameLength[0]) {
       setTriggerError(true);
@@ -108,26 +125,23 @@ const Create = ({
     <div className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 font-mono">
       <Input
         inputValue={inputValue}
-        setInputValue={setInputValue}
+        onChange={onChange}
+        onSubmit={handleSubmit}
         label={!eventStep && !inputValue ? "Create event" : eventSteps[eventStep]}
         labelAlignment={!eventStep && !inputValue ? "center" : "start"}
         type={eventStep === 3 ? "date" : "text"}
-        handleSubmit={handleSubmit}
-        regex={!eventStep ? /^[a-z0-9-]*$/ : undefined}
-        maxLength={!eventStep ? minAndMaxNameLength[1] : undefined}
-        replaceCharByAnother={!eventStep ? [[" ", "-"]] : undefined}
         triggerError={triggerError}
         setTriggerError={setTriggerError}
       />
       {eventStep || inputValue ? (
         <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
-          {eventStep && <Button text="<- Back" callback={goBackwards} variant="secondary" />}
+          {eventStep && <Button text="<- Back" onClick={goBackwards} variant="secondary" />}
           {inputValue && (
-            <Button text={eventStep === 3 ? "Create" : "Next ->"} callback={handleSubmit} variant={eventStep === 3 ? "primary" : "secondary"} />
+            <Button text={eventStep === 3 ? "Create" : "Next ->"} onClick={handleSubmit} variant={eventStep === 3 ? "primary" : "secondary"} />
           )}
         </div>
       ) : (
-        <Button text="Search event" callback={() => setRoute("search")} variant="secondary" />
+        <Button text="Search event" onClick={() => setRoute("search")} variant="secondary" />
       )}
     </div>
   );

@@ -7,18 +7,21 @@ export const connectToWallet = async () => {
   try {
     await wallet.request({ method: "eth_requestAccounts" });
   } catch (error) {
-    console.error(error);
+    throw error;
   }
 };
 
 export const dAppAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const isUserConnected = async () => {
-  if (!wallet) return false;
+  try {
+    if (!wallet) throw new Error("User doesn't have a wallet");
+    const accounts = await wallet.request({ method: "eth_accounts" });
 
-  const accounts = await wallet.request({ method: "eth_accounts" });
-
-  return accounts && accounts.length > 0;
+    if (accounts.length === 0) throw new Error("User is not connected");
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const userAccount = async () => (await wallet.request({ method: "eth_accounts" }))[0];
