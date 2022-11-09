@@ -28,13 +28,11 @@ const Location = ({
   >;
 }) => {
   const [clientAddress, setClientAddress] = useState("");
+  const [showInput, setShowInput] = useState(false);
   const [triggerError, setTriggerError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Couldn't find coordinates of your address");
 
-  console.log(clientCoordinates);
-
   useEffect(() => {
-    setIsLoading(true);
     navigator.geolocation.watchPosition(
       (position) => {
         setClientCoordinates({
@@ -49,7 +47,7 @@ const Location = ({
             setClientCoordinates(JSON.parse(localStorage.getItem("clientCoordinates") as string));
             setRoute("map");
           } else {
-            setIsLoading(false);
+            setShowInput(true);
           }
         }
       }
@@ -75,14 +73,18 @@ const Location = ({
   };
   return (
     <div className="w-1/2 lg:w-1/3 xl:w-1/4">
-      <Input
-        inputValue={clientAddress}
-        onChange={(value) => setClientAddress(value)}
-        onSubmit={() => setCustomLocation(clientAddress)}
-        label={triggerError ? errorMessage : "What is your location?"}
-        triggerError={triggerError}
-        setTriggerError={setTriggerError}
-      />
+      {showInput ? (
+        <Input
+          inputValue={clientAddress}
+          onChange={(value) => setClientAddress(value)}
+          onSubmit={() => setCustomLocation(clientAddress)}
+          label={triggerError ? errorMessage : "What is your location?"}
+          triggerError={triggerError}
+          setTriggerError={setTriggerError}
+        />
+      ) : (
+        <h1 className="text-white opacity-40 text-center">Accept localisation</h1>
+      )}
     </div>
   );
 };

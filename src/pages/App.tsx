@@ -25,7 +25,7 @@ const App = () => {
   useEffect(() => {
     const checkIfUserIsConnected = async () => {
       try {
-        await isUserConnected();
+        // await isUserConnected();
 
         if (!clientCoordinates) {
           setRoute("location");
