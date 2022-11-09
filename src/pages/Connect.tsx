@@ -22,11 +22,11 @@ const Connect = ({ setRoute }: { setRoute: (input: IRoute) => void }) => {
   return (
     <section className="flex flex-col space-y-4 items-center text-white text-center">
       {userGotWallet ? (
-        <Button text="Connect" callback={connectWallet} />
+        <Button text="Connect" onClick={connectWallet} />
       ) : (
         <>
           <p className="opacity-40">You don't have any wallet. We recommend downloading the MetaMask extension</p>
-          <Button text="Get MetaMask" callback={() => window.open("https://metamask.io/download/", "_blank")} variant="secondary" />
+          <Button text="Get MetaMask" onClick={() => window.open("https://metamask.io/download/", "_blank")} variant="secondary" />
         </>
       )}
     </section>

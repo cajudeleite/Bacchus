@@ -18,7 +18,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState<boolean | string>(true);
   const [clientAddress, setClientAddress] = useState<string>("");
   const [event, setEvent] = useState<IEvent | undefined>();
-  // const [eventUser, setEventUser] = useState<IUser | undefined>();
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number | undefined;
     lng: number | undefined;
@@ -114,7 +113,7 @@ const App = () => {
         {route === "create" && <Create setRoute={setRoute} setEvent={setEvent} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
         {route === "show" && event && clientCoordinates && <Show event={event} clientCoordinates={clientCoordinates} setRoute={setRoute} />}
         {route === "login" && <LogIn setRoute={setRoute} />}
-        {route === "location" && (
+        {/* {route === "location" && (
           <div className="w-1/2">
             <Input
               inputValue={clientAddress}
@@ -124,7 +123,7 @@ const App = () => {
               triggerError={triggerError}
             />
           </div>
-        )}
+        )} */}
         {route === "error" && <Error text={errorText} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}
