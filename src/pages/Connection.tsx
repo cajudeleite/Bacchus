@@ -3,7 +3,7 @@ import { IRoute } from "../types";
 import Button from "../components/Button";
 import { connectToWallet } from "../web3/provider";
 
-const Connect = ({
+const Connection = ({
   setRoute,
   setIsLoading,
 }: {
@@ -42,4 +42,4 @@ const Connect = ({
   );
 };
 
-export default Connect;
+export default Connection;

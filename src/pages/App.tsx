@@ -2,13 +2,13 @@ import React, { lazy, Suspense, useEffect, useState } from "react";
 import { IEvent, IRoute } from "../types";
 import Error from "./Error";
 import Loading from "../components/Loading";
-import Connect from "./Connect";
+import Connection from "./Connection";
 import Show from "./Show";
 import Search from "./Search";
 import "../index.css";
-import { isUserConnected } from "../web3/provider";
 import Create from "./Create";
 import Location from "./Location";
+import { isUserConnected } from "../web3/provider";
 
 const Map = lazy(() => import("./Map"));
 
@@ -25,13 +25,13 @@ const App = () => {
   useEffect(() => {
     const checkIfUserIsConnected = async () => {
       try {
-        // await isUserConnected();
+        await isUserConnected();
 
         if (!clientCoordinates) {
           setRoute("location");
         }
       } catch (error) {
-        setRoute("connect");
+        setRoute("connection");
       }
     };
 
@@ -47,7 +47,7 @@ const App = () => {
         {route === "search" && <Search setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} />}
         {route === "create" && <Create setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
         {route === "show" && event && clientCoordinates && <Show setRoute={setRoute} event={event} clientCoordinates={clientCoordinates} />}
-        {route === "connect" && <Connect setRoute={setRoute} setIsLoading={setIsLoading} />}
+        {route === "connection" && <Connection setRoute={setRoute} setIsLoading={setIsLoading} />}
         {route === "location" && (
           <Location
             setRoute={setRoute}
