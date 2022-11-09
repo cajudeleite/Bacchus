@@ -6,9 +6,13 @@ import { connectToWallet } from "../web3/provider";
 const Connection = ({
   setRoute,
   setIsLoading,
+  setErrorText,
+  setErrorCallback,
 }: {
   setRoute: (input: IRoute) => void;
   setIsLoading: React.Dispatch<React.SetStateAction<string | boolean>>;
+  setErrorText: React.Dispatch<React.SetStateAction<string>>;
+  setErrorCallback: React.Dispatch<React.SetStateAction<(() => () => void) | undefined>>;
 }) => {
   const [userGotWallet, setUserGotWallet] = useState(false);
 
@@ -21,8 +25,10 @@ const Connection = ({
     try {
       await connectToWallet();
       setRoute("map");
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setErrorText(error.message);
+      setErrorCallback(() => () => connectWallet());
+      setRoute("error");
     }
     setIsLoading(false);
   };

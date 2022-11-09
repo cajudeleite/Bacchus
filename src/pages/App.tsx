@@ -14,13 +14,14 @@ const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState<boolean | string>(false);
+  const [isLoading, setIsLoading] = useState<boolean | string>(true);
   const [event, setEvent] = useState<IEvent | undefined>();
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number;
     lng: number;
   }>();
   const [errorText, setErrorText] = useState("An error has occurred, please try again later");
+  const [errorCallback, setErrorCallback] = useState<() => () => void>();
 
   useEffect(() => {
     const checkIfUserIsConnected = async () => {
@@ -47,7 +48,9 @@ const App = () => {
         {route === "search" && <Search setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} />}
         {route === "create" && <Create setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
         {route === "show" && event && clientCoordinates && <Show setRoute={setRoute} event={event} clientCoordinates={clientCoordinates} />}
-        {route === "connection" && <Connection setRoute={setRoute} setIsLoading={setIsLoading} />}
+        {route === "connection" && (
+          <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
+        )}
         {route === "location" && (
           <Location
             setRoute={setRoute}
@@ -56,7 +59,7 @@ const App = () => {
             setClientCoordinates={setClientCoordinates}
           />
         )}
-        {route === "error" && <Error text={errorText} />}
+        {route === "error" && <Error text={errorText} onClick={errorCallback} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}
       <h1
