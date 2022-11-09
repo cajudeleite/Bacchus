@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getEvents } from "../web3/event";
-import { IEvent, IPartialEvent, IRoute, IUser } from "../types";
+import { IEvent, IPartialEvent, IRoute } from "../types";
 import Map from "react-map-gl";
 
 import mapboxgl from "mapbox-gl";
@@ -11,20 +11,17 @@ import Dot from "../components/Dot";
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 const MainMap = ({
-  clientCoordinates,
-  setRoute,
   setIsLoading,
+  setRoute,
   setEvent,
-}: // setEventUser,
-{
-  clientCoordinates: { lat: number | undefined; lng: number | undefined };
+  clientCoordinates,
+}: {
   setRoute: (input: IRoute) => void;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
+  clientCoordinates: { lat: number; lng: number };
 }) => {
   const [events, setEvents] = useState<IPartialEvent[]>([]);
-  // const [userReputation, setUserReputation] = useState<number>(0);
   const [loaded, setLoaded] = useState(false);
   const enableTimeout: boolean = true;
 
@@ -88,7 +85,6 @@ const MainMap = ({
             enableTimeout={enableTimeout}
             setEvent={setEvent}
             setIsLoading={setIsLoading}
-            // setEventUser={setEventUser}
           />
         );
       })}

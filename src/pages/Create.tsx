@@ -8,13 +8,13 @@ import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Create = ({
   setRoute,
-  setEvent,
   setIsLoading,
+  setEvent,
   setErrorText,
 }: {
   setRoute: (input: IRoute) => void;
-  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setErrorText: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [inputValue, setInputValue] = useState("");

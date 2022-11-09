@@ -7,12 +7,12 @@ import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Search = ({
   setRoute,
-  setEvent,
   setIsLoading,
+  setEvent,
 }: {
   setRoute: (input: IRoute) => void;
-  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
+  setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [triggerError, setTriggerError] = useState(false);
