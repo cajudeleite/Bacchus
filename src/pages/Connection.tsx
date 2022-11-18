@@ -18,6 +18,7 @@ const Connection = ({
 
   useEffect(() => {
     setUserGotWallet(window.ethereum || window.web3);
+    setIsLoading(false);
   }, [setIsLoading]);
 
   const connectWallet = async () => {
