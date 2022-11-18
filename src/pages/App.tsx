@@ -22,17 +22,23 @@ const App = () => {
   }>();
   const [errorText, setErrorText] = useState("An error has occurred, please try again later");
   const [errorCallback, setErrorCallback] = useState<() => () => void>();
+  const [clientHasCoordinates, setClientHasCoordinates] = useState(false);
+
+  useEffect(() => {
+    if (clientCoordinates && !clientHasCoordinates) {
+      setRoute("map");
+      setClientHasCoordinates(true);
+    }
+  }, [clientCoordinates, clientHasCoordinates]);
 
   useEffect(() => {
     const checkIfUserIsConnected = async () => {
       try {
         await isUserConnected();
 
-        if (!clientCoordinates) {
-          setRoute("location");
-        }
+        if (!clientCoordinates) setRoute("location");
       } catch (error) {
-        setRoute("connection");
+        setRoute("error");
       }
     };
 
@@ -51,14 +57,7 @@ const App = () => {
         {route === "connection" && (
           <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
         )}
-        {route === "location" && (
-          <Location
-            setRoute={setRoute}
-            setIsLoading={setIsLoading}
-            clientCoordinates={clientCoordinates}
-            setClientCoordinates={setClientCoordinates}
-          />
-        )}
+        {route === "location" && <Location setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />}
         {route === "error" && <Error text={errorText} onClick={errorCallback} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}

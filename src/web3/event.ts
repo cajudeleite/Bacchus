@@ -49,7 +49,6 @@ export const getEvents = async () => {
 export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
   try {
     const response = await contract.methods.getEvent(id).call();
-    console.warn(response);
 
     return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) };
   } catch (error: any) {

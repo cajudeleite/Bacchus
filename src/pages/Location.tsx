@@ -6,17 +6,10 @@ import { IRoute } from "../types";
 const Location = ({
   setRoute,
   setIsLoading,
-  clientCoordinates,
   setClientCoordinates,
 }: {
   setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   setIsLoading: React.Dispatch<React.SetStateAction<string | boolean>>;
-  clientCoordinates:
-    | {
-        lat: number;
-        lng: number;
-      }
-    | undefined;
   setClientCoordinates: React.Dispatch<
     React.SetStateAction<
       | {
@@ -39,7 +32,7 @@ const Location = ({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        setRoute("map");
+        console.log("Relocate");
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
@@ -52,7 +45,7 @@ const Location = ({
         }
       }
     );
-  }, [setClientCoordinates, setIsLoading, setRoute, clientCoordinates]);
+  }, [setClientCoordinates, setIsLoading, setRoute]);
 
   const setCustomLocation = async (address: string) => {
     setIsLoading(true);
