@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { addressToCoordinates } from "../api/geocoder";
+import Button from "../components/Button";
 import Input from "../components/Input";
 import { IRoute } from "../types";
 
@@ -32,7 +33,6 @@ const Location = ({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
-        console.log("Relocate");
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
@@ -58,26 +58,23 @@ const Location = ({
       setRoute("map");
     } catch (error: any) {
       setErrorMessage(error.message);
-
       setTriggerError(true);
     }
     setIsLoading(false);
-    setClientAddress("");
   };
+
+  if (!showInput) return <h1 className="text-white opacity-40 text-center">Accept localisation</h1>;
   return (
-    <div className="w-1/2 lg:w-1/3 xl:w-1/4">
-      {showInput ? (
-        <Input
-          inputValue={clientAddress}
-          onChange={(value) => setClientAddress(value)}
-          onSubmit={() => setCustomLocation(clientAddress)}
-          label={triggerError ? errorMessage : "What is your location?"}
-          triggerError={triggerError}
-          setTriggerError={setTriggerError}
-        />
-      ) : (
-        <h1 className="text-white opacity-40 text-center">Accept localisation</h1>
-      )}
+    <div className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4">
+      <Input
+        inputValue={clientAddress}
+        onChange={(value) => setClientAddress(value)}
+        onSubmit={() => setCustomLocation(clientAddress)}
+        label={triggerError ? errorMessage : "What is your location?"}
+        triggerError={triggerError}
+        setTriggerError={setTriggerError}
+      />
+      {!triggerError && clientAddress && <Button text="Set location" onClick={() => setCustomLocation(clientAddress)} size="full" />}
     </div>
   );
 };

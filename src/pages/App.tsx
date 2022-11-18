@@ -36,7 +36,10 @@ const App = () => {
       try {
         await isUserConnected();
 
-        if (!clientCoordinates) setRoute("location");
+        if (!clientCoordinates) {
+          setRoute("location");
+          setIsLoading(false);
+        }
       } catch (error) {
         setRoute("error");
       }
@@ -63,7 +66,10 @@ const App = () => {
       {isLoading && <Loading isLoading={isLoading} />}
       <h1
         className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
-        onClick={() => setRoute(route === "map" ? "search" : "map")}
+        onClick={() => {
+          if (route === "location") return;
+          setRoute(route === "map" ? "search" : "map");
+        }}
       >
         BACCHUS
       </h1>
