@@ -14,7 +14,7 @@ const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState<boolean | string>(true);
+  const [isLoading, setIsLoading] = useState<boolean | string>(false);
   const [event, setEvent] = useState<IEvent | undefined>();
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number;
@@ -22,6 +22,14 @@ const App = () => {
   }>();
   const [errorText, setErrorText] = useState("An error has occurred, please try again later");
   const [errorCallback, setErrorCallback] = useState<() => () => void>();
+  const [clientHasCoordinates, setClientHasCoordinates] = useState(false);
+
+  useEffect(() => {
+    if (clientCoordinates && !clientHasCoordinates) {
+      setRoute("map");
+      setClientHasCoordinates(true);
+    }
+  }, [clientCoordinates, clientHasCoordinates]);
 
   useEffect(() => {
     const checkIfUserIsConnected = async () => {
@@ -30,8 +38,9 @@ const App = () => {
 
         if (!clientCoordinates) {
           setRoute("location");
+          setIsLoading(false);
         }
-      } catch (error) {
+      } catch (error: any) {
         setRoute("connection");
       }
     };
@@ -51,20 +60,16 @@ const App = () => {
         {route === "connection" && (
           <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
         )}
-        {route === "location" && (
-          <Location
-            setRoute={setRoute}
-            setIsLoading={setIsLoading}
-            clientCoordinates={clientCoordinates}
-            setClientCoordinates={setClientCoordinates}
-          />
-        )}
+        {route === "location" && <Location setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />}
         {route === "error" && <Error text={errorText} onClick={errorCallback} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}
       <h1
         className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
-        onClick={() => setRoute(route === "map" ? "search" : "map")}
+        onClick={() => {
+          if (route === "location") return;
+          setRoute(route === "map" ? "search" : "map");
+        }}
       >
         BACCHUS
       </h1>

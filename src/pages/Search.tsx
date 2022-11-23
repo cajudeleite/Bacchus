@@ -92,7 +92,7 @@ const Search = ({
         triggerError={triggerError}
         setTriggerError={setTriggerError}
       />
-      {inputValue && <Button text="Search" onClick={onSubmit} />}
+      {!triggerError && inputValue && <Button text="Search" onClick={onSubmit} />}
       {!inputValue && (
         <Button
           text={userHasEvent ? "See my event" : "Create event"}

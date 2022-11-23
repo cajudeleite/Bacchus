@@ -53,7 +53,7 @@ const Show = ({
   // const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
 
   return (
-    <section className="h-full w-full flex text-white py-20 mx-5">
+    <section className="h-full w-full flex space-x-4 text-white py-20 mx-5">
       <div className="w-1/2 flex flex-col">
         <h1 className="severe-lower-case text-8xl opacity-70 mb-2">{event.name}</h1>
         {/* <div className="flex items-center mb-6">

@@ -18,13 +18,14 @@ const Connection = ({
 
   useEffect(() => {
     setUserGotWallet(window.ethereum || window.web3);
+    setIsLoading(false);
   }, [setIsLoading]);
 
   const connectWallet = async () => {
     setIsLoading("Connecting to wallet");
     try {
       await connectToWallet();
-      setRoute("map");
+      window.location.reload();
     } catch (error: any) {
       setErrorText(error.message);
       setErrorCallback(() => () => connectWallet());

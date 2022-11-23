@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./styles.scss";
 
 const Input = ({
@@ -21,17 +21,22 @@ const Input = ({
   triggerError?: boolean;
   setTriggerError?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const labelRef = useRef<HTMLLabelElement | null>(null);
+
   useEffect(() => {
     const shakeInput = () => {
-      const input = document.getElementById("input");
-      const label = document.getElementById("label");
+      const input = inputRef.current;
+      const label = labelRef.current;
 
-      input?.classList.add("shake-horizontal");
-      label?.classList.add("shake-horizontal");
+      if (!input || !label) return;
+
+      input.classList.add("shake-horizontal");
+      label.classList.add("shake-horizontal");
 
       setTimeout(() => {
-        input?.classList.remove("shake-horizontal");
-        label?.classList.remove("shake-horizontal");
+        input.classList.remove("shake-horizontal");
+        label.classList.remove("shake-horizontal");
         setTriggerError && setTriggerError(false);
       }, 1500);
     };
@@ -55,6 +60,7 @@ const Input = ({
           htmlFor="input"
           id="label"
           className={`text-${labelAlignment} opacity-40 capitalize ${labelAlignment === "start" && "after:content-[':']"}`}
+          ref={(ref) => (labelRef.current = ref)}
         >
           {label}
         </label>
@@ -68,6 +74,7 @@ const Input = ({
         className="h-12 w-full px-2 border-2 border-white opacity-40 bg-transparent text-center text-white text-lg outline-none appearance-none"
         autoComplete="off"
         onChange={(event) => onChange(event.target.value)}
+        ref={(ref) => (inputRef.current = ref)}
       />
     </div>
   );
