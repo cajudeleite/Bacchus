@@ -25,7 +25,7 @@ const Connection = ({
     setIsLoading("Connecting to wallet");
     try {
       await connectToWallet();
-      setRoute("map");
+      window.location.reload();
     } catch (error: any) {
       setErrorText(error.message);
       setErrorCallback(() => () => connectWallet());

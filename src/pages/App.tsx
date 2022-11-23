@@ -14,7 +14,7 @@ const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState<boolean | string>(true);
+  const [isLoading, setIsLoading] = useState<boolean | string>(false);
   const [event, setEvent] = useState<IEvent | undefined>();
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number;
@@ -40,8 +40,8 @@ const App = () => {
           setRoute("location");
           setIsLoading(false);
         }
-      } catch (error) {
-        setRoute("error");
+      } catch (error: any) {
+        setRoute("connection");
       }
     };
 
