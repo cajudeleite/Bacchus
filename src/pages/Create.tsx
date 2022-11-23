@@ -53,7 +53,18 @@ const Create = ({
     getNameLengthValues();
   }, [setRoute, setIsLoading, setErrorText]);
 
-  const goForward = () => {
+  const goForward = async () => {
+    if (eventStep === 2) {
+      setIsLoading(true);
+      try {
+        await addressToCoordinates(inputValue);
+      } catch (error) {
+        setTriggerError(true);
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+    }
     setInputValue(eventInfo[eventStep + 1]);
     setEventStep(eventStep + 1);
     document.querySelector("input")?.focus();
