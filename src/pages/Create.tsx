@@ -144,16 +144,17 @@ const Create = ({
         triggerError={triggerError}
         setTriggerError={setTriggerError}
       />
-      {eventStep || inputValue ? (
-        <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
-          {eventStep && <Button text="<- Back" onClick={goBackwards} variant="secondary" />}
-          {inputValue && (
-            <Button text={eventStep === 3 ? "Create" : "Next ->"} onClick={handleSubmit} variant={eventStep === 3 ? "primary" : "secondary"} />
-          )}
-        </div>
-      ) : (
-        <Button text="Search event" onClick={() => setRoute("search")} variant="secondary" />
-      )}
+      {!triggerError &&
+        (eventStep || inputValue ? (
+          <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
+            {eventStep && <Button text="<- Back" onClick={goBackwards} variant="secondary" />}
+            {inputValue && (
+              <Button text={eventStep === 3 ? "Create" : "Next ->"} onClick={handleSubmit} variant={eventStep === 3 ? "primary" : "secondary"} />
+            )}
+          </div>
+        ) : (
+          <Button text="Search event" onClick={() => setRoute("search")} variant="secondary" />
+        ))}
     </div>
   );
 };
