@@ -9,6 +9,7 @@ import "../index.css";
 import Create from "./Create";
 import Location from "./Location";
 import { isUserConnected } from "../web3/provider";
+import Logo from "../icons/Logo";
 
 const Map = lazy(() => import("./Map"));
 
@@ -64,15 +65,15 @@ const App = () => {
         {route === "error" && <Error text={errorText} onClick={errorCallback} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}
-      <h1
-        className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
+      <div
+        className="w-20 hover:w-[86px] absolute bottom-6 text-white opacity-80 cursor-help hover:opacity-90"
         onClick={() => {
           if (route === "location") return;
           setRoute(route === "map" ? "search" : "map");
         }}
       >
-        BACCHUS
-      </h1>
+        <Logo />
+      </div>
     </section>
   );
 };
