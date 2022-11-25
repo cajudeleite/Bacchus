@@ -80,6 +80,19 @@ export const eventAbi: any = [
     inputs: [
       {
         indexed: false,
+        internalType: "uint8",
+        name: "newMinLength",
+        type: "uint8",
+      },
+    ],
+    name: "NameMinLengthChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: "bytes1[2]",
         name: "newRange",
         type: "bytes1[2]",
@@ -133,6 +146,51 @@ export const eventAbi: any = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "newMaxLength",
+        type: "uint8",
+      },
+    ],
+    name: "UsernameMaxLengthChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "newMinLength",
+        type: "uint8",
+      },
+    ],
+    name: "UsernameMinLengthChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "username",
+        type: "string",
+      },
+    ],
+    name: "UsernameSet",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "bytes1[2][]",
@@ -161,12 +219,51 @@ export const eventAbi: any = [
   {
     inputs: [
       {
+        internalType: "uint8",
+        name: "_newMinLength",
+        type: "uint8",
+      },
+    ],
+    name: "changeNameMinLength",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes1[2]",
         name: "_newRange",
         type: "bytes1[2]",
       },
     ],
     name: "changeNameValidRange",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "_newMaxLength",
+        type: "uint8",
+      },
+    ],
+    name: "changeUsernameMaxLength",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "_newMinLength",
+        type: "uint8",
+      },
+    ],
+    name: "changeUsernameMinLength",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -378,6 +475,19 @@ export const eventAbi: any = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "_newUsername",
+        type: "string",
+      },
+    ],
+    name: "setUsername",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "newOwner",
         type: "address",
@@ -430,6 +540,32 @@ export const eventAbi: any = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "usernameMaxLength",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "usernameMinLength",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
       },
     ],
     stateMutability: "view",
