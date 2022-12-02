@@ -51,6 +51,7 @@ const Onboarding = ({
     setIsLoading("Setting your username");
     try {
       await setUsername(inputValue);
+      setRoute("map");
     } catch (error: any) {
       setErrorText(error.message);
       setRoute("error");

@@ -270,19 +270,6 @@ export const eventAbi: any = [
   },
   {
     inputs: [],
-    name: "checkIfUserHasAnEvent",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "closeEvent",
     outputs: [],
     stateMutability: "nonpayable",
@@ -386,6 +373,19 @@ export const eventAbi: any = [
         internalType: "string[]",
         name: "",
         type: "string[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getUserEvent",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -528,25 +528,6 @@ export const eventAbi: any = [
     name: "updateEvent",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "userAddressToUsername",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {

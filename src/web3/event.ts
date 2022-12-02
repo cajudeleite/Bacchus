@@ -62,7 +62,7 @@ export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
 export const userEvent = async () => {
   try {
     const account = await userAccount();
-    const response: number = await contract.methods.userToEventId(account).call({ from: account });
+    const response: number = await contract.methods.getUserEvent().call({ from: account });
 
     return response;
   } catch (error) {
