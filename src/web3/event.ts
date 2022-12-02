@@ -7,7 +7,8 @@ const contract = new provider.eth.Contract(eventAbi, dAppAddress);
 
 export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
   try {
-    const response = await contract.methods.searchEvent(name).call();
+    const account = await userAccount();
+    const response = await contract.methods.searchEvent(name).call({ from: account });
     return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) } as IEvent;
   } catch (error: any) {
     throw formatErrorFromContract(error);
@@ -32,7 +33,8 @@ type getEventsResponse = {
 
 export const getEvents = async () => {
   try {
-    const response: getEventsResponse = await contract.methods.getEvents().call();
+    const account = await userAccount();
+    const response: getEventsResponse = await contract.methods.getEvents().call({ from: account });
 
     const events: IPartialEvent[] = [];
 
@@ -48,7 +50,8 @@ export const getEvents = async () => {
 
 export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
   try {
-    const response = await contract.methods.getEvent(id).call();
+    const account = await userAccount();
+    const response = await contract.methods.getEvent(id).call({ from: account });
 
     return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) };
   } catch (error: any) {
@@ -59,7 +62,7 @@ export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
 export const userEvent = async () => {
   try {
     const account = await userAccount();
-    const response: number = await contract.methods.userToEventId(account).call();
+    const response: number = await contract.methods.userToEventId(account).call({ from: account });
 
     return response;
   } catch (error) {
