@@ -53,13 +53,13 @@ export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
     const account = await userAccount();
     const response = await contract.methods.getEvent(id).call({ from: account });
 
-    return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) };
+    return { name: response[0], description: response[1], location: response[2], username: response[3], date: parseInt(response[""]) };
   } catch (error: any) {
     throw error;
   }
 };
 
-export const userEvent = async () => {
+export const getUserEvent = async () => {
   try {
     const account = await userAccount();
     const response: number = await contract.methods.getUserEvent().call({ from: account });

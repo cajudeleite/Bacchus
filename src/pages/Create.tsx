@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, userEvent } from "../web3/event";
+import { createEvent, getEvent, getUserEvent } from "../web3/event";
 import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -29,7 +29,7 @@ const Create = ({
     const userHasEvent = async () => {
       setIsLoading(true);
       try {
-        const response = await userEvent();
+        const response = await getUserEvent();
         if (response > 0) throw new Error("User already has an event");
       } catch (error: any) {
         setErrorText(error.message);
@@ -121,7 +121,11 @@ const Create = ({
 
       await createEvent(eventInfo[0], eventInfo[1], coords, date);
 
-      setEvent({ name: eventInfo[0], description: eventInfo[1], location: coords, date });
+      const eventId = await getUserEvent();
+
+      const event = await getEvent(eventId);
+
+      setEvent(event);
       setRoute("show");
     } catch (error: any) {
       setErrorText(error);

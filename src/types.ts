@@ -10,6 +10,7 @@ export type IEvent = {
   name: string;
   description: string;
   location: string;
+  username: string;
   date: number;
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getEvent, searchEvent, userEvent } from "../web3/event";
+import { getEvent, searchEvent, getUserEvent } from "../web3/event";
 import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -24,7 +24,7 @@ const Search = ({
     const userHasEvent = async () => {
       setIsLoading(true);
       try {
-        const response = await userEvent();
+        const response = await getUserEvent();
         setUserHasEvent(response > 0);
         if (response > 0) {
           const event = await getEvent(response);

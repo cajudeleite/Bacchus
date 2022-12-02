@@ -88,7 +88,7 @@ const App = () => {
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}
       <div
-        className="w-20 hover:w-[86px] absolute bottom-6 text-white opacity-80 cursor-help hover:opacity-90"
+        className="w-20 hover:w-[86px] absolute bottom-4 text-white opacity-80 cursor-help hover:opacity-90"
         onClick={() => {
           if (route === "location" || route === "connection") return;
           setRoute(route === "map" ? "search" : "map");
