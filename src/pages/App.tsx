@@ -10,6 +10,8 @@ import Create from "./Create";
 import Location from "./Location";
 import { isUserConnected } from "../web3/provider";
 import Logo from "../icons/Logo";
+import { userFirstConnection } from "../web3/bacchus";
+import Onboarding from "./Onboarding";
 
 const Map = lazy(() => import("./Map"));
 
@@ -36,22 +38,42 @@ const App = () => {
     const checkIfUserIsConnected = async () => {
       try {
         await isUserConnected();
-
-        if (!clientCoordinates) {
-          setRoute("location");
-          setIsLoading(false);
-        }
       } catch (error: any) {
         setRoute("connection");
       }
     };
 
-    checkIfUserIsConnected();
+    const checkFirstConnection = async () => {
+      try {
+        const firstConnection = await userFirstConnection();
+
+        if (firstConnection) setRoute("onboarding");
+        return firstConnection;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const checkCoordinates = () => {
+      if (!clientCoordinates) {
+        setRoute("location");
+        setIsLoading(false);
+      }
+    };
+
+    const runChecks = async () => {
+      await checkIfUserIsConnected();
+      const firstConnection = await checkFirstConnection();
+      if (!firstConnection) checkCoordinates();
+    };
+
+    runChecks();
   }, [clientCoordinates]);
 
   return (
     <section className="w-screen h-screen flex justify-center items-center bg-background">
       <Suspense fallback={<Loading />}>
+        {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
         {route === "map" && clientCoordinates && (
           <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} />
         )}
@@ -68,7 +90,7 @@ const App = () => {
       <div
         className="w-20 hover:w-[86px] absolute bottom-6 text-white opacity-80 cursor-help hover:opacity-90"
         onClick={() => {
-          if (route === "location") return;
+          if (route === "location" || route === "connection") return;
           setRoute(route === "map" ? "search" : "map");
         }}
       >

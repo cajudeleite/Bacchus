@@ -270,6 +270,19 @@ export const eventAbi: any = [
   },
   {
     inputs: [],
+    name: "checkIfUserHasAnEvent",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "closeEvent",
     outputs: [],
     stateMutability: "nonpayable",
@@ -320,31 +333,17 @@ export const eventAbi: any = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "eventIdToUser",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
         name: "_eventId",
         type: "uint256",
       },
     ],
     name: "getEvent",
     outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
       {
         internalType: "string",
         name: "",
@@ -464,6 +463,11 @@ export const eventAbi: any = [
         type: "string",
       },
       {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+      {
         internalType: "uint256",
         name: "",
         type: "uint256",
@@ -534,12 +538,25 @@ export const eventAbi: any = [
         type: "address",
       },
     ],
-    name: "userToEventId",
+    name: "userAddressToUsername",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "string",
         name: "",
-        type: "uint256",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "userFirstConnection",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",

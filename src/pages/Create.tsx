@@ -133,7 +133,7 @@ const Create = ({
   };
 
   return (
-    <div className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 font-mono">
+    <section className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 font-mono">
       <Input
         inputValue={inputValue}
         onChange={onChange}
@@ -155,7 +155,7 @@ const Create = ({
         ) : (
           <Button text="Search event" onClick={() => setRoute("search")} variant="secondary" />
         ))}
-    </div>
+    </section>
   );
 };
 
