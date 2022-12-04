@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getEventsNearby } from "../api/event";
-import { IEvent, IRoute, IUser } from "../types";
+import { getEvents } from "../web3/event";
+import { IEvent, IPartialEvent, IRoute } from "../types";
 import Map from "react-map-gl";
 
 import mapboxgl from "mapbox-gl";
@@ -11,25 +11,19 @@ import Dot from "../components/Dot";
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 const MainMap = ({
-  clientCoordinates,
-  setRoute,
   setIsLoading,
+  setRoute,
   setEvent,
-  setEventUser,
-  activateLoading,
+  clientCoordinates,
 }: {
-  clientCoordinates: { lat: number | undefined; lng: number | undefined };
   setRoute: (input: IRoute) => void;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
+  clientCoordinates: { lat: number; lng: number };
 }) => {
-  const [events, setEvents] = useState<IEvent[]>([]);
-  const [userReputation, setUserReputation] = useState<number>(0);
-  const enableTimeout: boolean = true;
-
+  const [events, setEvents] = useState<IPartialEvent[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const enableTimeout: boolean = true;
 
   useEffect(() => {
     if (clientCoordinates.lat && clientCoordinates.lng) {
@@ -43,24 +37,26 @@ const MainMap = ({
   useEffect(() => {
     let mounted = true;
 
-    const getEventsInApi = async () => {
+    const getEventsInDApp = async () => {
+      setIsLoading(true);
       try {
-        const response: any = await getEventsNearby(clientCoordinates);
-        if (response.data.events.length > 0) setEvents(response.data.events);
-        setUserReputation(response.data.reputation);
+        const response = await getEvents();
+
+        if (response.length > 0) setEvents(response);
       } catch (error) {
         setRoute("error");
       }
+      setIsLoading(false);
     };
 
     if (clientCoordinates.lat && clientCoordinates.lng && events.length === 0 && mounted) {
-      getEventsInApi();
+      getEventsInDApp();
     }
 
     return () => {
       mounted = false;
     };
-  }, [clientCoordinates, events, setRoute]);
+  }, [clientCoordinates, events, setRoute, setIsLoading]);
 
   if (!loaded) return null;
 
@@ -70,7 +66,7 @@ const MainMap = ({
       initialViewState={{
         longitude: clientCoordinates.lng,
         latitude: clientCoordinates.lat,
-        zoom: 11,
+        zoom: 12,
       }}
       interactive={true}
       style={{ width: "100%", height: "100%", position: "absolute" }}
@@ -78,7 +74,8 @@ const MainMap = ({
     >
       <MainDot clientCoordinates={clientCoordinates} setIsLoading={setIsLoading} callback={() => setRoute("search")} />
       {events.map((event) => {
-        const timeBeforeShow = 10000 / (!userReputation ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
+        // const timeBeforeShow = 10000 / (!userReputation ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
+        const timeBeforeShow = 0;
         return (
           <Dot
             key={event.id}
@@ -87,8 +84,7 @@ const MainMap = ({
             timeBeforeShow={timeBeforeShow}
             enableTimeout={enableTimeout}
             setEvent={setEvent}
-            setEventUser={setEventUser}
-            activateLoading={activateLoading}
+            setIsLoading={setIsLoading}
           />
         );
       })}

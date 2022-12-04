@@ -1,21 +1,35 @@
-import React from "react";
-import { IEvent, IRoute, IUser } from "../types";
+import React, { useEffect, useState } from "react";
+import { IEvent, IRoute } from "../types";
 import Map, { Marker } from "react-map-gl";
+import { coordinatesToAddress } from "../api/geocoder";
 
 const Show = ({
+  setRoute,
   event,
   clientCoordinates,
-  eventUser,
-  setRoute,
 }: {
+  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   event: IEvent;
   clientCoordinates: {
     lat: number | undefined;
     lng: number | undefined;
   };
-  eventUser: IUser;
-  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
 }) => {
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    const coordsToAddress = async () => {
+      try {
+        const response: string = await coordinatesToAddress(event.location);
+        setAddress(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    coordsToAddress();
+  }, [event]);
+
   const eventCoordinates = {
     lat: parseFloat(event.location.split(",")[0]),
     lng: parseFloat(event.location.split(",")[1]),
@@ -36,30 +50,28 @@ const Show = ({
     lng: clientCoordinates.lng - (clientCoordinates.lng - eventCoordinates.lng) / 2,
   };
 
-  const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
+  // const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
 
   return (
-    <section className="h-full w-full flex text-white py-20 mx-5">
+    <section className="h-full w-full flex space-x-4 text-white py-20 mx-5">
       <div className="w-1/2 flex flex-col">
         <h1 className="severe-lower-case text-8xl opacity-70 mb-2">{event.name}</h1>
         <div className="flex items-center mb-6">
           <p
             className="opacity-60"
             style={{
-              fontFamily: eventUser.verified ? "SevereLowerCase" : "",
-              fontSize: eventUser.verified ? 35 : 18,
-              color: eventUser.verified ? "#0F530D" : "",
+              fontSize: 18,
             }}
           >
-            {eventUser.username}
+            {event.username}
           </p>
-          {!eventUser.verified && (
+          {/* {!eventUser.verified && (
             <div className="h-[0.3rem] w-20 bg-white opacity-20 ml-4">
               <div className="h-full bg-white opacity-40" style={{ width: `${eventUserReputation}rem` }} />
             </div>
-          )}
+          )} */}
         </div>
-        <p className="opacity-40 mb-5">{event.address}</p>
+        <p className="opacity-40 mb-5">{address}</p>
         <h2 className="opacity-50 text-justify">{event.description}</h2>
       </div>
       <div className="h-full w-1/2 border border-white border-opacity-50">
@@ -73,8 +85,8 @@ const Show = ({
           style={{ width: "100%", height: "100%" }}
           mapStyle="mapbox://styles/cajudeleite/cl5fnkcqk00e616p3fk1nk88n"
         >
-          <Marker key="medusa" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={() => setRoute("map")}>
-            <p className="severe-lower-case text-5xl opacity-70 hover:opacity-90 hover:text-6xl cursor-help">M</p>
+          <Marker key="bacchus" longitude={clientCoordinates.lng} latitude={clientCoordinates.lat} anchor="center" onClick={() => setRoute("map")}>
+            <p className="severe-lower-case text-5xl opacity-70 hover:opacity-90 hover:text-6xl cursor-help">B</p>
           </Marker>
           <Marker longitude={eventCoordinates.lng} latitude={eventCoordinates.lat} />
         </Map>

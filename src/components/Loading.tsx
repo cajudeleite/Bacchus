@@ -2,28 +2,8 @@ import React, { useEffect, useState } from "react";
 import { randomNumber } from "../utils";
 import "./styles.scss";
 
-const Loading = ({
-  callbackSuccess,
-  setIsLoading,
-}: {
-  callbackSuccess?: boolean | undefined;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const Loading = ({ isLoading }: { isLoading?: boolean | string }) => {
   const [rotateDirection, setRotateDirection] = useState<string>("right");
-
-  useEffect(() => {
-    if (callbackSuccess === undefined) return;
-    if (callbackSuccess) {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    } else {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    }
-    setRotateDirection("out");
-  }, [callbackSuccess, setIsLoading]);
 
   useEffect(() => {
     if (rotateDirection === "out") return;
@@ -41,13 +21,9 @@ const Loading = ({
   }, [rotateDirection]);
 
   return (
-    <div className="h-full w-full absolute flex justify-center items-center bg-background">
-      <h1
-        style={{ color: callbackSuccess === false ? "rgba(255, 0, 0, 0.8)" : "rgba(255, 255, 255, 0.8)" }}
-        className={`severe-lower-case text-8xl rotate-${rotateDirection}`}
-      >
-        M
-      </h1>
+    <div className="h-screen w-screen absolute flex flex-col space-y-4 justify-center items-center text-white bg-background z-20">
+      <h1 className={`severe-lower-case text-8xl opacity-80 rotate-${rotateDirection}`}>B</h1>
+      {isLoading?.toString() !== "true" && <h2 className="opacity-40">{isLoading}</h2>}
     </div>
   );
 };

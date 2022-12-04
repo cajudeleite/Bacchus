@@ -1,142 +1,101 @@
-import React, { useEffect, useState } from "react";
-import { convertAddressToCoordinates } from "../api/address";
-import { IEvent, IRoute, IUser } from "../types";
+import React, { lazy, Suspense, useEffect, useState } from "react";
+import { IEvent, IRoute } from "../types";
 import Error from "./Error";
-import Input from "../components/Input";
 import Loading from "../components/Loading";
-import LogIn from "./Login";
-import Register from "./Register";
+import Connection from "./Connection";
 import Show from "./Show";
-import Map from "./MedusaMap";
 import Search from "./Search";
 import "../index.css";
+import Create from "./Create";
+import Location from "./Location";
+import { isUserConnected } from "../web3/provider";
+import Logo from "../icons/Logo";
+import { userFirstConnection } from "../web3/bacchus";
+import Onboarding from "./Onboarding";
+
+const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState(true);
-  const [callbackSuccess, setCallbackSuccess] = useState<boolean | undefined>();
-  const [clientAddress, setClientAddress] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean | string>(false);
   const [event, setEvent] = useState<IEvent | undefined>();
-  const [eventUser, setEventUser] = useState<IUser | undefined>();
   const [clientCoordinates, setClientCoordinates] = useState<{
-    lat: number | undefined;
-    lng: number | undefined;
-  }>({ lat: undefined, lng: undefined });
-  const [triggerError, setTriggerError] = useState<boolean>(false);
+    lat: number;
+    lng: number;
+  }>();
+  const [errorText, setErrorText] = useState("An error has occurred, please try again later");
+  const [errorCallback, setErrorCallback] = useState<() => () => void>();
+  const [clientHasCoordinates, setClientHasCoordinates] = useState(false);
 
   useEffect(() => {
-    navigator.geolocation.watchPosition(
-      (position) => {
-        setClientCoordinates({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setIsLoading(false);
-      },
-      (error) => {
-        if (error.code === error.PERMISSION_DENIED) {
-          if (localStorage.getItem("clientCoordinates")) {
-            setClientCoordinates(JSON.parse(localStorage.getItem("clientCoordinates") as string));
-            setRoute("map");
-          } else {
-            setRoute("location");
-          }
-          setIsLoading(false);
-        }
-      }
-    );
-  }, []);
-
-  const triggerShake = (delay = 0) => {
-    setTimeout(() => {
-      setTriggerError(true);
-      setTriggerError(false);
-    }, delay);
-  };
-
-  const activateLoading = async (callback: Promise<any>) => {
-    setIsLoading(true);
-    try {
-      const response = await callback;
-
-      if (response.status >= 400) throw response;
-      setCallbackSuccess(true);
-      return response;
-    } catch (e: any) {
-      setCallbackSuccess(false);
-      return { message: e.data.message, status: e.status };
-    }
-  };
-
-  const setCustomLocation = async (address: string) => {
-    try {
-      const response: any = await activateLoading(convertAddressToCoordinates(address));
-      const coords = response.data.coordinates.split(",");
-      const transformedCoords = {
-        lat: parseFloat(coords[0]),
-        lng: parseFloat(coords[1]),
-      };
-      localStorage.setItem("clientCoordinates", JSON.stringify(transformedCoords));
-      setClientCoordinates({ lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) });
+    if (clientCoordinates && !clientHasCoordinates) {
       setRoute("map");
-    } catch (error) {
-      triggerShake(1000);
+      setClientHasCoordinates(true);
     }
-    setClientAddress("");
-  };
+  }, [clientCoordinates, clientHasCoordinates]);
 
-  const handleMedusa = () => {
-    switch (route) {
-      case "map":
-        setRoute("search");
-        break;
+  useEffect(() => {
+    const checkIfUserIsConnected = async () => {
+      try {
+        await isUserConnected();
+      } catch (error: any) {
+        setRoute("connection");
+      }
+    };
 
-      default:
-        setRoute("map");
-        break;
-    }
-  };
+    const checkFirstConnection = async () => {
+      try {
+        const firstConnection = await userFirstConnection();
+
+        if (firstConnection) setRoute("onboarding");
+        return firstConnection;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const checkCoordinates = () => {
+      if (!clientCoordinates) {
+        setRoute("location");
+        setIsLoading(false);
+      }
+    };
+
+    const runChecks = async () => {
+      await checkIfUserIsConnected();
+      const firstConnection = await checkFirstConnection();
+      if (!firstConnection) checkCoordinates();
+    };
+
+    runChecks();
+  }, [clientCoordinates]);
 
   return (
     <section className="w-screen h-screen flex justify-center items-center bg-background">
-      {route === "map" && (
-        <Map
-          setRoute={setRoute}
-          setIsLoading={setIsLoading}
-          setEvent={setEvent}
-          setEventUser={setEventUser}
-          activateLoading={activateLoading}
-          clientCoordinates={clientCoordinates}
-        />
-      )}
-      {route === "search" && <Search setRoute={setRoute} activateLoading={activateLoading} setEvent={setEvent} setEventUser={setEventUser} />}
-      {route === "show" && event && eventUser && clientCoordinates && (
-        <Show event={event} clientCoordinates={clientCoordinates} eventUser={eventUser} setRoute={setRoute} />
-      )}
-      {route === "login" && <LogIn setRoute={setRoute} activateLoading={activateLoading} />}
-      {route === "register" && <Register setRoute={setRoute} activateLoading={activateLoading} />}
-      {route === "location" && (
-        <div className="w-1/2 lg:w-1/3 xl:w-1/4">
-          <Input
-            inputValue={clientAddress}
-            setInputValue={setClientAddress}
-            handleSubmit={() => setCustomLocation(clientAddress)}
-            label="What is your location?"
-            triggerError={triggerError}
-          />
-        </div>
-      )}
-      {route === "error" && <Error />}
-      {isLoading ? (
-        <Loading callbackSuccess={callbackSuccess} setIsLoading={setIsLoading} />
-      ) : (
-        <h1
-          className="absolute bottom-4 severe-lower-case text-[2.5rem] text-white cursor-help opacity-80 hover:text-[2.75rem] hover:opacity-90"
-          onClick={handleMedusa}
-        >
-          MEDUSA
-        </h1>
-      )}
+      <Suspense fallback={<Loading />}>
+        {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
+        {route === "map" && clientCoordinates && (
+          <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} />
+        )}
+        {route === "search" && <Search setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} />}
+        {route === "create" && <Create setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
+        {route === "show" && event && clientCoordinates && <Show setRoute={setRoute} event={event} clientCoordinates={clientCoordinates} />}
+        {route === "connection" && (
+          <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
+        )}
+        {route === "location" && <Location setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />}
+        {route === "error" && <Error text={errorText} onClick={errorCallback} />}
+      </Suspense>
+      {isLoading && <Loading isLoading={isLoading} />}
+      <div
+        className="w-20 hover:w-[86px] absolute bottom-4 text-white opacity-80 cursor-help hover:opacity-90"
+        onClick={() => {
+          if (route === "location" || route === "connection") return;
+          setRoute(route === "map" ? "search" : "map");
+        }}
+      >
+        <Logo />
+      </div>
     </section>
   );
 };

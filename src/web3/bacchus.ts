@@ -1,0 +1,47 @@
+import { formatErrorFromContract } from "../utils";
+import { eventAbi } from "./abi/eventAbi";
+import { dAppAddress, provider, userAccount } from "./provider";
+
+const contract = new provider.eth.Contract(eventAbi, dAppAddress);
+
+export const getMinAndMaxNameLength: () => Promise<[number, number]> = async () => {
+  try {
+    const account = await userAccount();
+    const min: number = await contract.methods.nameMinLength().call({ from: account });
+    const max: number = await contract.methods.nameMaxLength().call({ from: account });
+    return [min, max];
+  } catch (error) {
+    throw formatErrorFromContract(error);
+  }
+};
+
+export const getMinAndMaxUsernameLength: () => Promise<[number, number]> = async () => {
+  try {
+    const account = await userAccount();
+    const min: number = await contract.methods.usernameMinLength().call({ from: account });
+    const max: number = await contract.methods.usernameMaxLength().call({ from: account });
+    return [min, max];
+  } catch (error) {
+    throw formatErrorFromContract(error);
+  }
+};
+
+export const userFirstConnection = async () => {
+  try {
+    const account = await userAccount();
+    const response: boolean = await contract.methods.userFirstConnection().call({ from: account });
+    return response;
+  } catch (error) {
+    throw formatErrorFromContract(error);
+  }
+};
+
+export const setUsername = async (username: string) => {
+  try {
+    const account = await userAccount();
+    await contract.methods.setUsername(username).send({ from: account });
+    await contract.events.UsernameSet({ filter: { user: account } });
+  } catch (error) {
+    throw formatErrorFromContract(error);
+  }
+};

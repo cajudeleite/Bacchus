@@ -1,155 +1,104 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, searchEvent, checkInvite } from "../api/event";
-import { IEvent, IRoute, IUser } from "../types";
+import { getEvent, searchEvent, getUserEvent } from "../web3/event";
+import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { getMinAndMaxNameLength } from "../web3/bacchus";
 
 const Search = ({
   setRoute,
-  activateLoading,
+  setIsLoading,
   setEvent,
-  setEventUser,
 }: {
   setRoute: (input: IRoute) => void;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
-  const [inputValue, setInputValue] = useState<string>("");
-  const [eventTrigger, setEventTrigger] = useState<boolean>(false);
-  const [showButton, setShowButton] = useState<boolean>(false);
-  const eventSteps = ["Description", "Status", "Address", "Date", "Invite Quantity"];
-  const [eventStep, setEventStep] = useState<number>(0);
-  const [eventInfo, setEventInfo] = useState<any[]>([]);
-  const [checkToken, setCheckToken] = useState<boolean>(false);
-  const [eventIdToBeChecked, setEventIdToBeChecked] = useState<string>("");
-  const [triggerError, setTriggerError] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState("");
+  const [triggerError, setTriggerError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("An error occured");
+  const [userHasEvent, setUserHasEvent] = useState(false);
+  const [minAndMaxNameLength, setMinAndMaxNameLength] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
-    if (showButton && inputValue !== eventInfo[0]) {
-      setEventInfo([]);
-      setShowButton(false);
-    }
-  }, [inputValue, eventInfo, showButton]);
+    const userHasEvent = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getUserEvent();
+        setUserHasEvent(response > 0);
+        if (response > 0) {
+          const event = await getEvent(response);
 
-  const triggerShake = (delay = 0) => {
-    setTimeout(() => {
+          setEvent(event);
+        }
+      } catch (error) {
+        setRoute("error");
+      }
+      setIsLoading(false);
+    };
+
+    const getNameLengthValues = async () => {
+      try {
+        const response = await getMinAndMaxNameLength();
+        setMinAndMaxNameLength(response);
+      } catch (error) {
+        console.error(error);
+
+        setRoute("error");
+      }
+    };
+
+    userHasEvent();
+    getNameLengthValues();
+  }, [setRoute, setIsLoading, setEvent]);
+
+  const onChange = (value: string) => {
+    const newValue = value[value.length - 1] === " " ? inputValue + "-" : value;
+
+    if (!newValue.match(/^[a-z0-9-]*$/)) {
+      setErrorMessage("Invalid Character");
       setTriggerError(true);
-      setTriggerError(false);
-    }, delay);
-  };
-
-  const handleSubmit: () => void = async () => {
-    if (eventTrigger) {
-      handleCreateEventTrigger();
-    } else if (showButton) {
-      setEventTrigger(true);
-      setShowButton(false);
-      setInputValue("");
+    } else if (newValue.length > minAndMaxNameLength[1]) {
+      setErrorMessage("Too Long");
+      setTriggerError(true);
     } else {
-      checkToken ? handleCheckToken() : handleSearchEvent();
+      setInputValue(newValue);
     }
   };
 
-  const handleSearchEvent = async () => {
+  const onSubmit = async () => {
+    setIsLoading(true);
     try {
-      const response: any = await activateLoading(searchEvent(inputValue));
-      if (response.status >= 400) throw response;
+      if (inputValue.length < minAndMaxNameLength[0]) throw new Error("Too short");
 
-      setEvent(response.data.event);
-      setEventUser(response.data.user);
+      const response = await searchEvent(inputValue);
+
+      setEvent(response);
       setRoute("show");
     } catch (error: any) {
-      switch (error.status) {
-        case 401:
-          setInputValue("");
-          setRoute("login");
-          break;
-
-        case 403:
-          setInputValue("");
-          setCheckToken(true);
-          setEventIdToBeChecked(error.message.split(" ")[1]);
-          break;
-
-        case 404:
-          setEventInfo([inputValue]);
-          triggerShake(1000);
-
-          setShowButton(true);
-          break;
-
-        default:
-          break;
-      }
+      setErrorMessage(error.message);
+      setTriggerError(true);
     }
-  };
-
-  const handleCheckToken: () => void = async () => {
-    try {
-      const response = await activateLoading(checkInvite(eventIdToBeChecked, inputValue));
-      if (response.status >= 400) throw new Error("Wrong token");
-
-      setEvent(response.data.event);
-      setEventUser(response.data.user);
-      setRoute("show");
-    } catch (error) {
-      triggerShake(1000);
-    }
-  };
-
-  const handleCreateEventTrigger: () => void = async () => {
-    if ((eventStep === 4 && eventInfo[1] !== "locked") || eventStep === 5) {
-      setInputValue("");
-      try {
-        const response = await activateLoading(createEvent([...eventInfo, inputValue]));
-        if (response.status >= 400) throw response;
-
-        setEventTrigger(false);
-        setEvent(response.data.event);
-        setEventStep(0);
-        setRoute("show");
-      } catch (e) {
-        triggerShake();
-      }
-      return;
-    }
-
-    setEventInfo([...eventInfo, inputValue]);
-    setEventStep(eventStep + 1);
-    if (eventStep === 0) setInputValue("open");
-    else setInputValue("");
+    setIsLoading(false);
   };
 
   return (
     <div className="w-1/2 lg:w-1/3 xl:w-1/4 flex flex-col space-y-4 font-mono">
       <Input
         inputValue={inputValue}
-        setInputValue={setInputValue}
-        label={eventTrigger ? eventSteps[eventStep] : checkToken ? "Event invite token" : "Search event"}
-        type={eventStep === 1 ? "select" : eventStep === 3 ? "date" : eventStep === 4 ? "number" : "text"}
-        handleSubmit={handleSubmit}
-        options={["open", "closed", "locked"]}
-        buttonText={showButton ? "Create event" : inputValue.length > 0 && !eventTrigger ? "Search event" : undefined}
-        regex={eventTrigger ? undefined : /^\S*$/}
+        onChange={onChange}
+        onSubmit={onSubmit}
+        label={triggerError ? errorMessage : "Search Event"}
         triggerError={triggerError}
+        setTriggerError={setTriggerError}
       />
-      {eventTrigger && (
-        <div className={`w-full flex flex-wrap-reverse ${eventStep > 0 ? "justify-between" : "justify-end"}`}>
-          {eventStep > 0 && (
-            <Button
-              text="<- Back"
-              callback={() => {
-                setEventStep(eventStep - 1);
-                document.querySelector("input")?.focus();
-              }}
-              variant="secondary"
-            />
-          )}
-          {inputValue.length > 0 && (
-            <Button text={eventStep === 4 ? "Create" : "Next ->"} callback={handleSubmit} variant={eventStep === 4 ? "primary" : "secondary"} />
-          )}
-        </div>
+      {!triggerError && inputValue && <Button text="Search" onClick={onSubmit} />}
+      {!inputValue && (
+        <Button
+          text={userHasEvent ? "See my event" : "Create event"}
+          onClick={() => setRoute(userHasEvent ? "show" : "create")}
+          variant="secondary"
+        />
       )}
     </div>
   );

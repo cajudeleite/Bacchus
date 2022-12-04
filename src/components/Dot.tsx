@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Marker } from "react-map-gl";
-import { getEvent } from "../api/event";
-import { IEvent, IRoute, IUser } from "../types";
+import { getEvent } from "../web3/event";
+import { IEvent, IPartialEvent, IRoute, IUser } from "../types";
 import "./styles.scss";
 
 const Dot = ({
@@ -10,32 +10,34 @@ const Dot = ({
   timeBeforeShow,
   enableTimeout,
   setEvent,
-  setEventUser,
-  activateLoading,
-}: {
-  event: IEvent;
+  setIsLoading,
+}: // setEventUser,
+{
+  event: IPartialEvent;
   setRoute: (input: IRoute) => void;
   timeBeforeShow: number;
   enableTimeout: boolean;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
-  setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
-  activateLoading: (callback: Promise<any>) => Promise<any>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
+  // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }) => {
-  const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));
+  // const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));
+  const dotSize = 8;
   const eventCoordinates = event.location.split(",");
   const [showName, setShowName] = useState<boolean>(false);
   const [showDot, setShowDot] = useState<boolean>(!enableTimeout);
 
   const handdleClick = async () => {
+    setIsLoading(true);
     try {
-      const response: any = await activateLoading(getEvent(event.id));
-      if (response.status >= 400) throw response;
-      setEvent(event);
-      setEventUser(response.data.user);
+      const response = await getEvent(event.id);
+      setEvent(response);
+      // setEventUser(response.data.user);
       setRoute("show");
     } catch (error: any) {
-      if (error.status === 401) setRoute("login");
+      console.error(error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
