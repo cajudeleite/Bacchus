@@ -38,8 +38,10 @@ const App = () => {
     const checkIfUserIsConnected = async () => {
       try {
         await isUserConnected();
+        return true;
       } catch (error: any) {
         setRoute("connection");
+        return false;
       }
     };
 
@@ -62,7 +64,8 @@ const App = () => {
     };
 
     const runChecks = async () => {
-      await checkIfUserIsConnected();
+      const isConnected = await checkIfUserIsConnected();
+      if (!isConnected) return;
       const firstConnection = await checkFirstConnection();
       if (!firstConnection) checkCoordinates();
     };
