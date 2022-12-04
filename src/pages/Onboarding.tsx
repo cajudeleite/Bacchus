@@ -15,6 +15,7 @@ const Onboarding = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [triggerError, setTriggerError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("An error occured");
   const [minAndMaxÙsernameLength, setMinAndMaxUsernameLength] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
@@ -35,15 +36,20 @@ const Onboarding = ({
   const onChange = (value: string) => {
     const newValue = value[value.length - 1] === " " ? inputValue + "-" : value;
 
-    if (newValue.match(/^[a-z0-9-]*$/) && newValue.length <= minAndMaxÙsernameLength[1]) {
-      setInputValue(newValue);
-    } else {
+    if (!newValue.match(/^[a-z0-9-]*$/)) {
+      setErrorMessage("Invalid Character");
       setTriggerError(true);
+    } else if (newValue.length > minAndMaxÙsernameLength[1]) {
+      setErrorMessage("Too Long");
+      setTriggerError(true);
+    } else {
+      setInputValue(newValue);
     }
   };
 
   const onSubmit = async () => {
     if (inputValue.length < minAndMaxÙsernameLength[0]) {
+      setErrorMessage("Too Short");
       setTriggerError(true);
       return;
     }
@@ -51,10 +57,10 @@ const Onboarding = ({
     setIsLoading("Setting your username");
     try {
       await setUsername(inputValue);
-      setRoute("map");
+      setRoute("location");
     } catch (error: any) {
-      setErrorText(error.message);
-      setRoute("error");
+      setErrorMessage(error.message);
+      setTriggerError(true);
     }
     setIsLoading(false);
   };
@@ -65,7 +71,7 @@ const Onboarding = ({
         inputValue={inputValue}
         onChange={onChange}
         onSubmit={onSubmit}
-        label="Username"
+        label={triggerError ? errorMessage : "Username"}
         triggerError={triggerError}
         setTriggerError={setTriggerError}
       />
