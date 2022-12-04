@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Marker } from "react-map-gl";
 import { getEvent } from "../web3/event";
-import { IEvent, IPartialEvent, IRoute, IUser } from "../types";
+import { IEvent, IPartialEvent, IRoute } from "../types";
 import "./styles.scss";
 
 const Dot = ({

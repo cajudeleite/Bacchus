@@ -72,7 +72,7 @@ const MainMap = ({
       style={{ width: "100%", height: "100%", position: "absolute" }}
       mapStyle="mapbox://styles/cajudeleite/cl5fnkcqk00e616p3fk1nk88n"
     >
-      <MainDot clientCoordinates={clientCoordinates} setIsLoading={setIsLoading} callback={() => setRoute("search")} />
+      <MainDot clientCoordinates={clientCoordinates} callback={() => setRoute("search")} />
       {events.map((event) => {
         // const timeBeforeShow = 10000 / (!userReputation ? 1 : userReputation) / Math.log2(Math.exp(event.reputation === 0 ? 1 : event.reputation));
         const timeBeforeShow = 0;
