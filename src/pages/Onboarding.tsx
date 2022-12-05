@@ -7,11 +7,9 @@ import { getMinAndMaxUsernameLength, setUsername } from "../web3/bacchus";
 const Onboarding = ({
   setRoute,
   setIsLoading,
-  setErrorText,
 }: {
   setRoute: (input: IRoute) => void;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
-  setErrorText: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [triggerError, setTriggerError] = useState(false);

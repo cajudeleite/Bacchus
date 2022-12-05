@@ -76,7 +76,7 @@ const App = () => {
   return (
     <section className="w-screen h-screen flex justify-center items-center bg-background">
       <Suspense fallback={<Loading />}>
-        {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
+        {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} />}
         {route === "map" && clientCoordinates && (
           <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} />
         )}
