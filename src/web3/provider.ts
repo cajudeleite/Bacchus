@@ -18,7 +18,8 @@ export const connectToWallet = async () => {
   }
 };
 
-export const dAppAddress = "0xC9999482D8Eb75B21b433c0e7bDa55b9A0075C6D";
+// export const dAppAddress = "0xC9999482D8Eb75B21b433c0e7bDa55b9A0075C6D";
+export const dAppAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; //REFACTO
 
 export const isUserConnected = async () => {
   try {

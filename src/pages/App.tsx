@@ -47,12 +47,13 @@ const App = () => {
 
     const checkFirstConnection = async () => {
       try {
-        const firstConnection = await userFirstConnection();
+        const firstConnection: boolean = await userFirstConnection();
 
         if (firstConnection) setRoute("onboarding");
         return firstConnection;
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        setErrorText(error.message);
+        setRoute("error");
       }
     };
 

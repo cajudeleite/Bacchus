@@ -32,7 +32,7 @@ export const userFirstConnection = async () => {
     const response: boolean = await contract.methods.userFirstConnection().call({ from: account });
     return response;
   } catch (error) {
-    throw formatErrorFromContract(error);
+    throw new Error("Connect to the Goerli testnet to use this app. It will be on the mainet soon... ");
   }
 };
 
