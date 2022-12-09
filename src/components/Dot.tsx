@@ -11,15 +11,15 @@ const Dot = ({
   enableTimeout,
   setEvent,
   setIsLoading,
-}: // setEventUser,
-{
+  setEventId,
+}: {
   event: IPartialEvent;
   setRoute: (input: IRoute) => void;
   timeBeforeShow: number;
   enableTimeout: boolean;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
-  // setEventUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
+  setEventId: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   // const dotSize = 7 + (event.reputation <= 1 ? 0 : Math.log2(event.reputation));
   const dotSize = 8;
@@ -32,6 +32,7 @@ const Dot = ({
     try {
       const response = await getEvent(event.id);
       setEvent(response);
+      setEventId(event.id);
       // setEventUser(response.data.user);
       setRoute("show");
     } catch (error: any) {

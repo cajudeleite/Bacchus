@@ -15,11 +15,13 @@ const MainMap = ({
   setRoute,
   setEvent,
   clientCoordinates,
+  setEventId,
 }: {
   setRoute: (input: IRoute) => void;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   clientCoordinates: { lat: number; lng: number };
+  setEventId: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [events, setEvents] = useState<IPartialEvent[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -85,6 +87,7 @@ const MainMap = ({
             enableTimeout={enableTimeout}
             setEvent={setEvent}
             setIsLoading={setIsLoading}
+            setEventId={setEventId}
           />
         );
       })}

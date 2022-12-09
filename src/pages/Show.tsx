@@ -3,20 +3,30 @@ import { IEvent, IRoute } from "../types";
 import Map, { Marker } from "react-map-gl";
 import { coordinatesToAddress } from "../api/geocoder";
 import Button from "../components/Button";
+import { closeEvent, getUserEvent } from "../web3/event";
 
 const Show = ({
   setRoute,
   event,
+  eventId,
   clientCoordinates,
+  setIsLoading,
+  setErrorText,
+  setErrorCallback,
 }: {
   setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   event: IEvent;
+  eventId: number;
   clientCoordinates: {
     lat: number | undefined;
     lng: number | undefined;
   };
+  setIsLoading: React.Dispatch<React.SetStateAction<string | boolean>>;
+  setErrorText: React.Dispatch<React.SetStateAction<string>>;
+  setErrorCallback: React.Dispatch<React.SetStateAction<(() => () => void) | undefined>>;
 }) => {
   const [address, setAddress] = useState("");
+  const [isEventOwner, setIsEventOwner] = useState(false);
 
   useEffect(() => {
     const coordsToAddress = async () => {
@@ -28,8 +38,18 @@ const Show = ({
       }
     };
 
+    const checkIfEventOwner = async () => {
+      try {
+        const userEventId = await getUserEvent();
+        setIsEventOwner(userEventId === eventId);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     coordsToAddress();
-  }, [event]);
+    checkIfEventOwner();
+  }, [event, eventId]);
 
   const eventCoordinates = {
     lat: parseFloat(event.location.split(",")[0]),
@@ -51,7 +71,18 @@ const Show = ({
     lng: clientCoordinates.lng - (clientCoordinates.lng - eventCoordinates.lng) / 2,
   };
 
-  const handleClose = () => {};
+  const handleClose = async () => {
+    setIsLoading("Your event is being closed, this can take a while");
+    try {
+      await closeEvent();
+      setRoute("map");
+    } catch (error: any) {
+      setErrorText(error.message);
+      setErrorCallback(() => () => handleClose());
+      setRoute("error");
+    }
+    setIsLoading(false);
+  };
 
   // const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
 
@@ -77,9 +108,11 @@ const Show = ({
           )} */}
             </div>
           </div>
-          <div className="flex my-3">
-            <Button text="Close" onClick={handleClose} />
-          </div>
+          {isEventOwner && (
+            <div className="flex my-3">
+              <Button text="Close" onClick={handleClose} />
+            </div>
+          )}
         </div>
         <p className="opacity-40 mb-5">{address}</p>
         <h2 className="opacity-50 text-justify">{event.description}</h2>
