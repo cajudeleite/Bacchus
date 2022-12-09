@@ -5,16 +5,6 @@ import { dAppAddress, provider, userAccount } from "./provider";
 
 const contract = new provider.eth.Contract(eventAbi, dAppAddress);
 
-export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
-  try {
-    const account = await userAccount();
-    const response = await contract.methods.searchEvent(name).call({ from: account });
-    return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) } as IEvent;
-  } catch (error: any) {
-    throw formatErrorFromContract(error);
-  }
-};
-
 export const createEvent = async (name: string, description: string, location: string, date: number) => {
   try {
     const account = await userAccount();
@@ -67,5 +57,24 @@ export const getUserEvent = async () => {
     return response;
   } catch (error) {
     throw error;
+  }
+};
+
+export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
+  try {
+    const account = await userAccount();
+    const response = await contract.methods.searchEvent(name).call({ from: account });
+    return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) } as IEvent;
+  } catch (error: any) {
+    throw formatErrorFromContract(error);
+  }
+};
+
+export const closeEvent = async () => {
+  try {
+    const account = await userAccount();
+    await contract.methods.closeEvent().call({ from: account });
+  } catch (error) {
+    throw formatErrorFromContract(error);
   }
 };
