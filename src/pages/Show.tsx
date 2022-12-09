@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IEvent, IRoute } from "../types";
 import Map, { Marker } from "react-map-gl";
 import { coordinatesToAddress } from "../api/geocoder";
+import Button from "../components/Button";
 
 const Show = ({
   setRoute,
@@ -55,23 +56,30 @@ const Show = ({
   // const eventUserReputation = Math.round((Math.log(eventUser.reputation + 1) / Math.log(4)) * 10) / 10;
 
   return (
-    <section className="h-full w-full flex flex-col lg:flex-row space-y-4 lg:space-x-4 text-white pb-20 py-4 lg:py-20 lg:pb-24 mx-5">
-      <div className="w-full lg:w-1/2 flex flex-col">
-        <h1 className="severe-lower-case text-8xl opacity-70 mb-2">{event.name}</h1>
-        <div className="flex items-center mb-6">
-          <p
-            className="opacity-60"
-            style={{
-              fontSize: 18,
-            }}
-          >
-            {event.username}
-          </p>
-          {/* {!eventUser.verified && (
+    <section className="h-full w-full flex flex-col lg:flex-row space-y-4 lg:space-x-4 text-white pb-20 pt-4 lg:pt-8 lg:pb-24 mx-5">
+      <div className="w-full lg:w-1/2 flex flex-col mt-1">
+        <div className="flex justify-between flex-wrap">
+          <div className="mr-8">
+            <h1 className="severe-lower-case text-8xl opacity-70">{event.name}</h1>
+            <div className="flex items-center mb-6">
+              <p
+                className="opacity-60"
+                style={{
+                  fontSize: 18,
+                }}
+              >
+                {event.username}
+              </p>
+              {/* {!eventUser.verified && (
             <div className="h-[0.3rem] w-20 bg-white opacity-20 ml-4">
               <div className="h-full bg-white opacity-40" style={{ width: `${eventUserReputation}rem` }} />
             </div>
           )} */}
+            </div>
+          </div>
+          <div className="flex my-3">
+            <Button text="Close" onClick={handleClose} />
+          </div>
         </div>
         <p className="opacity-40 mb-5">{address}</p>
         <h2 className="opacity-50 text-justify">{event.description}</h2>
