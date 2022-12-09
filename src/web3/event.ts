@@ -73,7 +73,7 @@ export const searchEvent: (name: string) => Promise<IEvent> = async (name: strin
 export const closeEvent = async () => {
   try {
     const account = await userAccount();
-    await contract.methods.closeEvent().call({ from: account });
+    await contract.methods.closeEvent().send({ from: account });
   } catch (error) {
     throw formatErrorFromContract(error);
   }
