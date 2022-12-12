@@ -17,7 +17,7 @@ const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState<boolean | string>(false);
+  const [isLoading, setIsLoading] = useState<boolean | string>(true);
   const [event, setEvent] = useState<IEvent | undefined>();
   const [eventId, setEventId] = useState(0);
   const [clientCoordinates, setClientCoordinates] = useState<{
@@ -59,10 +59,7 @@ const App = () => {
     };
 
     const checkCoordinates = () => {
-      if (!clientCoordinates) {
-        setRoute("location");
-        setIsLoading(false);
-      }
+      if (!clientCoordinates) setRoute("location");
     };
 
     const runChecks = async () => {
@@ -98,7 +95,9 @@ const App = () => {
         {route === "connection" && (
           <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
         )}
-        {route === "location" && <Location setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />}
+        {route === "location" && (
+          <Location route={route} setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />
+        )}
         {route === "error" && <Error text={errorText} onClick={errorCallback} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}

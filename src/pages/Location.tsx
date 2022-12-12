@@ -5,10 +5,12 @@ import Input from "../components/Input";
 import { IRoute } from "../types";
 
 const Location = ({
+  route,
   setRoute,
   setIsLoading,
   setClientCoordinates,
 }: {
+  route: IRoute;
   setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   setIsLoading: React.Dispatch<React.SetStateAction<string | boolean>>;
   setClientCoordinates: React.Dispatch<
@@ -45,7 +47,10 @@ const Location = ({
         }
       }
     );
-  }, [setClientCoordinates, setIsLoading, setRoute]);
+    setTimeout(() => {
+      if (route === "location") setIsLoading(false);
+    }, 5000);
+  }, [setClientCoordinates, setIsLoading, setRoute, route]);
 
   const setCustomLocation = async (address: string) => {
     setIsLoading(true);
