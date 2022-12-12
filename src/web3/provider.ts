@@ -1,7 +1,14 @@
 import Web3 from "web3";
 
 const wallet = window.ethereum || window.web3 || undefined;
-export const provider = new Web3("http://127.0.0.1:8545/");
+
+export const currentProvider = () => {
+  // if (window.ethereum) return new Web3(window.ethereum);
+  // if (window.web3) return new Web3(window.web3.currentProvider); //REFACTO
+  return new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+};
+
+export const provider = currentProvider();
 
 export const connectToWallet = async () => {
   try {
@@ -11,7 +18,8 @@ export const connectToWallet = async () => {
   }
 };
 
-export const dAppAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+// export const dAppAddress = "0xC9999482D8Eb75B21b433c0e7bDa55b9A0075C6D";
+export const dAppAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; //REFACTO
 
 export const isUserConnected = async () => {
   try {

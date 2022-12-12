@@ -19,6 +19,7 @@ const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
   const [isLoading, setIsLoading] = useState<boolean | string>(false);
   const [event, setEvent] = useState<IEvent | undefined>();
+  const [eventId, setEventId] = useState(0);
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -47,12 +48,13 @@ const App = () => {
 
     const checkFirstConnection = async () => {
       try {
-        const firstConnection = await userFirstConnection();
+        const firstConnection: boolean = await userFirstConnection();
 
         if (firstConnection) setRoute("onboarding");
         return firstConnection;
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        setErrorText(error.message);
+        setRoute("error");
       }
     };
 
@@ -76,13 +78,23 @@ const App = () => {
   return (
     <section className="w-screen h-screen flex justify-center items-center bg-background">
       <Suspense fallback={<Loading />}>
-        {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} />}
+        {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} />}
         {route === "map" && clientCoordinates && (
-          <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} />
+          <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} setEventId={setEventId} />
         )}
         {route === "search" && <Search setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} />}
         {route === "create" && <Create setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
-        {route === "show" && event && clientCoordinates && <Show setRoute={setRoute} event={event} clientCoordinates={clientCoordinates} />}
+        {route === "show" && event && clientCoordinates && (
+          <Show
+            setRoute={setRoute}
+            event={event}
+            eventId={eventId}
+            clientCoordinates={clientCoordinates}
+            setIsLoading={setIsLoading}
+            setErrorText={setErrorText}
+            setErrorCallback={setErrorCallback}
+          />
+        )}
         {route === "connection" && (
           <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
         )}
