@@ -112,7 +112,8 @@ const Show = ({
             </div>
           </div>
           {isEventOwner && (
-            <div className="flex my-3">
+            <div className="flex flex-wrap space-x-2 my-3">
+              <Button text="Update" onClick={() => setRoute("update")} />
               <Button text="Close" onClick={handleClose} />
             </div>
           )}

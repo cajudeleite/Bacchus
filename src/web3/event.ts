@@ -70,6 +70,16 @@ export const searchEvent: (name: string) => Promise<IEvent> = async (name: strin
   }
 };
 
+export const updateEvent = async (name: string, description: string, location: string, date: number) => {
+  try {
+    const account = await userAccount();
+    await contract.methods.updateEvent(name, description, location, date).send({ from: account });
+    await contract.events.EventUpdated({ filter: { user: account } });
+  } catch (error: any) {
+    throw formatErrorFromContract(error);
+  }
+};
+
 export const closeEvent = async () => {
   try {
     const account = await userAccount();
