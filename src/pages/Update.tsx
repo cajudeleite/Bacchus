@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, getEvent, getUserEvent, updateEvent } from "../web3/event";
+import { getEvent, getUserEvent, updateEvent } from "../web3/event";
 import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
