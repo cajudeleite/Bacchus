@@ -12,7 +12,7 @@ const Create = ({
   setEvent,
   setErrorText,
 }: {
-  setRoute: (input: IRoute) => void;
+  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
   setErrorText: React.Dispatch<React.SetStateAction<string>>;
