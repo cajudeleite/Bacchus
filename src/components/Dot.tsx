@@ -14,7 +14,7 @@ const Dot = ({
   setEventId,
 }: {
   event: IPartialEvent;
-  setRoute: (input: IRoute) => void;
+  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   timeBeforeShow: number;
   enableTimeout: boolean;
   setEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;

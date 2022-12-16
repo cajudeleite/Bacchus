@@ -8,7 +8,7 @@ const Onboarding = ({
   setRoute,
   setIsLoading,
 }: {
-  setRoute: (input: IRoute) => void;
+  setRoute: React.Dispatch<React.SetStateAction<IRoute>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean | string>>;
 }) => {
   const [inputValue, setInputValue] = useState("");

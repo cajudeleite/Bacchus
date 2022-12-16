@@ -3,10 +3,11 @@ import { formatErrorFromContract } from "../utils";
 import { eventAbi } from "./abi/eventAbi";
 import { dAppAddress, provider, userAccount } from "./provider";
 
-const contract = new provider.eth.Contract(eventAbi, dAppAddress);
+const contract = provider ? new provider.eth.Contract(eventAbi, dAppAddress) : null;
 
 export const createEvent = async (name: string, description: string, location: string, date: number) => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     await contract.methods.createEvent(name, description, location, date).send({ from: account });
     await contract.events.NewEvent({ filter: { user: account } });
@@ -23,6 +24,7 @@ type getEventsResponse = {
 
 export const getEvents = async () => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     const response: getEventsResponse = await contract.methods.getEvents().call({ from: account });
 
@@ -40,6 +42,7 @@ export const getEvents = async () => {
 
 export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     const response = await contract.methods.getEvent(id).call({ from: account });
 
@@ -51,6 +54,7 @@ export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
 
 export const getUserEvent = async () => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     const response: number = await contract.methods.getUserEvent().call({ from: account });
 
@@ -62,6 +66,7 @@ export const getUserEvent = async () => {
 
 export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     const response = await contract.methods.searchEvent(name).call({ from: account });
     return { name: response[0], description: response[1], location: response[2], date: new Date(parseInt(response[3])) } as IEvent;
@@ -72,6 +77,7 @@ export const searchEvent: (name: string) => Promise<IEvent> = async (name: strin
 
 export const updateEvent = async (name: string, description: string, location: string, date: number) => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     await contract.methods.updateEvent(name, description, location, date).send({ from: account });
     await contract.events.EventUpdated({ filter: { user: account } });
@@ -82,6 +88,7 @@ export const updateEvent = async (name: string, description: string, location: s
 
 export const closeEvent = async () => {
   try {
+    if (!contract) throw new Error("User does not have a provider");
     const account = await userAccount();
     await contract.methods.closeEvent().send({ from: account });
   } catch (error) {

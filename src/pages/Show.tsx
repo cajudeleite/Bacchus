@@ -52,7 +52,7 @@ const Show = ({
 
     coordsToAddress();
     checkIfEventOwner();
-  }, [event, eventId]);
+  }, [event, eventId, setRoute]);
 
   const eventCoordinates = {
     lat: parseFloat(event.location.split(",")[0]),
