@@ -50,7 +50,10 @@ const App = () => {
       try {
         const firstConnection: boolean = await userFirstConnection();
 
-        if (firstConnection) setRoute("onboarding");
+        if (firstConnection) {
+          setRoute("onboarding");
+          setIsLoading(false);
+        }
         return firstConnection;
       } catch (error: any) {
         setErrorText(error.message);

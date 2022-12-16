@@ -11,7 +11,7 @@ export type IEvent = {
   description: string;
   location: string;
   username: string;
-  date: number;
+  date: Date;
 };
 
 export type IPartialEvent = {
