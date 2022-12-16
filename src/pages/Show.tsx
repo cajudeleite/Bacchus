@@ -4,6 +4,7 @@ import Map, { Marker } from "react-map-gl";
 import { coordinatesToAddress } from "../api/geocoder";
 import Button from "../components/Button";
 import { closeEvent, getUserEvent } from "../web3/event";
+import moment from "moment";
 
 const Show = ({
   setRoute,
@@ -27,6 +28,8 @@ const Show = ({
 }) => {
   const [address, setAddress] = useState("");
   const [isEventOwner, setIsEventOwner] = useState(false);
+
+  const date = moment(event.date).fromNow();
 
   useEffect(() => {
     const coordsToAddress = async () => {
@@ -109,11 +112,13 @@ const Show = ({
             </div>
           </div>
           {isEventOwner && (
-            <div className="flex my-3">
+            <div className="flex flex-wrap space-x-2 my-3">
+              <Button text="Update" onClick={() => setRoute("update")} />
               <Button text="Close" onClick={handleClose} />
             </div>
           )}
         </div>
+        <p className="opacity-40 mb-5">{date.charAt(0).toUpperCase() + date.slice(1)}</p>
         <p className="opacity-40 mb-5">{address}</p>
         <h2 className="opacity-50 text-justify">{event.description}</h2>
       </div>

@@ -12,6 +12,7 @@ import { isUserConnected } from "../web3/provider";
 import Logo from "../icons/Logo";
 import { userFirstConnection } from "../web3/bacchus";
 import Onboarding from "./Onboarding";
+import Update from "./Update";
 
 const Map = lazy(() => import("./Map"));
 
@@ -50,7 +51,10 @@ const App = () => {
       try {
         const firstConnection: boolean = await userFirstConnection();
 
-        if (firstConnection) setRoute("onboarding");
+        if (firstConnection) {
+          setRoute("onboarding");
+          setIsLoading(false);
+        }
         return firstConnection;
       } catch (error: any) {
         setErrorText(error.message);
@@ -92,6 +96,7 @@ const App = () => {
             setErrorCallback={setErrorCallback}
           />
         )}
+        {route === "update" && <Update setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
         {route === "connection" && (
           <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
         )}
