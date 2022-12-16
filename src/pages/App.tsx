@@ -12,13 +12,15 @@ import { isUserConnected } from "../web3/provider";
 import Logo from "../icons/Logo";
 import { userFirstConnection } from "../web3/bacchus";
 import Onboarding from "./Onboarding";
+import Update from "./Update";
 
 const Map = lazy(() => import("./Map"));
 
 const App = () => {
   const [route, setRoute] = useState<IRoute>("map");
-  const [isLoading, setIsLoading] = useState<boolean | string>(false);
+  const [isLoading, setIsLoading] = useState<boolean | string>(true);
   const [event, setEvent] = useState<IEvent | undefined>();
+  const [eventId, setEventId] = useState(0);
   const [clientCoordinates, setClientCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -47,20 +49,21 @@ const App = () => {
 
     const checkFirstConnection = async () => {
       try {
-        const firstConnection = await userFirstConnection();
+        const firstConnection: boolean = await userFirstConnection();
 
-        if (firstConnection) setRoute("onboarding");
+        if (firstConnection) {
+          setRoute("onboarding");
+          setIsLoading(false);
+        }
         return firstConnection;
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        setErrorText(error.message);
+        setRoute("error");
       }
     };
 
     const checkCoordinates = () => {
-      if (!clientCoordinates) {
-        setRoute("location");
-        setIsLoading(false);
-      }
+      if (!clientCoordinates) setRoute("location");
     };
 
     const runChecks = async () => {
@@ -78,15 +81,28 @@ const App = () => {
       <Suspense fallback={<Loading />}>
         {route === "onboarding" && <Onboarding setRoute={setRoute} setIsLoading={setIsLoading} />}
         {route === "map" && clientCoordinates && (
-          <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} />
+          <Map setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} clientCoordinates={clientCoordinates} setEventId={setEventId} />
         )}
         {route === "search" && <Search setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} />}
         {route === "create" && <Create setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
-        {route === "show" && event && clientCoordinates && <Show setRoute={setRoute} event={event} clientCoordinates={clientCoordinates} />}
+        {route === "show" && event && clientCoordinates && (
+          <Show
+            setRoute={setRoute}
+            event={event}
+            eventId={eventId}
+            clientCoordinates={clientCoordinates}
+            setIsLoading={setIsLoading}
+            setErrorText={setErrorText}
+            setErrorCallback={setErrorCallback}
+          />
+        )}
+        {route === "update" && <Update setRoute={setRoute} setIsLoading={setIsLoading} setEvent={setEvent} setErrorText={setErrorText} />}
         {route === "connection" && (
           <Connection setRoute={setRoute} setIsLoading={setIsLoading} setErrorText={setErrorText} setErrorCallback={setErrorCallback} />
         )}
-        {route === "location" && <Location setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />}
+        {route === "location" && (
+          <Location route={route} setRoute={setRoute} setIsLoading={setIsLoading} setClientCoordinates={setClientCoordinates} />
+        )}
         {route === "error" && <Error text={errorText} onClick={errorCallback} />}
       </Suspense>
       {isLoading && <Loading isLoading={isLoading} />}

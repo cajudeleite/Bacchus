@@ -11,7 +11,7 @@ export type IEvent = {
   description: string;
   location: string;
   username: string;
-  date: number;
+  date: Date;
 };
 
 export type IPartialEvent = {
@@ -20,7 +20,7 @@ export type IPartialEvent = {
   location: string;
 };
 
-export type IRoute = "onboarding" | "map" | "search" | "create" | "connection" | "location" | "show" | "error";
+export type IRoute = "onboarding" | "map" | "search" | "create" | "connection" | "location" | "show" | "update" | "error";
 
 declare global {
   interface Window {

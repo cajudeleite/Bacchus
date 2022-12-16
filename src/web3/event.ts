@@ -5,16 +5,6 @@ import { dAppAddress, provider, userAccount } from "./provider";
 
 const contract = new provider.eth.Contract(eventAbi, dAppAddress);
 
-export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
-  try {
-    const account = await userAccount();
-    const response = await contract.methods.searchEvent(name).call({ from: account });
-    return { name: response[0], description: response[1], location: response[2], date: parseInt(response[3]) } as IEvent;
-  } catch (error: any) {
-    throw formatErrorFromContract(error);
-  }
-};
-
 export const createEvent = async (name: string, description: string, location: string, date: number) => {
   try {
     const account = await userAccount();
@@ -53,7 +43,7 @@ export const getEvent: (id: number) => Promise<IEvent> = async (id: number) => {
     const account = await userAccount();
     const response = await contract.methods.getEvent(id).call({ from: account });
 
-    return { name: response[0], description: response[1], location: response[2], username: response[3], date: parseInt(response[""]) };
+    return { name: response[0], description: response[1], location: response[2], username: response[3], date: new Date(parseInt(response[4])) };
   } catch (error: any) {
     throw error;
   }
@@ -67,5 +57,34 @@ export const getUserEvent = async () => {
     return response;
   } catch (error) {
     throw error;
+  }
+};
+
+export const searchEvent: (name: string) => Promise<IEvent> = async (name: string) => {
+  try {
+    const account = await userAccount();
+    const response = await contract.methods.searchEvent(name).call({ from: account });
+    return { name: response[0], description: response[1], location: response[2], date: new Date(parseInt(response[3])) } as IEvent;
+  } catch (error: any) {
+    throw formatErrorFromContract(error);
+  }
+};
+
+export const updateEvent = async (name: string, description: string, location: string, date: number) => {
+  try {
+    const account = await userAccount();
+    await contract.methods.updateEvent(name, description, location, date).send({ from: account });
+    await contract.events.EventUpdated({ filter: { user: account } });
+  } catch (error: any) {
+    throw formatErrorFromContract(error);
+  }
+};
+
+export const closeEvent = async () => {
+  try {
+    const account = await userAccount();
+    await contract.methods.closeEvent().send({ from: account });
+  } catch (error) {
+    throw formatErrorFromContract(error);
   }
 };

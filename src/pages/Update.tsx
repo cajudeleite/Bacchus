@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { createEvent, getEvent, getUserEvent } from "../web3/event";
+import { getEvent, getUserEvent, updateEvent } from "../web3/event";
 import { IEvent, IRoute } from "../types";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import { addressToCoordinates } from "../api/geocoder";
+import { addressToCoordinates, coordinatesToAddress } from "../api/geocoder";
 import { getMinAndMaxNameLength } from "../web3/bacchus";
 
-const Create = ({
+const Update = ({
   setRoute,
   setIsLoading,
   setEvent,
@@ -26,16 +26,19 @@ const Create = ({
   const eventSteps = ["Name", "Description", "Address", "Date"];
 
   useEffect(() => {
-    const userHasEvent = async () => {
-      setIsLoading(true);
+    const getEventInfo = async () => {
       try {
-        const response = await getUserEvent();
-        if (response > 0) throw new Error("User already has an event");
+        const eventId = await getUserEvent();
+        const event = await getEvent(eventId);
+
+        const location: string = await coordinatesToAddress(event.location);
+
+        setEventInfo([event.name, event.description, location, event.date.getTime().toString()]);
+        setInputValue(event.name);
       } catch (error: any) {
         setErrorText(error.message);
         setRoute("error");
       }
-      setIsLoading(false);
     };
 
     const getNameLengthValues = async () => {
@@ -48,7 +51,7 @@ const Create = ({
       }
     };
 
-    userHasEvent();
+    getEventInfo();
     getNameLengthValues();
   }, [setRoute, setIsLoading, setErrorText]);
 
@@ -107,18 +110,18 @@ const Create = ({
     newEventInfo[eventStep] = inputValue;
 
     setEventInfo(newEventInfo);
-    eventStep === 3 ? handleCreateEvent(newEventInfo) : goForward();
+    eventStep === 3 ? handleUpdateEvent(newEventInfo) : goForward();
   };
 
-  const handleCreateEvent: (eventInfo: [string, string, string, string]) => void = async (eventInfo: [string, string, string, string]) => {
-    setIsLoading("Your event is being created, this can take a while");
+  const handleUpdateEvent: (eventInfo: [string, string, string, string]) => void = async (eventInfo: [string, string, string, string]) => {
+    setIsLoading("Your event is being updated, this can take a while");
     try {
       const coordsObj = await addressToCoordinates(eventInfo[2]);
 
       const coords = `${coordsObj?.lat},${coordsObj?.lng}`;
       const date = Date.parse(eventInfo[3]);
 
-      await createEvent(eventInfo[0], eventInfo[1], coords, date);
+      await updateEvent(eventInfo[0], eventInfo[1], coords, date);
 
       const eventId = await getUserEvent();
       const event = await getEvent(eventId);
@@ -140,25 +143,22 @@ const Create = ({
         inputValue={inputValue}
         onChange={onChange}
         onSubmit={handleSubmit}
-        label={!eventStep && !inputValue ? "Create event" : eventSteps[eventStep]}
+        label={!eventStep && !inputValue ? "Update event" : eventSteps[eventStep]}
         labelAlignment={!eventStep && !inputValue ? "center" : "start"}
         type={eventStep === 3 ? "date" : "text"}
         triggerError={triggerError}
         setTriggerError={setTriggerError}
       />
-      {!triggerError &&
-        (eventStep || inputValue ? (
-          <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
-            {eventStep && <Button text="<- Back" onClick={goBackwards} variant="secondary" />}
-            {inputValue && (
-              <Button text={eventStep === 3 ? "Create" : "Next ->"} onClick={handleSubmit} variant={eventStep === 3 ? "primary" : "secondary"} />
-            )}
-          </div>
-        ) : (
-          <Button text="Search event" onClick={() => setRoute("search")} variant="secondary" />
-        ))}
+      {!triggerError && (
+        <div className={`w-full flex flex-wrap-reverse ${eventStep ? "justify-between" : "justify-end"}`}>
+          {eventStep && <Button text="<- Back" onClick={goBackwards} variant="secondary" />}
+          {inputValue && (
+            <Button text={eventStep === 3 ? "Create" : "Next ->"} onClick={handleSubmit} variant={eventStep === 3 ? "primary" : "secondary"} />
+          )}
+        </div>
+      )}
     </section>
   );
 };
 
-export default Create;
+export default Update;
